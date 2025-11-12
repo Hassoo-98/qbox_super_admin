@@ -38,7 +38,7 @@ const MenuItems = ({ currentTab }: MenuItemsProps): MenuItem[] => {
       ),
 
       { type: "divider", key: "divider-1", className: "bg-divider my-3", label:''},
-      { type: "group", label: "LOCKER MANAGEMENT", key: "header-1", className: "heading-menu" },
+      { type: "group", label: "CLIENT MANAGEMENT", key: "header-1", className: "heading-menu" },
       getItem(
         "Home Owners",
         "2",

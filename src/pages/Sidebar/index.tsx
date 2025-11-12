@@ -5,7 +5,8 @@ import type { MenuProps } from 'antd';
 import { useNavigate, useLocation, Routes, Route } from 'react-router-dom';
 import { MenuItems } from './MenuItems';
 import { DashboardPage } from '../DashboardPage';
-import { LanguageDropdown, UserDropdown } from '../../components';
+import { HomeOwnersDetails, LanguageDropdown, SearchInput, UserDropdown } from '../../components';
+import { HomeOwnersPage } from '../HomeOwnersPage';
 
 const { Header, Sider, Content } = Layout;
 
@@ -19,18 +20,18 @@ const Sidebar: React.FC = () => {
     useEffect(() => {
         let tab = location?.pathname?.split("/")[1];
         tab = tab === '' ? '1' :
-            tab === 'homeowners' ? '2' :
-                tab === 'requestqueue' ? '3' :
-                    tab === 'allqboxes' ? '4' :
-                        tab === 'serviceproviders' ? '5' :
-                            tab === 'alldrivers' ? '6' :
-                                tab === 'allshipments' ? '7' :
-                                    tab === 'staffs' ? '8' :
-                                        tab === 'rolepermissions' ? '9' :
-                                            tab === 'qrlogs' ? '10' :
-                                                tab === 'settingpages' ? '11' :
-                                                    tab === 'activitylogs' ? '12' :
-                                                        '1';
+        tab === 'homeowners' || tab === 'homeowners/homeownersdetails' ? '2' :
+        tab === 'requestqueue' ? '3' :
+        tab === 'allqboxes' ? '4' :
+        tab === 'serviceproviders' ? '5' :
+        tab === 'alldrivers' ? '6' :
+        tab === 'allshipments' ? '7' :
+        tab === 'staffs' ? '8' :
+        tab === 'rolepermissions' ? '9' :
+        tab === 'qrlogs' ? '10' :
+        tab === 'settingpages' ? '11' :
+        tab === 'activitylogs' ? '12' :
+        '1';
         setCurrentTab(tab);
     }, [location]);
 
@@ -105,6 +106,11 @@ const Sidebar: React.FC = () => {
                                         alt='collapse icon' fetchPriority="high"
                                     />
                                 </Button>
+                                <SearchInput
+                                    prefix={<img src="/assets/icons/search.png" width={20} alt="search icon" fetchPriority="high" />}
+                                    placeholder="Search by QBOX ID"
+                                />
+
                             </Space>
                             <Flex justify='space-between' align='center' className='w-100 flex-end'>
                                 <Button className='bg-transparent border-0 p-0 d-none' onClick={() => setCollapsed(!collapsed)}>
@@ -115,8 +121,8 @@ const Sidebar: React.FC = () => {
                                     />
                                 </Button>
                                 <Space size={15} align='center' className='right'>
-                                    <LanguageDropdown/>
-                                    <UserDropdown/>
+                                    <LanguageDropdown />
+                                    <UserDropdown />
                                 </Space>
                             </Flex>
                         </Flex>
@@ -127,6 +133,8 @@ const Sidebar: React.FC = () => {
                 <Content className="scroll-bar content-css">
                     <Routes>
                         <Route path='/' element={<DashboardPage />} />
+                        <Route path='/homeowners' element={<HomeOwnersPage/>}/>
+                        <Route path='/homeowners/homeownersdetails' element={<HomeOwnersDetails/>}/>
                     </Routes>
                 </Content>
             </Layout>

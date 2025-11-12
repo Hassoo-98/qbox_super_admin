@@ -1,0 +1,116 @@
+export interface HomerOwnerItems {
+    key:number,
+    id:string,
+    homeownername:string,
+    qboxid: string,
+    qboximage: string,
+    phonenumber: string,
+    email: string,
+    shortaddress: string,
+    city: string,
+    totaldliveries: string,
+    subscriptionplane: 'active' | 'expired';
+    qboxstatus: 'online' | 'offline' | 'error';
+    accountstatus: 'active' | 'inactive';
+    createdon: string
+}
+
+export const homeownersData:HomerOwnerItems [] = [
+    {
+        key:1,
+        id:'256505',
+        homeownername:'Fahd Bakir',
+        qboxid:'AB6543',
+        qboximage:'/assets/images/qbox.png',
+        phonenumber:'+966 311 425 116',
+        email:'Fahd_b@gmail.com',
+        shortaddress:'BGFT5443',
+        city:'Qatif',
+        totaldliveries:'10',
+        subscriptionplane:'active',
+        qboxstatus:'online',
+        accountstatus:'active',
+        createdon:'5/30/14'
+    },
+    {
+        key:2,
+        id:'2565056',
+        homeownername:'Mohammed Darwish',
+        qboxid:'AB65434',
+        qboximage:'/assets/images/qbox.png',
+        phonenumber:'+966 642 323 134',
+        email:'JB_23@gmail.com',
+        shortaddress:'NBHG5234',
+        city:'Qassem',
+        totaldliveries:'17',
+        subscriptionplane:'expired',
+        qboxstatus:'offline',
+        accountstatus:'inactive',
+        createdon:'2/11/12'
+    },
+    {
+        key:3,
+        id:'2565057',
+        homeownername:'Fahd Bakir',
+        qboxid:'AB6545',
+        qboximage:'/assets/images/qbox.png',
+        phonenumber:'+966 311 425 116',
+        email:'Fahd_b@gmail.com',
+        shortaddress:'BGFT5444',
+        city:'Qatif',
+        totaldliveries:'2',
+        subscriptionplane:'active',
+        qboxstatus:'online',
+        accountstatus:'active',
+        createdon:'5/30/14'
+    },
+     {
+        key:4,
+        id:'256556',
+        homeownername:'Fahd Bakir',
+        qboxid:'AB65453',
+        qboximage:'/assets/images/qbox.png',
+        phonenumber:'+966 311 425 116',
+        email:'Fahd_b@gmail.com',
+        shortaddress:'BGFT5498',
+        city:'Qatif',
+        totaldliveries:'5',
+        subscriptionplane:'active',
+        qboxstatus:'online',
+        accountstatus:'active',
+        createdon:'5/30/25'
+    },
+    {
+        key:5,
+        id:'2565056',
+        homeownername:'Mohammed Darwish',
+        qboxid:'AB65634',
+        qboximage:'/assets/images/qbox.png',
+        phonenumber:'+966 642 323 134',
+        email:'JB_23@gmail.com',
+        shortaddress:'NBHG5244',
+        city:'Qassem',
+        totaldliveries:'8',
+        subscriptionplane:'active',
+        qboxstatus:'offline',
+        accountstatus:'inactive',
+        createdon:'2/11/12'
+    },
+    {
+        key:6,
+        id:'2565087',
+        homeownername:'Fahd Bakir',
+        qboxid:'AB6549',
+        qboximage:'/assets/images/qbox.png',
+        phonenumber:'+966 311 425 116',
+        email:'Fahd_b@gmail.com',
+        shortaddress:'BGFT5423',
+        city:'Qatif',
+        totaldliveries:'2',
+        subscriptionplane:'expired',
+        qboxstatus:'error',
+        accountstatus:'inactive',
+        createdon:'5/30/14'
+    },
+    
+]

@@ -17,6 +17,7 @@
     --secondary-color: #D8E4FC;
     --light-brand: #E4F2FA;
     --dark-blue: #07072D;
+    --dark-slate-blue: #28475c;
     --light-blue: #0C1342;
     --white-text:#fff;
     --body-text: Productsans, sans-serif;
@@ -87,6 +88,9 @@
     color: var(--dark-brand) !important;
 }
 
+.bg-slate-blue{
+    background-color: var(--dark-slate-blue) !important;
+}
 .bg-delete{
     background-color: var(--red-3) !important;
 }
@@ -351,6 +355,7 @@
     box-shadow: none !important;
     font-size: .9rem;
     border-radius: 16px;
+    text-wrap: nowrap;
 }
 
 /* table css */
@@ -421,7 +426,8 @@
     border-top: 0 !important;
     border-bottom: 1px solid var(--border-gray);
     font-weight: 500 !important;
-    background-color: var(--brand-color) !important;
+    background-color: var(--dark-slate-blue) !important;
+    white-space: nowrap;
 }
 
 .table-cs .ant-table-thead >tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before{
@@ -487,9 +493,8 @@
     border: 1px solid var(--brand-color);
 }
 .btncancel{
-    padding: 0.5rem 1.7rem;
+    padding: 0.7rem 1.5rem !important;
     height: auto !important; 
-    color: var(--black-color) !important;
     box-shadow: none !important;
     font-size: .8rem;
     border-radius: 5px;
@@ -509,7 +514,7 @@
 }
 
 .filter-bg{
-    background-color: var(--light-gray-bg) !important;
+    background-color: #fcfcfd !important;
 }
 
 .center{
