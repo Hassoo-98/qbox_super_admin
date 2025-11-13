@@ -12,7 +12,15 @@ export interface HomerOwnerItems {
     subscriptionplane: 'active' | 'expired';
     qboxstatus: 'online' | 'offline' | 'error';
     accountstatus: 'active' | 'inactive';
-    createdon: string
+    createdon: string,
+    district:string,
+    street:string,
+    postalcode: string,
+    building:string,
+    secondarynumber:string,
+    idtypenumber:string,
+    preferdlocation:string,
+    instruction:string
 }
 
 export const homeownersData:HomerOwnerItems [] = [
@@ -30,7 +38,16 @@ export const homeownersData:HomerOwnerItems [] = [
         subscriptionplane:'active',
         qboxstatus:'online',
         accountstatus:'active',
-        createdon:'5/30/14'
+        createdon:'5/30/14',
+        district:'Riyadh',
+        street:'Street 12, Block A',
+        postalcode:'12345',
+        building:'3214',
+        secondarynumber:'3333',
+        idtypenumber:'Iqama . XXXXXXXXXX',
+        preferdlocation:'Left side of garden',
+        instruction:'tai fiktyvus tekstas naudojamas spaudos ir grafinio dizaino pasaulyje jau nuo XVI a. pradžios. Lorem Ipsum tapo standartiniu fiktyviu tekstu,'
+
     },
     {
         key:2,
@@ -46,7 +63,15 @@ export const homeownersData:HomerOwnerItems [] = [
         subscriptionplane:'expired',
         qboxstatus:'offline',
         accountstatus:'inactive',
-        createdon:'2/11/12'
+        createdon:'2/11/12',
+         district:'Riyadh',
+        street:'Street 12, Block A',
+        postalcode:'12345',
+        building:'3214',
+        secondarynumber:'3333',
+        idtypenumber:'Iqama . XXXXXXXXXX',
+        preferdlocation:'Left side of garden',
+        instruction:'tai fiktyvus tekstas naudojamas spaudos ir grafinio dizaino pasaulyje jau nuo XVI a. pradžios. Lorem Ipsum tapo standartiniu fiktyviu tekstu,'
     },
     {
         key:3,
@@ -62,7 +87,15 @@ export const homeownersData:HomerOwnerItems [] = [
         subscriptionplane:'active',
         qboxstatus:'online',
         accountstatus:'active',
-        createdon:'5/30/14'
+        createdon:'5/30/14',
+         district:'Riyadh',
+        street:'Street 12, Block A',
+        postalcode:'12345',
+        building:'3214',
+        secondarynumber:'3333',
+        idtypenumber:'Iqama . XXXXXXXXXX',
+        preferdlocation:'Left side of garden',
+        instruction:'tai fiktyvus tekstas naudojamas spaudos ir grafinio dizaino pasaulyje jau nuo XVI a. pradžios. Lorem Ipsum tapo standartiniu fiktyviu tekstu,'
     },
      {
         key:4,
@@ -78,7 +111,15 @@ export const homeownersData:HomerOwnerItems [] = [
         subscriptionplane:'active',
         qboxstatus:'online',
         accountstatus:'active',
-        createdon:'5/30/25'
+        createdon:'5/30/25',
+         district:'Riyadh',
+        street:'Street 12, Block A',
+        postalcode:'12345',
+        building:'3214',
+        secondarynumber:'3333',
+        idtypenumber:'Iqama . XXXXXXXXXX',
+        preferdlocation:'Left side of garden',
+        instruction:'tai fiktyvus tekstas naudojamas spaudos ir grafinio dizaino pasaulyje jau nuo XVI a. pradžios. Lorem Ipsum tapo standartiniu fiktyviu tekstu,'
     },
     {
         key:5,
@@ -94,7 +135,15 @@ export const homeownersData:HomerOwnerItems [] = [
         subscriptionplane:'active',
         qboxstatus:'offline',
         accountstatus:'inactive',
-        createdon:'2/11/12'
+        createdon:'2/11/12',
+         district:'Riyadh',
+        street:'Street 12, Block A',
+        postalcode:'12345',
+        building:'3214',
+        secondarynumber:'3333',
+        idtypenumber:'Iqama . XXXXXXXXXX',
+        preferdlocation:'Left side of garden',
+        instruction:'tai fiktyvus tekstas naudojamas spaudos ir grafinio dizaino pasaulyje jau nuo XVI a. pradžios. Lorem Ipsum tapo standartiniu fiktyviu tekstu,'
     },
     {
         key:6,
@@ -110,7 +159,15 @@ export const homeownersData:HomerOwnerItems [] = [
         subscriptionplane:'expired',
         qboxstatus:'error',
         accountstatus:'inactive',
-        createdon:'5/30/14'
+        createdon:'5/30/14',
+         district:'Riyadh',
+        street:'Street 12, Block A',
+        postalcode:'12345',
+        building:'3214',
+        secondarynumber:'3333',
+        idtypenumber:'Iqama . XXXXXXXXXX',
+        preferdlocation:'Left side of garden',
+        instruction:'tai fiktyvus tekstas naudojamas spaudos ir grafinio dizaino pasaulyje jau nuo XVI a. pradžios. Lorem Ipsum tapo standartiniu fiktyviu tekstu,'
     },
     
 ]

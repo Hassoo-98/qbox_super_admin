@@ -444,8 +444,8 @@
 }
 
 .pagination .ant-pagination-item-active{
-    background-color: var(--brand-color) !important;
-    border-color: var(--brand-color) !important;
+    background-color: var(--dark-slate-blue) !important;
+    border-color: var(--dark-slate-blue) !important;
     color: var(--white-text) !important;
 }
 
@@ -466,8 +466,8 @@
 }
 
 .filter-pag .ant-select-selector{
-    background-color: var(--brand-color) !important;
-    color: var(--white-text);
+    background-color: var(--dark-slate-blue) !important;
+    color: var(--white-text) !important;
     border-color: var(--brand-color) !important;
 }
 

@@ -134,7 +134,7 @@ const Sidebar: React.FC = () => {
                     <Routes>
                         <Route path='/' element={<DashboardPage />} />
                         <Route path='/homeowners' element={<HomeOwnersPage/>}/>
-                        <Route path='/homeowners/homeownersdetails' element={<HomeOwnersDetails/>}/>
+                        <Route path='/homeowners/homeownersdetails/:id' element={<HomeOwnersDetails/>}/>
                     </Routes>
                 </Content>
             </Layout>

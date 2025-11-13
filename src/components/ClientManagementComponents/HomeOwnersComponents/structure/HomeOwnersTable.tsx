@@ -1,25 +1,30 @@
 import { useState } from "react";
 import { Typography, Card, Flex, Table, Form, Row, Col, type TableColumnsType, type MenuProps, Avatar, Dropdown, Button } from "antd"
-import { ActiveModal, DeleteModal, InactiveModal, ModuleTopHeading } from "../../PageComponents"
-import { homeownersData, type HomerOwnerItems } from "../../../data";
-import { SearchInput } from "../../Forms";
+import { ActiveModal, CustomPagination, DeleteModal, InactiveModal, ModuleTopHeading } from "../../../PageComponents"
+import { homeownersData, type HomerOwnerItems } from "../../../../data";
+import { SearchInput } from "../../../Forms";
 import { DownOutlined } from '@ant-design/icons';
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 const { Text } = Typography;
-const HomeOwnersTable = () => {
+const HomeOwnersTable: React.FC = () => {
     const [form] = Form.useForm();
     const [activeModal, setActiveModal] = useState(false);
     const [inactiveModal, setInactiveModal] = useState(false);
     const [deleteItem, setDeleteItem] = useState(false);
+    const [pageSize, setPageSize] = useState<number>(10);
+    const [current, setCurrent] = useState<number>(1);
     const [itemToDelete, setItemToDelete] = useState<HomerOwnerItems | null>(null);
-
-
+    const navigate = useNavigate();
     const handleStatusClick = (status: "active" | "inactive") => {
         if (status === "active") {
             setInactiveModal(true);
         } else {
             setActiveModal(true);
         }
+    };
+    const handlePageChange = (page: number, size: number): void => {
+        setCurrent(page);
+        setPageSize(size);
     };
     const Cities = [
         { key: 1, label: 'Qatif' },
@@ -121,7 +126,7 @@ const HomeOwnersTable = () => {
             title: "Action",
             key: "action",
             width: 100,
-            render: (_: any, row: HomerOwnerItems) => {
+            render: (_, row: HomerOwnerItems) => {
                 const items: MenuProps["items"] = [
                     {
                         label: (
@@ -140,7 +145,7 @@ const HomeOwnersTable = () => {
                     },
                     {
                         label: (
-                            <NavLink to="/" onClick={(e) => e.preventDefault()}>
+                            <NavLink to="/" onClick={(e) => { e.preventDefault(); navigate('/homeowners/homeownersdetails/' + + row?.key) }}>
                                 View
                             </NavLink>
                         ),
@@ -249,6 +254,12 @@ const HomeOwnersTable = () => {
                         scroll={{ x: 1300 }}
                         rowHoverable={false}
                         pagination={false}
+                    />
+                    <CustomPagination
+                        total={12}
+                        current={current}
+                        pageSize={pageSize}
+                        onPageChange={handlePageChange}
                     />
                 </Flex>
             </Card>
