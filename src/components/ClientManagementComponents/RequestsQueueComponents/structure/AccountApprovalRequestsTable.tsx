@@ -1,18 +1,18 @@
 
 import { Flex, Form, Row, Col, Dropdown, Button, Typography, Table, type TableColumnsType, type MenuProps, Avatar } from "antd"
-import { SearchInput } from "../../../Forms"
 import { appointmentapprovalrequestData, type AppointApprovalItems } from "../../../../data";
 import { DownOutlined } from '@ant-design/icons';
 import { NavLink, useNavigate } from "react-router-dom";
-const {Text} = Typography;
-const AccountApprovalRequestsTable = () => {
-    const [form] = Form.useForm();
+import { SearchInput } from "../../../Forms";
+const { Text } = Typography;
+const AccountApprovalRequestsTable: React.FC = () => {
+    const [form] = Form.useForm()
     const navigate = useNavigate();
     const Cities = [
         { key: 1, label: 'Qatif' },
         { key: 2, label: 'Qaseem' }
     ];
-    const accountColumns:TableColumnsType<AppointApprovalItems> = [
+    const accountColumns: TableColumnsType<AppointApprovalItems> = [
         {
             title: 'Owner ID',
             dataIndex: 'ownerid'
@@ -46,7 +46,7 @@ const AccountApprovalRequestsTable = () => {
         {
             title: 'Installation Status',
             dataIndex: 'installationstatus',
-             render: (subscriptionplane) => {
+            render: (subscriptionplane) => {
                 return (
                     subscriptionplane === 'installed' ?
                         <Text className='btnpill fs-12 success'>Installed</Text> :
@@ -54,7 +54,7 @@ const AccountApprovalRequestsTable = () => {
                 )
             }
         },
-         {
+        {
             title: "Action",
             key: "action",
             width: 100,
@@ -62,7 +62,7 @@ const AccountApprovalRequestsTable = () => {
                 const items: MenuProps["items"] = [
                     {
                         label: (
-                            <NavLink to="/" onClick={(e) => { e.preventDefault(); navigate('') }}>
+                            <NavLink to="/" onClick={(e) => { e.preventDefault(); navigate(''+row?.key) }}>
                                 View
                             </NavLink>
                         ),
@@ -115,6 +115,7 @@ const AccountApprovalRequestsTable = () => {
                                 </Col>
                             </Row>
                         </Col>
+                       
                     </Row>
                 </Form>
                 <Table<AppointApprovalItems>
