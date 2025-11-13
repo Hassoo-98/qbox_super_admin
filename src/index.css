@@ -1209,8 +1209,8 @@
 }
 
 .custom-segment .ant-segmented-item-selected {
-  background-color: var(--white-text);
-  color: black;
+  background-color: var(--dark-slate-blue);
+  color: var(--white-text);
 }
 
 

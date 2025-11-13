@@ -7,6 +7,7 @@ import { MenuItems } from './MenuItems';
 import { DashboardPage } from '../DashboardPage';
 import { HomeOwnersDetails, LanguageDropdown, SearchInput, UserDropdown } from '../../components';
 import { HomeOwnersPage } from '../HomeOwnersPage';
+import { RequestsQueuePage } from '../RequestsQueuePage';
 
 const { Header, Sider, Content } = Layout;
 
@@ -21,7 +22,7 @@ const Sidebar: React.FC = () => {
         let tab = location?.pathname?.split("/")[1];
         tab = tab === '' ? '1' :
         tab === 'homeowners' || tab === 'homeowners/homeownersdetails' ? '2' :
-        tab === 'requestqueue' ? '3' :
+        tab === 'requestsqueue' ? '3' :
         tab === 'allqboxes' ? '4' :
         tab === 'serviceproviders' ? '5' :
         tab === 'alldrivers' ? '6' :
@@ -39,7 +40,7 @@ const Sidebar: React.FC = () => {
         switch (e.key) {
             case '1': navigate("/", { replace: true }); break;
             case '2': navigate("/homeowners", { replace: true }); break;
-            case '3': navigate("/requestqueue", { replace: true }); break;
+            case '3': navigate("/requestsqueue", { replace: true }); break;
             case '4': navigate("/allqboxes", { replace: true }); break;
             case '5': navigate("/serviceproviders", { replace: true }); break;
             case '6': navigate("/alldrivers", { replace: true }); break;
@@ -135,6 +136,7 @@ const Sidebar: React.FC = () => {
                         <Route path='/' element={<DashboardPage />} />
                         <Route path='/homeowners' element={<HomeOwnersPage/>}/>
                         <Route path='/homeowners/homeownersdetails/:id' element={<HomeOwnersDetails/>}/>
+                        <Route path='/requestsqueue' element={<RequestsQueuePage/>}/>
                     </Routes>
                 </Content>
             </Layout>

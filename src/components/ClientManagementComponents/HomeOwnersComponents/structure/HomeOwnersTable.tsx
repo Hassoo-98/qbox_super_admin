@@ -145,7 +145,7 @@ const HomeOwnersTable: React.FC = () => {
                     },
                     {
                         label: (
-                            <NavLink to="/" onClick={(e) => { e.preventDefault(); navigate('/homeowners/homeownersdetails/' + + row?.key) }}>
+                            <NavLink to="/" onClick={(e) => { e.preventDefault(); navigate('/homeowners/homeownersdetails/'+row?.key) }}>
                                 View
                             </NavLink>
                         ),
