@@ -19,7 +19,7 @@ type SingleFileUploadProps = {
   width?: number;
   height?: number;
   onUpload?: (file: RcFile | RcFile[]) => Promise<void>;
-  className?: string
+  className?: string;
 };
 
 const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
@@ -36,66 +36,63 @@ const SingleFileUpload: React.FC<SingleFileUploadProps> = ({
   align = "center",
   width = 150,
   height = 150,
-  className
+  className,
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const handleChange: UploadProps["onChange"] = async (info) => {
-  let newFileList = [...info.fileList];
+    let newFileList = [...info.fileList];
 
-  // Validate file type only if multiple
-  if (multiple) {
-    const validFiles = newFileList.filter((file) =>
-      allowedTypes.includes(file.type || "")
-    );
+    // Validate file type only if multiple
+    if (multiple) {
+      const validFiles = newFileList.filter((file) =>
+        allowedTypes.includes(file.type || "")
+      );
 
-    if (validFiles.length !== newFileList.length) {
-      message.error("Only PNG, JPG, JPEG, and WEBP images are allowed.");
-    }
-
-    newFileList = validFiles;
-  }
-
-  // If not multiple — only keep the last file
-  if (!multiple) {
-    newFileList = newFileList.slice(-1);
-  }
-
-  setFileList(newFileList);
-
-  // Extract RcFile(s)
-  const files = multiple
-    ? newFileList
-        .map((file) => file.originFileObj)
-        .filter((f): f is RcFile => !!f)
-    : (newFileList[0]?.originFileObj as RcFile | null) || null;
-
-  // Update form value
-  form.setFieldsValue({ [name]: files });
-
-  // Uploading — check if onUpload exists
-  try {
-    if (onUpload) {
-      if (multiple) {
-        await onUpload(files as RcFile[]);
-      } else if (files) {
-        await onUpload(files as RcFile);
+      if (validFiles.length !== newFileList.length) {
+        message.error("Only PNG, JPG, JPEG, and WEBP images are allowed.");
       }
-    }
-  } catch (err) {
-    console.error("Upload error:", err);
-  }
-};
 
+      newFileList = validFiles;
+    }
+
+    // If not multiple — only keep the last file
+    if (!multiple) {
+      newFileList = newFileList.slice(-1);
+    }
+
+    setFileList(newFileList);
+
+    // Extract RcFile(s)
+    const files = multiple
+      ? newFileList
+          .map((file) => file.originFileObj)
+          .filter((f): f is RcFile => !!f)
+      : (newFileList[0]?.originFileObj as RcFile | null) || null;
+
+    // Update form value
+    form.setFieldsValue({ [name]: files });
+
+    // Uploading — check if onUpload exists
+    try {
+      if (onUpload) {
+        if (multiple) {
+          await onUpload(files as RcFile[]);
+        } else if (files) {
+          await onUpload(files as RcFile);
+        }
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+    }
+  };
 
   const handleRemove = (file: UploadFile) => {
     const updated = fileList.filter((f) => f.uid !== file.uid);
     setFileList(updated);
 
     const files = multiple
-      ? updated
-          .map((f) => f.originFileObj)
-          .filter((f): f is RcFile => !!f)
+      ? updated.map((f) => f.originFileObj).filter((f): f is RcFile => !!f)
       : null;
 
     form.setFieldsValue({ [name]: files });
@@ -119,7 +116,7 @@ const SingleFileUpload: React.FC<SingleFileUploadProps> = ({
             name="file"
             multiple={multiple}
             showUploadList={false}
-            customRequest={({ file, onSuccess }) => {
+            customRequest={({ onSuccess }) => {
               setTimeout(() => onSuccess?.("ok"), 300);
             }}
             onChange={handleChange}
@@ -127,7 +124,13 @@ const SingleFileUpload: React.FC<SingleFileUploadProps> = ({
             className="upload-d"
           >
             {(fileList.length === 0 || multiple) && (
-              <Flex vertical gap={5} align="center" justify="center" className="upload-flex">
+              <Flex
+                vertical
+                gap={5}
+                align="center"
+                justify="center"
+                className="upload-flex"
+              >
                 <PlusOutlined className="fs-16" />
                 <p className="ant-upload p-0 m-0 text-black">{title}</p>
               </Flex>
@@ -144,7 +147,9 @@ const SingleFileUpload: React.FC<SingleFileUploadProps> = ({
 
               const preview =
                 file.thumbUrl ||
-                (file.originFileObj ? URL.createObjectURL(file.originFileObj) : "");
+                (file.originFileObj
+                  ? URL.createObjectURL(file.originFileObj)
+                  : "");
 
               return (
                 <Flex key={file.uid} align="center" gap={10} justify={align}>
