@@ -10,7 +10,7 @@ import { ConfirmModal, DeleteModal, ModuleTopHeading } from "../../../PageCompon
 import { serviceproviderColumn, serviceproviderData } from "../../../../data";
 import { MyDatepicker, SearchInput } from "../../../Forms";
 import { AddEditServiceProviderDrawer } from "../modal";
-import i18n from "../../../../sources/i18n";
+
 
 
 const { Text } = Typography;
