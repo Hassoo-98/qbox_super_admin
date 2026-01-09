@@ -2,6 +2,8 @@ import React from "react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Flex, Select, Pagination } from "antd";
 import type { PaginationProps } from "antd";
+import { useTranslation } from "react-i18next";
+import i18n from "../../sources/i18n";
 
 interface CustomPaginationProps {
   total: number;
@@ -18,21 +20,27 @@ export const CustomPagination: React.FC<CustomPaginationProps> = ({
   onPageChange,
   pageSizeOptions = [10, 20, 50, 100],
 }) => {
+  const { t } = useTranslation();
+     const isRTL = i18n.language === "ar";
+     
+       
 
-  // if (!total || total <= pageSize) return null;
-
-  const itemRender: PaginationProps["itemRender"] = (page, type, originalElement) => {
+  const itemRender: PaginationProps["itemRender"] = (
+    page,
+    type,
+    originalElement
+  ) => {
     if (type === "prev") {
       return (
         <a className="text-black">
-       <LeftOutlined />Previous
+          <LeftOutlined /> {t("Previous")}
         </a>
       );
     }
     if (type === "next") {
       return (
         <a className="text-black">
-          Next <RightOutlined />
+          {t("Next")} <RightOutlined />
         </a>
       );
     }
@@ -46,7 +54,7 @@ export const CustomPagination: React.FC<CustomPaginationProps> = ({
             color: isActive ? "#1677ff" : "inherit",
           }}
         >
-        {page.toString()}
+          {page.toString()}
         </a>
       );
     }
@@ -54,9 +62,9 @@ export const CustomPagination: React.FC<CustomPaginationProps> = ({
   };
 
   return (
-    <Flex justify="space-between" align="center" className="px-2 py-4">
+    <Flex justify="space-between" align="center" className="px-2 py-4"   style={{ direction: isRTL ? "rtl" : "ltr" }}>
       <Flex align="center" gap={8}>
-        <span className="text-gray-500">Rows per page:</span>
+        <span className="text-gray-500">{t("Rows per page:")}</span>
         <Select
           value={pageSize}
           onChange={(value) => onPageChange(1, value)}
@@ -77,9 +85,9 @@ export const CustomPagination: React.FC<CustomPaginationProps> = ({
         className={`pagination `}
         itemRender={itemRender}
         showTotal={(total, range) =>
-          `Showing ${
-            range[0]
-          }-${range[1]} of ${total} items`
+          `${t("Showing")} ${range[0]}-${range[1]} ${t("of")} ${total} ${t(
+            "items"
+          )}`
         }
       />
     </Flex>

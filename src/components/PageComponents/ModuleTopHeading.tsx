@@ -2,6 +2,7 @@
 import React from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Space, Button, Typography } from "antd";
+import i18n from "../../sources/i18n";
 
 const { Title } = Typography;
 
@@ -16,8 +17,11 @@ export const ModuleTopHeading: React.FC<ModuleTopHeadingProps> = ({
   onClick,
   level = 4,
 }) => {
+     const isRTL = i18n.language === "ar";
+       
+     
   return (
-    <Space className="align-center">
+    <Space className="align-center"   style={{ direction: isRTL ? "rtl" : "ltr" }}>
       <Title level={level} className="my-0 fw-500">
         {name}
       </Title>

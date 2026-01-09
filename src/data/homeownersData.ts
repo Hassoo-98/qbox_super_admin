@@ -1,29 +1,7 @@
-export interface HomerOwnerItems {
-    key:number,
-    id:string,
-    homeownername:string,
-    qboxid: string,
-    qboximage: string,
-    phonenumber: string,
-    email: string,
-    shortaddress: string,
-    city: string,
-    totaldliveries: string,
-    subscriptionplane: 'active' | 'expired';
-    qboxstatus: 'online' | 'offline' | 'error';
-    accountstatus: 'active' | 'inactive';
-    createdon: string,
-    district:string,
-    street:string,
-    postalcode: string,
-    building:string,
-    secondarynumber:string,
-    idtypenumber:string,
-    preferdlocation:string,
-    instruction:string
-}
+import type {  HomerOwnerTypes } from "../Type";
 
-export const homeownersData:HomerOwnerItems [] = [
+
+export const homeownersData:HomerOwnerTypes [] = [
     {
         key:1,
         id:'256505',
@@ -171,3 +149,4 @@ export const homeownersData:HomerOwnerItems [] = [
     },
     
 ]
+

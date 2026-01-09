@@ -31,6 +31,7 @@ interface SearchInputProps {
   prefix?: React.ReactNode; // ✅ Allowed for Input/Password
   inputProps?: InputOrPasswordProps;
   textAreaProps?: TextAreaOnlyProps;
+  className?: string;
 }
 
 export const SearchInput: React.FC<SearchInputProps> = ({
@@ -49,6 +50,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   prefix,
   inputProps,
   textAreaProps,
+  className,
 }) => {
   return (
     <>
@@ -59,7 +61,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
             value={value || ''}
             {...textAreaProps}
             disabled={disabled}
-            className="searchinputno"
+            className={`searchinputno ${className}`}
           />
         ) : type === 'password' ? (
           <Input.Password
@@ -69,7 +71,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
             disabled={disabled}
             prefix={prefix}
             {...inputProps}
-            className="searchinputno"
+            className={`searchinputno ${className}`}
           />
         ) : (
           <Input
@@ -79,7 +81,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
             disabled={disabled}
             prefix={prefix}
             {...inputProps}
-            className="searchinputno"
+            className={`searchinputno ${className}`}
           />
         )
       ) : (
@@ -94,7 +96,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
                 ]
               : [{ required, message }]
           }
-          className="custom-input1 fs-14 m-0"
+          className={`custom-input1 fs-14 m-0 ${className}`}
         >
           {textArea ? (
             <Input.TextArea

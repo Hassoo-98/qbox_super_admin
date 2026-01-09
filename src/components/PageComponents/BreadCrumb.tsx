@@ -1,16 +1,17 @@
 import React from "react";
 import { Card, Breadcrumb, Typography } from "antd";
 import { NavLink } from "react-router-dom";
+import i18n from "../../sources/i18n";
 
 const { Text } = Typography;
 
-// ✅ Define the type for each breadcrumb item
+
 interface BreadCrumbItem {
   title: string;
   to?: string;
 }
 
-// ✅ Define the component props
+
 interface BreadCrumbProps {
   items?: BreadCrumbItem[];
   separator?: React.ReactNode;
@@ -22,8 +23,11 @@ const BreadCrumb: React.FC<BreadCrumbProps> = ({
   separator = "/",
   className = "",
 }) => {
+     const isRTL = i18n.language === "ar";
+    
+       
   return (
-    <Card className={`card-bg card-cs radius-12 border-gray ${className}`}>
+    <Card className={`card-bg card-cs radius-12 border-gray ${className}`}   style={{ direction: isRTL ? "rtl" : "ltr" }}>
       <Breadcrumb
         separator={separator}
         items={items.map((item, index) => ({

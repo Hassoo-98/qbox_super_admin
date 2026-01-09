@@ -1,16 +1,8 @@
-export interface RecentRequestItem {
-  key: number;
-  qboxid: string;
-  qboximage: string;
-  homeownername: string;
-  phonenumber: string;
-  city: string;
-  shortaddress: string;
-  requestdate: string;
-}
+import type { RecentRequestType } from "../Type";
 
 
-export const recentrequestData:RecentRequestItem [] = [
+
+export const recentrequestData:RecentRequestType []= [
     {
         key:1,
         qboxid:'AB6542',

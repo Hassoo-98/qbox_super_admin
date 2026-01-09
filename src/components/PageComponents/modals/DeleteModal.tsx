@@ -1,40 +1,69 @@
 import { Modal, Flex, Button, Typography } from "antd";
+import type { HomerOwnerTypes } from "../../../Type";
+import { useTranslation } from "react-i18next";
+import i18n from "../../../sources/i18n";
 const { Text, Title } = Typography;
-import { type HomerOwnerItems } from "../../../data";
 interface DeleteModalProps {
   visible: boolean;
   onClose: () => void;
-  item: HomerOwnerItems | null;
+  title: string;
+  subtitle: string;
+  item?: HomerOwnerTypes | null;
 }
 
-export const DeleteModal: React.FC<DeleteModalProps> = ({ visible, onClose, item }) => {
+export const DeleteModal: React.FC<DeleteModalProps> = ({
+  visible,
+  onClose,
+  item,
+  title,
+  subtitle,
+}) => {
+  const { t } = useTranslation();
+   const isRTL = i18n.language === "ar";
+   
   return (
     <Modal
       open={visible}
       onCancel={onClose}
+       
+      style={{ direction: isRTL ? "rtl" : "ltr" }}
       centered
       footer={
         <Flex justify="center" gap={5}>
-          <Button onClick={onClose} className="btncancel text-black border-gray">
-            Cancel
+          <Button
+            onClick={onClose}
+            className="btncancel text-black border-gray"
+          >
+            {t("Cancel")}
           </Button>
           <Button
-            className="btnsave border-0 text-white bg-red"
+            className="btnsave border-0 text-white bg-delivery-failed"
             onClick={onClose}
           >
-            Confirm
+            {t("Confirm")}
           </Button>
         </Flex>
       }
     >
       <Flex vertical align="center" className="mt-3" gap={5}>
-        <img src="/assets/icons/delete.png" width={50} alt="bin icon" fetchPriority="high" />
+        <img
+          src="/assets/icons/delete.png"
+          width={50}
+          alt="bin icon"
+          fetchPriority="high"
+        />
         <Title level={5} className="m-0">
-          Delete Account
+          {title}
         </Title>
         <Text className="fs-14 text-center">
-          Are you sure you want to delete{" "}
-          <b>{item?.homeownername || "this account"}</b>?
+          {subtitle}
+          <>
+            {item ? (
+              <>
+                <b>{item?.homeownername || "this account"}</b> ?
+              </>
+            ) : null}
+          </>
         </Text>
       </Flex>
     </Modal>

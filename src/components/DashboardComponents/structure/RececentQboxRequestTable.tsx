@@ -1,52 +1,29 @@
-import { Avatar, Button, Card, Flex, Table, type TableColumnsType } from "antd"
-import { ModuleTopHeading } from "../../PageComponents"
-import { recentrequestData, type RecentRequestItem } from "../../../data"
+import { Button, Card, Flex, Table } from "antd";
+import { ModuleTopHeading } from "../../PageComponents";
+import { recentrequestData, recentColumn } from "../../../data";
+import type { RecentRequestType } from "../../../Type";
+import { useTranslation } from "react-i18next";
+import i18n from "../../../sources/i18n";
 const RececentQboxRequestTable = () => {
-    const recentColumn: TableColumnsType<RecentRequestItem> =[
-        {
-            title:'QBox ID',
-            dataIndex:'qboxid'
-        },
-        {
-            title:'QBox Image',
-            dataIndex:'qboximage',
-             render: (qboximage: string) => <Avatar src={qboximage} size={50} shape="square" />,
-            width: 100
-        },
-        {
-            title:'Homeowner Name',
-            dataIndex:'homeownername'
-        },
-        {
-            title:'Phone Number',
-            dataIndex:'phonenumber'
-        },
-        {
-            title:'City',
-            dataIndex:'city'
-        },
-        {
-            title:'Short Address',
-            dataIndex:'shortaddress'
-        },
-        {
-            title:'Requested Date',
-            dataIndex:'requestdate'
-        }
-    ];
+   const isRTL = i18n.language === "ar";
     
+     
+  const { t } = useTranslation();
   return (
-    <Card className='radius-12 border-gray card-cs h-100'>
-      <Flex justify='space-between' align='center' className='mb-2'>
-        <ModuleTopHeading level={5} name={'Recent QBox Installment Requests'}/>
-        <Button className='btncancel brand-bg text-black'>View All</Button>
+    <Card className="radius-12 border-gray card-cs h-100"   style={{ direction: isRTL ? "rtl" : "ltr" }}>
+      <Flex justify="space-between" align="center" className="mb-2">
+        <ModuleTopHeading
+          level={5}
+          name={t("Recent QBox Installment Requests")}
+        />
+      <Button className="btncancel text-black">{t("View All")}</Button>
       </Flex>
       <Flex vertical gap={20}>
-        <Table<RecentRequestItem>
-          size='large'
-          columns={recentColumn}
+        <Table<RecentRequestType>
+          size="large"
+          columns={recentColumn(t)}
           dataSource={recentrequestData}
-          className='pagination table-cs table'
+          className="pagination table-cs table"
           showSorterTooltip={false}
           scroll={{ x: 1300 }}
           rowHoverable={false}
@@ -54,7 +31,7 @@ const RececentQboxRequestTable = () => {
         />
       </Flex>
     </Card>
-  )
-}
+  );
+};
 
-export {RececentQboxRequestTable} 
+export { RececentQboxRequestTable };
