@@ -139,12 +139,12 @@ const StaffsTable = () => {
           <Table<staffType>
             size="large"
             columns={staffColumn(
-              { setVisible },
-              setEditItem,
-              setStatusChanged,
-              setDeleteItem,
-              t
-            )}
+               setVisible,
+               setEditItem,
+               setStatusChanged,
+               setDeleteItem,
+               t
+             )}
             dataSource={staffData}
             className="pagination table-cs table"
             showSorterTooltip={false}
