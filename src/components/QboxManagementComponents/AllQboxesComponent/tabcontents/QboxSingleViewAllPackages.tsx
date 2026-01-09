@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { BreadCrumb } from "../../../PageComponents";
 import { allpackagesData } from "../../../../data";
 import { ProviderActivityTable } from "../../../ShippingManagementComponents";
-import i18n from "../../../../sources/i18n";
+
 
 const statusColors: Record<string, string> = {
   "Shipment Created": "bg-shipment",
