@@ -49,7 +49,7 @@ const ChangePasswordSetting = () => {
                                         required: true,
                                     }
                                 ]}
-                                validator={({ getFieldValue }) => ({
+                                validator={() => ({
                                     validator: (_, value) => {
                                         const reg = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/;
                                         if (!reg.test(value)) {
