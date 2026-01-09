@@ -6,7 +6,7 @@ import { useNavigate, useParams} from "react-router-dom"
 import { PayoutHistoryInvoiceTable } from "./PayoutHistoryInvoiceTable"
 import { PayoutHistoryPackagesTable } from "./PayoutHistoryPackagesTable"
 import { payouthistoryData } from "../../../../data"
-import i18n from "../../../../sources/i18n"
+
 const { Title } = Typography
 const SingleViewPayoutHistory = () => {
     const navigate = useNavigate()
