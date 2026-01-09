@@ -32,7 +32,7 @@ const SubscriptionTable = () => {
   const [selectedPayment, setselectedPayment] = useState<string>("");
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
-  const [downloaditem, setDownloadItem] = useState<DownloadType | null>();
+  const [_downloaditem, setDownloadItem] = useState<DownloadType | null>();
   const [selectedYear, setSelectedYear] = useState<[Dayjs, Dayjs] | undefined>(
     undefined
   );
