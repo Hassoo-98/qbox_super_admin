@@ -107,7 +107,7 @@ const installmentColumn = ({
 ];
 
 const staffColumn = (
-  { setVisible }: VisibleType,
+  setVisible: (visible: boolean) => void,
   setEditItem: (item: staffType) => void,
   setStatusChanged: (value: boolean) => void, // separate param
   setDeleteItem: (value: boolean) => void,
@@ -715,7 +715,7 @@ const subscriptionColumn = (
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_value: unknown, row: SubscriptionType) => (
+    render: (_value: unknown, _row: SubscriptionType) => (
       <Dropdown
         menu={{
           items: [
@@ -1219,7 +1219,7 @@ const singleviewqrhistorytableColumn = (
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_value, row: SingleViewQRHistoryTableType) => {
+    render: (_value, _row: SingleViewQRHistoryTableType) => {
       const items: MenuProps["items"] = [
         {
           label: (
@@ -1276,7 +1276,7 @@ const rolepermissionColumn = (
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_, row: RolePermissionType) => {
+    render: (_, _row: RolePermissionType) => {
       const items: MenuProps["items"] = [
         {
           label: (
@@ -1578,7 +1578,7 @@ const payoutrequestinvoiceColumn = (
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_value, row: PayoutRequestInvoiceTypes) => (
+    render: (_value, _row: PayoutRequestInvoiceTypes) => (
       <Dropdown
         menu={{
           items: [
