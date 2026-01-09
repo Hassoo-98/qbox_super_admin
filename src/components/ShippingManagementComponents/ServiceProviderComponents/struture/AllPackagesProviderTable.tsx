@@ -1,4 +1,4 @@
-import { Card, Flex, Table, Form, Row, Col, Dropdown, Button, type MenuProps } from "antd"
+import { Flex, Table, Form, Row, Col, Dropdown, Button, type MenuProps } from "antd"
 import { DownOutlined } from '@ant-design/icons';
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
