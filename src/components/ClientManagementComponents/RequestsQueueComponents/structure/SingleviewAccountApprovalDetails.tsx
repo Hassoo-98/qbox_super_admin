@@ -4,7 +4,6 @@ import {
   Card,
   Flex,
   Typography,
-  Image,
   Row,
   Modal,
   Col,
