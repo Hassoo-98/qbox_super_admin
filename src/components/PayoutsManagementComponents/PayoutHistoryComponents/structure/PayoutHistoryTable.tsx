@@ -19,7 +19,7 @@ import {
   ModuleTopHeading,
   SubscriptionExportModal,
 } from "../../../PageComponents";
-import { type DownloadType, type PayoutHistoryTypes } from "../../../../Type";
+import {  type PayoutHistoryTypes } from "../../../../Type";
 import { payouthistoryColumn, payouthistoryData } from "../../../../data";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ const PayoutHistoryTable = () => {
   const [selectedProvider, setselectedProvider] = useState<number | string>("");
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
-  const [downloaditem, setDownloadItem] = useState<DownloadType | null>();
+  // const [downloaditem, setDownloadItem] = useState<DownloadType | null>();
   const [exportmodal, setExportModal] = useState<boolean>(false);
   const { t } = useTranslation();
 
