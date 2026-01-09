@@ -41,7 +41,7 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
         }
     }, [visible, edititem]);
 
-    const handleUpload = async (file: RcFile | RcFile[]) => {};
+    const handleUpload = async (_file: RcFile | RcFile[]) => {};
 
     const handleChangeImage = () => setPreviewImage(null);
   
