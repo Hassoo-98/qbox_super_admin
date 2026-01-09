@@ -1,5 +1,5 @@
-import {type ActivitylogTypes } from "../Type"
-export const activitylogData:ActivitylogTypes [] = [
+
+export const activitylogData= [
     {
         key:1,
         staffname:'Fahd Bakir',
