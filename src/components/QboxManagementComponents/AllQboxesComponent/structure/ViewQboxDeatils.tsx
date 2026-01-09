@@ -15,7 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AllPackagesTable, QRHistoryTable } from "../tabcontents";
 import { allboxesData } from "../../../../data";
 import { useTranslation } from "react-i18next";
-import i18n from "../../../../sources/i18n";
+
 const { Title, Text } = Typography;
 const ViewQboxDeatils = () => {
   const { t, i18n } = useTranslation();
