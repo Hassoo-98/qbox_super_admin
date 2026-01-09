@@ -15,8 +15,8 @@ import { MyDatepicker, SearchInput } from "../../../Forms";
 const { Text } = Typography;
 const ServiceProviderRequestTable = () => {
   const [form] = Form.useForm();
-  const [visible, setVisible] = useState<boolean>(false);
-  const [edititem, setEditItem] = useState<ServiceProviderType | null>(null);
+  const [_visible, setVisible] = useState<boolean>(false);
+  const [_edititem, setEditItem] = useState<ServiceProviderType | null>(null);
   const [statuschanged, setStatusChanged] = useState<boolean>(false);
   const [deleteitem, setDeleteItem] = useState<boolean>(false);
   const navigate = useNavigate();
