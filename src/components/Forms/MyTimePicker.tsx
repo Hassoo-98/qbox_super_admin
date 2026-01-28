@@ -51,7 +51,7 @@ export const MyTimePicker: React.FC<MyTimePickerProps> = ({
         ) : (
           <TimePicker
             disabled={disabled || false}
-            // value={moment(value || '00:00')}
+            value={dayjs(value || "00:00", "HH:mm")}
             placeholder={placeholder}
             format="HH:mm A"
             className="w-100"

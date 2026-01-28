@@ -33,7 +33,6 @@ const HomeOwnersDetails: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const details = homeownersData?.find((list) => list?.key === Number(id));
-   
 
   interface DetailItem {
     key: string;
@@ -132,8 +131,7 @@ const HomeOwnersDetails: React.FC = () => {
                 className="border-0 p-0 bg-transparent"
                 onClick={() => navigate("/homeowners")}
               >
-              
-          {isRTL ? <ArrowRightOutlined/> :     <ArrowLeftOutlined />}
+                {isRTL ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
               </Button>
               <Title level={4} className="fw-500 m-0">
                 ID . {details?.homeownername}
