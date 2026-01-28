@@ -1,4 +1,4 @@
-import type { InstallmentType } from "../Type";
+import type { InstallmentType } from "../types";
 
 export const installmentpendingData: InstallmentType[] = [
     {

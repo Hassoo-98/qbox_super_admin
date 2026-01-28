@@ -1,5 +1,5 @@
 import { Modal, Flex, Button, Typography } from "antd";
-import type { HomerOwnerTypes } from "../../../Type";
+import type { HomerOwnerTypes } from "../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../sources/i18n";
 const { Text, Title } = Typography;

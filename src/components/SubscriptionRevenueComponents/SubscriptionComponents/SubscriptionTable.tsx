@@ -19,7 +19,7 @@ import {
   SubscriptionExportModal,
 } from "../../PageComponents";
 import { MyDatepicker, SearchInput } from "../../Forms";
-import { type DownloadType, type SubscriptionType } from "../../../Type";
+import { type DownloadType, type SubscriptionType } from "../../../types";
 import { subscriptionColumn, subscriptionDate } from "../../../data";
 import { statusItemnew } from "../../../shared";
 import { useTranslation } from "react-i18next";

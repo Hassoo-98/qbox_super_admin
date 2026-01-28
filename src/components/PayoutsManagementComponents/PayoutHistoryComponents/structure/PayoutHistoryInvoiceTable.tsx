@@ -1,5 +1,5 @@
 import { Flex, Table, } from "antd"
-import { type PayoutHistoryInvoiceTypes } from "../../../../Type";
+import { type PayoutHistoryInvoiceTypes } from "../../../../types";
 import { payouthistoryinvoiceColumn, payouthistoryinvoiceData } from "../../../../data";
 import i18n from "../../../../sources/i18n";
 import { useTranslation } from "react-i18next";

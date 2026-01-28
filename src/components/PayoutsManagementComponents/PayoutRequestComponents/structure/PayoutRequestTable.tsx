@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Dayjs } from 'dayjs';
 import { useNavigate } from "react-router-dom";
-import type { PayoutRequestTypes } from "../../../../Type";
+import type { PayoutRequestTypes } from "../../../../types";
 import { ModuleTopHeading } from "../../../PageComponents";
 import { payoutrequestColumn, payoutrequestData} from "../../../../data";
 import { MyDatepicker, SearchInput } from "../../../Forms";

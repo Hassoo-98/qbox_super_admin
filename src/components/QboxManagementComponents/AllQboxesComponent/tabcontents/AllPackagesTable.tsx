@@ -5,7 +5,7 @@ import { allpackagesColumn, allpackagesData } from "../../../../data";
 import { SearchInput } from "../../../Forms";
 import { DownOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
-import type { AllPackagesTypes } from "../../../../Type";
+import type { AllPackagesTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
 const AllPackagesTable: React.FC = () => {

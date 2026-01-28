@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, Row, Typography } from 'antd'
 import { MyInput } from '../../../Forms'
-import type { EditSettingsModalProps  } from '../../../../Type'
+import type { EditSettingsModalProps  } from '../../../../types'
 import { useTranslation } from 'react-i18next'
 import i18n from '../../../../sources/i18n'
 

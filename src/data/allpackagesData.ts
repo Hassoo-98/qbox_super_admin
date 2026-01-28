@@ -1,4 +1,4 @@
-import type {  AllPackagesTypes } from "../Type";
+import type {  AllPackagesTypes } from "../types";
 
 
 export const allpackagesData:AllPackagesTypes [] = [

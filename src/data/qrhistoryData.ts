@@ -1,4 +1,4 @@
-import type { QRHistoryTypes } from "../Type";
+import type { QRHistoryTypes } from "../types";
 
 
 export const qrhistoryData:QRHistoryTypes [] = [

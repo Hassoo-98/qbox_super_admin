@@ -1,4 +1,4 @@
-import type { AllPackageProviderType, DriverProviderType, ProviderActiviteType, ServiceProviderType } from "../Type";
+import type { AllPackageProviderType, DriverProviderType, ProviderActiviteType, ServiceProviderType } from "../types";
 
 const serviceproviderData:ServiceProviderType[] = [
     {

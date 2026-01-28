@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Dayjs } from 'dayjs';
 import { useNavigate } from "react-router-dom";
-import type { ServiceProviderType } from "../../../../Type";
+import type { ServiceProviderType } from "../../../../types";
 import { statusItems } from "../../../../shared";
 import { ConfirmModal, DeleteModal, ModuleTopHeading } from "../../../PageComponents";
 import { serviceproviderColumn, serviceproviderData } from "../../../../data";

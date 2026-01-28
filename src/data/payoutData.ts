@@ -1,4 +1,4 @@
-import type { PayoutHistorPackagesTypes, PayoutHistoryInvoiceTypes, PayoutHistoryTypes, PayoutRequestInvoiceTypes, PayoutRequestTypes } from "../Type";
+import type { PayoutHistorPackagesTypes, PayoutHistoryInvoiceTypes, PayoutHistoryTypes, PayoutRequestInvoiceTypes, PayoutRequestTypes } from "../types";
 
 const payouthistoryData:PayoutHistoryTypes[] =  [
     {

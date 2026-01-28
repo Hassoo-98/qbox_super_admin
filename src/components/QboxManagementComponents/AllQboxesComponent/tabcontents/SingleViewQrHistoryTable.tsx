@@ -16,7 +16,7 @@ import {
 } from "../../../../data";
 import { SearchInput } from "../../../Forms";
 import { DownOutlined } from "@ant-design/icons";
-import type { SingleViewQRHistoryTableType } from "../../../../Type";
+import type { SingleViewQRHistoryTableType } from "../../../../types";
 import i18n from "../../../../sources/i18n";
 import { useTranslation } from "react-i18next";
 

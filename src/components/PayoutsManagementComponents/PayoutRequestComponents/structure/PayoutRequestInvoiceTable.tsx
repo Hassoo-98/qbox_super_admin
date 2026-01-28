@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Flex, Table } from "antd";
-import { type PayoutRequestInvoiceTypes } from "../../../../Type";
+import { type PayoutRequestInvoiceTypes } from "../../../../types";
 import {
   payoutrequestinvoiceColumn,
   payoutrequestinvoiceData,

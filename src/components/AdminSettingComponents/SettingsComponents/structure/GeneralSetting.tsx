@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Button, Card, Col, Flex, Form, Row, Typography } from 'antd'
 import { MyInput } from '../../../Forms';
 import { EditGeneralSettings } from '../modal';
-import type { SettingData } from '../../../../Type';
+import type { SettingData } from '../../../../types';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../../../sources/i18n';
 

@@ -1,4 +1,4 @@
-import type { RecentRequestType } from "../Type";
+import type { RecentRequestType } from "../types";
 
 
 

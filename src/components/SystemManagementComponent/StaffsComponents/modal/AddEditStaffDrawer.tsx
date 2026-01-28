@@ -3,7 +3,7 @@ import { Button, Col, Divider, Drawer, Flex, Form, Row, Typography } from 'antd'
 import type React from 'react';
 import { MyInput, MySelect } from '../../../Forms';
 import { staffrole } from '../../../../shared';
-import type { staffType } from '../../../../Type';
+import type { staffType } from '../../../../types';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 

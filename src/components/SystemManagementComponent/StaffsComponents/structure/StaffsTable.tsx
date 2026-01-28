@@ -18,7 +18,7 @@ import {
   ModuleTopHeading,
 } from "../../../PageComponents";
 import { SearchInput } from "../../../Forms";
-import type { staffType } from "../../../../Type";
+import type { staffType } from "../../../../types";
 import { useState } from "react";
 import { staffColumn, staffData } from "../../../../data";
 import { statusItems } from "../../../../shared";

@@ -34,7 +34,7 @@ import type {
   PayoutHistorPackagesTypes,
   PayoutRequestTypes,
   PayoutRequestInvoiceTypes,
-} from "../Type";
+} from "../types";
 import { statusColors } from "./statusColors";
 import { t } from "i18next";
 const { Text } = Typography;

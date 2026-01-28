@@ -2,7 +2,7 @@ import { Flex, Table, Form, Row, Col, Button, Image } from "antd"
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Dayjs } from 'dayjs';
-import type { RevenueType } from "../../../../Type";
+import type { RevenueType } from "../../../../types";
 import { MyDatepicker, SearchInput } from "../../../Forms";
 import { revenuecomColumn, revenuecomData } from "../../../../data";
 import { CustomPagination, SubscriptionExportModal } from "../../../PageComponents";

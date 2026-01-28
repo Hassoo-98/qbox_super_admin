@@ -14,7 +14,7 @@ import { qrhistoryColumn, qrhistoryData } from "../../../../data";
 import { SearchInput } from "../../../Forms";
 import { DownOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import type { QRHistoryTypes } from "../../../../Type";
+import type { QRHistoryTypes } from "../../../../types";
 import i18n from "../../../../sources/i18n";
 import { useTranslation } from "react-i18next";
 const QRHistoryTable: React.FC = () => {

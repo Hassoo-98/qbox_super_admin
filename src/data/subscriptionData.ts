@@ -1,4 +1,4 @@
-import type { SubscriptionType } from "../Type"
+import type { SubscriptionType } from "../types"
 
 const subscriptionDate: SubscriptionType[] = [
     {

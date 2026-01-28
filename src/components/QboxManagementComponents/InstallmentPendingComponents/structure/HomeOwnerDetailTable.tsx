@@ -1,5 +1,5 @@
 import { Flex, Table, Typography } from "antd";
-import type { InstallmentType } from "../../../../Type";
+import type { InstallmentType } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
 interface props {
