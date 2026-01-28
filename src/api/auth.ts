@@ -18,3 +18,16 @@ export const login = (payload: LoginRequest) =>
     method: "POST",
     body: payload,
   });
+
+export type RegisterRequest = {
+  name: string;
+  email: string;
+  password: string;
+  [key: string]: unknown;
+};
+
+export const register = (payload: RegisterRequest) =>
+  request<LoginResponse>("/auth/register", {
+    method: "POST",
+    body: payload,
+  });
