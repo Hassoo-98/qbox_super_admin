@@ -1,4 +1,4 @@
-import type { staffType } from "../Type";
+import type { staffType } from "../types";
 
 export const staffData:staffType[] = [
     {

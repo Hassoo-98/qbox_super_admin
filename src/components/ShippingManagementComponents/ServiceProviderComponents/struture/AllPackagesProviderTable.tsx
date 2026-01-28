@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Dayjs } from 'dayjs';
 import { useNavigate } from "react-router-dom";
-import type { AllPackageProviderType } from "../../../../Type";
+import type { AllPackageProviderType } from "../../../../types";
 import { packageItem } from "../../../../shared";
 import { allpackageproviderColumn, allpkgproviderData } from "../../../../data";
 import { MyDatepicker, SearchInput } from "../../../Forms";

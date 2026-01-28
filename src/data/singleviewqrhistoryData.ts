@@ -1,4 +1,4 @@
-import type { SingleViewQRHistoryTableType } from "../Type"
+import type { SingleViewQRHistoryTableType } from "../types"
 export const singleviewqrhistoryData:SingleViewQRHistoryTableType [] = [
     {
         key:1,

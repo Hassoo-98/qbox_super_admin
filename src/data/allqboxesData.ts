@@ -1,4 +1,4 @@
-import type {  AllBoxesTypes } from "../Type";
+import type {  AllBoxesTypes } from "../types";
 
 
 export const allboxesData:AllBoxesTypes [] = [

@@ -2,7 +2,7 @@ import { CloseOutlined, EditFilled } from '@ant-design/icons'
 import { Button, Col, Divider, Drawer, Flex, Form, Row, Switch, Typography } from 'antd'
 import { MyInput, MySelect, SingleFileUpload, TimeForm } from '../../../Forms';
 import { citiesOp, markuptypeOp } from '../../../../shared';
-import type { ServiceProviderType } from '../../../../Type';
+import type { ServiceProviderType } from '../../../../types';
 import { useEffect, useState } from 'react';
 import type { RcFile } from 'antd/es/upload';
 import { useTranslation } from 'react-i18next';

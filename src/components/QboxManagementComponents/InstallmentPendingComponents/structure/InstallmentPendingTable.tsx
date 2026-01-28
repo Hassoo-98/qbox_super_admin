@@ -2,7 +2,7 @@ import { Typography, Card, Flex, Table, Form, Row, Col, Dropdown, Button, type M
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, ModuleTopHeading } from "../../../PageComponents";
 import { SearchInput } from "../../../Forms";
-import type { InstallmentType } from "../../../../Type";
+import type { InstallmentType } from "../../../../types";
 import { installmentColumn, installmentpendingData } from "../../../../data";
 import { useState } from "react";
 import i18n from "../../../../sources/i18n";

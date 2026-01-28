@@ -1,5 +1,5 @@
 import { Table } from "antd";
-import type { ProviderActiviteType } from "../../../../Type";
+import type { ProviderActiviteType } from "../../../../types";
 import {
   provideractivitiesData,
   provideractivityColumn,

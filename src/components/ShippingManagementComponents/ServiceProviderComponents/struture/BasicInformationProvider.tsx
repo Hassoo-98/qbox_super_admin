@@ -1,6 +1,6 @@
 import { Flex, Image, Table, Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import type { ServiceProviderType } from "../../../../Type";
+import type { ServiceProviderType } from "../../../../types";
 
 
 interface basicInfoProp {

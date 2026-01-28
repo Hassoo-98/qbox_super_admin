@@ -1,7 +1,7 @@
 import { Button, Card, Flex, Table } from "antd";
 import { ModuleTopHeading } from "../../PageComponents";
 import { recentrequestData, recentColumn } from "../../../data";
-import type { RecentRequestType } from "../../../Type";
+import type { RecentRequestType } from "../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../sources/i18n";
 const RececentQboxRequestTable = () => {

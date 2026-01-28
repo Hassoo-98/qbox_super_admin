@@ -1,4 +1,4 @@
-import type {  HomerOwnerTypes } from "../Type";
+import type {  HomerOwnerTypes } from "../types";
 
 
 export const homeownersData:HomerOwnerTypes [] = [

@@ -1,7 +1,7 @@
 import { Flex, Table } from "antd";
 import { useState } from "react";
 import { CustomPagination } from "../../../PageComponents";
-import { type PayoutHistorPackagesTypes } from "../../../../Type";
+import { type PayoutHistorPackagesTypes } from "../../../../types";
 import {
   payouthistorypackagesColumn,
   payouthistorypackagesData,

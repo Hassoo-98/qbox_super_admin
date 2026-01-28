@@ -18,7 +18,7 @@ import {
   ModuleTopHeading,
 } from "../../../PageComponents";
 import { SearchInput } from "../../../Forms";
-import type { RolePermissionType } from "../../../../Type";
+import type { RolePermissionType } from "../../../../types";
 import { useState } from "react";
 import { rolepermissionColumn, rolepermissionData } from "../../../../data";
 import { statusItems } from "../../../../shared";

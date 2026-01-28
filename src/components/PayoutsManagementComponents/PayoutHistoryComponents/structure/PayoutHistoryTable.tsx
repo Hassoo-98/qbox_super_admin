@@ -19,7 +19,7 @@ import {
   ModuleTopHeading,
   SubscriptionExportModal,
 } from "../../../PageComponents";
-import {  type PayoutHistoryTypes } from "../../../../Type";
+import {  type PayoutHistoryTypes } from "../../../../types";
 import { payouthistoryColumn, payouthistoryData } from "../../../../data";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";

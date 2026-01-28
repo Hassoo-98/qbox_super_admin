@@ -15,7 +15,7 @@ import { CustomPagination, ModuleTopHeading } from "../../../PageComponents";
 import { activitylogData, activityColumn } from "../../../../data";
 import { SearchInput } from "../../../Forms";
 import { DownOutlined } from "@ant-design/icons";
-import type { ActivitylogTypes } from "../../../../Type";
+import type { ActivitylogTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
 const { Text } = Typography;

@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import type { DriverProviderType } from "../../../../Type";
+import type { DriverProviderType } from "../../../../types";
 import { statusItems } from "../../../../shared";
 import { driverproviderColumn, driverproviderData } from "../../../../data";
 import { SearchInput } from "../../../Forms";
