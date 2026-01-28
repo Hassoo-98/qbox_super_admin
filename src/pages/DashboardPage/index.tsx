@@ -1,5 +1,9 @@
 import { Flex } from "antd";
-import { RececentQboxRequestTable, TotalReportCards } from "../../components";
+import {
+  RececentQboxRequestTable,
+  TotalReportCards,
+  RevenueChart,
+} from "../../components";
 import i18n from "../../sources/i18n";
 const DashboardPage = () => {
   const isRTL = i18n.language === "ar";
@@ -8,6 +12,7 @@ const DashboardPage = () => {
     <div style={{ direction: isRTL ? "rtl" : "ltr" }}>
       <Flex vertical gap={20}>
         <TotalReportCards />
+        <RevenueChart />
         <RececentQboxRequestTable />
       </Flex>
     </div>
