@@ -3,6 +3,7 @@ import {
   RececentQboxRequestTable,
   TotalReportCards,
   RevenueChart,
+  SubscriptionRateBarChart,
 } from "../../components";
 import i18n from "../../sources/i18n";
 const DashboardPage = () => {
@@ -13,6 +14,7 @@ const DashboardPage = () => {
       <Flex vertical gap={20}>
         <TotalReportCards />
         <RevenueChart />
+        <SubscriptionRateBarChart/>
         <RececentQboxRequestTable />
       </Flex>
     </div>
