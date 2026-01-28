@@ -6,7 +6,7 @@ import { useNavigate, useLocation, Routes, Route } from "react-router-dom";
 import { MenuItems } from "./MenuItems";
 
 const DashboardPage = lazy(() =>
-  import("../DashboardPage").then((m) => ({ default: m.DashboardPage }))
+  import("../DashboardPage").then((m) => ({ default: m.DashboardPage })),
 );
 import {
   HomeOwnersDetails,
@@ -26,59 +26,65 @@ import {
 } from "../../components";
 import { LanguageChange } from "./LanguageChange";
 const HomeOwnersPage = lazy(() =>
-  import("../HomeOwnersPage").then((m) => ({ default: m.HomeOwnersPage }))
+  import("../HomeOwnersPage").then((m) => ({ default: m.HomeOwnersPage })),
 );
 const RequestsQueuePage = lazy(() =>
-  import("../RequestsQueuePage").then((m) => ({ default: m.RequestsQueuePage }))
+  import("../RequestsQueuePage").then((m) => ({
+    default: m.RequestsQueuePage,
+  })),
 );
 const StaffsPage = lazy(() =>
-  import("../StaffsPage").then((m) => ({ default: m.StaffsPage }))
+  import("../StaffsPage").then((m) => ({ default: m.StaffsPage })),
 );
 const ActivitylogPage = lazy(() =>
-  import("../ActivitylogPage").then((m) => ({ default: m.ActivitylogPage }))
+  import("../ActivitylogPage").then((m) => ({ default: m.ActivitylogPage })),
 );
 const InstallmentPendingPage = lazy(() =>
   import("../InstallmentPendingPage").then((m) => ({
     default: m.InstallmentPendingPage,
-  }))
+  })),
 );
 const AllqboxesPage = lazy(() =>
-  import("../AllqboxesPage").then((m) => ({ default: m.AllqboxesPage }))
+  import("../AllqboxesPage").then((m) => ({ default: m.AllqboxesPage })),
 );
 const SettingPage = lazy(() =>
-  import("../SettingPage").then((m) => ({ default: m.SettingPage }))
+  import("../SettingPage").then((m) => ({ default: m.SettingPage })),
 );
 const SubscriptionManagementPage = lazy(() =>
   import("../SubscriptionManagementPage").then((m) => ({
     default: m.SubscriptionManagementPage,
-  }))
+  })),
 );
 const RevenuePage = lazy(() =>
-  import("../RevenuePage").then((m) => ({ default: m.RevenuePage }))
+  import("../RevenuePage").then((m) => ({ default: m.RevenuePage })),
 );
 const ServiceProviderPage = lazy(() =>
   import("../ServiceProviderPage").then((m) => ({
     default: m.ServiceProviderPage,
-  }))
+  })),
 );
 const ServiceProviderRequestPage = lazy(() =>
   import("../ServiceProviderRequestPage").then((m) => ({
     default: m.ServiceProviderRequestPage,
-  }))
+  })),
 );
 const RolePermissionPage = lazy(() =>
   import("../RolePermissionPage").then((m) => ({
     default: m.RolePermissionPage,
-  }))
+  })),
 );
 const PayoutHistoryPage = lazy(() =>
-  import("../PayoutHistoryPage").then((m) => ({ default: m.PayoutHistoryPage }))
+  import("../PayoutHistoryPage").then((m) => ({
+    default: m.PayoutHistoryPage,
+  })),
 );
 const PayoutRequestPage = lazy(() =>
-  import("../PayoutRequestPage").then((m) => ({ default: m.PayoutRequestPage }))
+  import("../PayoutRequestPage").then((m) => ({
+    default: m.PayoutRequestPage,
+  })),
 );
 const AllShipmentsPage = lazy(() =>
-  import("../AllShipmentsPage").then((m) => ({ default: m.AllShipmentsPage }))
+  import("../AllShipmentsPage").then((m) => ({ default: m.AllShipmentsPage })),
 );
 
 const { Header, Sider, Content } = Layout;
