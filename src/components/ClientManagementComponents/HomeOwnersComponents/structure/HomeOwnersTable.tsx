@@ -31,18 +31,20 @@ const HomeOwnersTable: React.FC = () => {
   const [form] = Form.useForm();
   const [activeModal, setActiveModal] = useState<boolean>(false);
   const [inactiveModal, setInactiveModal] = useState<boolean>(false);
-  const [deleteItem, setDeleteItem] = useState(false);
+  const [deleteItem, setDeleteItem] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
   const [itemToDelete, setItemToDelete] = useState<HomerOwnerTypes | null>(
-    null
+    null,
   );
-  const [selectedCity, setselectedCity] = useState<number | string>();
+  const [selectedCity, setselectedCity] = useState<
+    number | string | undefined
+  >();
   const [selectedQboxstatus, setselectedQboxstatus] = useState<
-    number | string
+    number | string | undefined
   >();
   const [selecteAccountstatus, setselecteAccountstatus] = useState<
-    number | string
+    number | string | undefined
   >();
   const navigate = useNavigate();
   const handleStatusClick = (status: "active" | "inactive") => {
