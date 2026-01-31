@@ -1,33 +1,17 @@
 import { useState } from "react";
-import {
-  Typography,
-  Card,
-  Flex,
-  Table,
-  Form,
-  Row,
-  Col,
-  Dropdown,
-  Button,
-  type MenuProps,
-} from "antd";
+import { Flex, Form, Row, Col } from "antd";
 import {
   ActiveModal,
   ConfirmModal,
-  CustomPagination,
   DeleteModal,
-  ModuleTopHeading,
+  GlobalTable,
 } from "../../../PageComponents";
 import { homeownersColumn } from "../../../../data";
-import { SearchInput } from "../../../Forms";
-import { DownOutlined } from "@ant-design/icons";
+import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
 import type { HomerOwnerTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
-import i18n from "../../../../sources/i18n";
 import { useHomeOwners } from "../../../../api/hooks";
-
-const { Text } = Typography;
 
 const HomeOwnersTable: React.FC = () => {
   const { t } = useTranslation();
@@ -65,162 +49,118 @@ const HomeOwnersTable: React.FC = () => {
     }
   };
 
-  const isRTL = i18n.language === "ar";
-
   const handlePageChange = (page: number, size: number): void => {
     setCurrent(page);
     setPageSize(size);
   };
 
   const cityItems = [
-    { key: 1, label: t("Qatif") },
-    { key: 2, label: t("Qaseem") },
+    { id: 1, name: t("Qatif") },
+    { id: 2, name: t("Qaseem") },
   ];
 
   const QboxStatus = [
-    { key: 1, label: t("Online") },
-    { key: 2, label: t("Offline") },
-    { key: 3, label: t("Error") },
+    { id: 1, name: t("Online") },
+    { id: 2, name: t("Offline") },
+    { id: 3, name: t("Error") },
   ];
 
   const AccountStatus = [
-    { key: 1, label: t("Active") },
-    { key: 2, label: t("Inactive") },
+    { id: 1, name: t("Active") },
+    { id: 2, name: t("Inactive") },
   ];
 
-  const handleCityClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedCity(Number(key));
+  const handleCityChange = (value: any) => {
+    setselectedCity(value);
   };
 
-  const selectedCityLabel =
-    cityItems.find((item) => item.key === selectedCity)?.label || t("City");
-
-  const handleQboxstatusClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedQboxstatus(Number(key));
+  const handleQboxstatusChange = (value: any) => {
+    setselectedQboxstatus(value);
   };
 
-  const selectedQboxstatusLabel =
-    QboxStatus.find((item) => item.key === selectedQboxstatus)?.label ||
-    t("QBox Status");
-
-  const handleAccountstatusClick: MenuProps["onClick"] = ({ key }) => {
-    setselecteAccountstatus(Number(key));
+  const handleAccountstatusChange = (value: any) => {
+    setselecteAccountstatus(value);
   };
-
-  const selectedAccounttatusLabel =
-    AccountStatus.find((item) => item.key === selecteAccountstatus)?.label ||
-    t("Account Status");
 
   // Map real data or use empty array
   const dataSource = owners || [];
 
+  const filters = (
+    <Form layout="vertical" form={form}>
+      <Row gutter={[16, 16]} align="middle">
+        <Col span={24} md={12} lg={8}>
+          <SearchInput
+            placeholder={t("Search by Home Owner Name / QBox ID")}
+            prefix={
+              <img
+                src="/assets/icons/search.png"
+                width={16}
+                alt="search icon"
+              />
+            }
+          />
+        </Col>
+        <Col span={24} md={12} lg={16}>
+          <Flex gap={5} wrap="wrap">
+            <MySelect
+              withoutForm
+              className="filter-bg fs-13 text-black"
+              options={cityItems}
+              placeholder={t("City")}
+              value={selectedCity}
+              onChange={handleCityChange}
+              allowClear
+              maxWidth={150}
+            />
+            <MySelect
+              withoutForm
+              className="filter-bg fs-13 text-black"
+              options={QboxStatus}
+              placeholder={t("QBox Status")}
+              value={selectedQboxstatus}
+              onChange={handleQboxstatusChange}
+              allowClear
+              maxWidth={150}
+            />
+            <MySelect
+              withoutForm
+              className="filter-bg fs-13 text-black"
+              options={AccountStatus}
+              placeholder={t("Account Status")}
+              value={selecteAccountstatus}
+              onChange={handleAccountstatusChange}
+              allowClear
+              maxWidth={150}
+            />
+          </Flex>
+        </Col>
+      </Row>
+    </Form>
+  );
+
   return (
     <>
-      <Card
-        className="radius-12 border-gray card-cs h-100"
-        style={{ direction: isRTL ? "rtl" : "ltr" }}
-      >
-        <Flex vertical gap={10} className="mb-2">
-          <Flex vertical>
-            <ModuleTopHeading level={5} name={t("Home Owners")} />
-            <Text className="text-gray fs-13">
-              {t("Manage all the home owners in your system")}
-            </Text>
-          </Flex>
-          <Form layout="vertical" form={form}>
-            <Row gutter={[16, 16]} justify="space-between" align="middle">
-              <Col xl={16} md={24} span={24}>
-                <Row gutter={[16, 16]}>
-                  <Col span={24} md={24} lg={12}>
-                    <SearchInput
-                      placeholder={t("Search by Home Owner Name / QBox ID")}
-                      prefix={
-                        <img
-                          src="/assets/icons/search.png"
-                          width={16}
-                          alt="search icon"
-                        />
-                      }
-                    />
-                  </Col>
-                  <Col span={24} md={24} lg={12}>
-                    <Flex gap={5}>
-                      <Dropdown
-                        menu={{
-                          items: cityItems,
-                          onClick: handleCityClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedCityLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
-                      <Dropdown
-                        menu={{
-                          items: QboxStatus,
-                          onClick: handleQboxstatusClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedQboxstatusLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
-                      <Dropdown
-                        menu={{
-                          items: AccountStatus,
-                          onClick: handleAccountstatusClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedAccounttatusLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
-                    </Flex>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Form>
-        </Flex>
-        <Flex vertical gap={20}>
-          <Table<HomerOwnerTypes>
-            size="large"
-            loading={isLoading}
-            columns={homeownersColumn({
-              setItemToDelete,
-              navigate,
-              setDeleteItem,
-              handleStatusClick,
-              t,
-            })}
-            dataSource={dataSource as any}
-            className="pagination table-cs table"
-            showSorterTooltip={false}
-            scroll={{ x: 1300 }}
-            rowHoverable={false}
-            pagination={false}
-          />
-          <CustomPagination
-            total={dataSource.length}
-            current={current}
-            pageSize={pageSize}
-            onPageChange={handlePageChange}
-          />
-        </Flex>
-      </Card>
-
+      <GlobalTable
+        title={t("Home Owners")}
+        description={t("Manage all the home owners in your system")}
+        filters={filters}
+        loading={isLoading}
+        columns={homeownersColumn({
+          setItemToDelete,
+          navigate,
+          setDeleteItem,
+          handleStatusClick,
+          t,
+        })}
+        dataSource={dataSource as any}
+        rowKey="key"
+        paginationProps={{
+          total: dataSource.length,
+          current: current,
+          pageSize: pageSize,
+          onPageChange: handlePageChange,
+        }}
+      />
       <ConfirmModal
         visible={inactiveModal}
         title={t("Inactivate Account")}

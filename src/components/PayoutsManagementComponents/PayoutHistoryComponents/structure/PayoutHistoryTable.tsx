@@ -6,12 +6,9 @@ import {
   Form,
   Row,
   Col,
-  Dropdown,
   Button,
-  type MenuProps,
   Image,
 } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import i18n from "../../../../sources/i18n";
 import { useState } from "react";
 import {
@@ -19,10 +16,11 @@ import {
   ModuleTopHeading,
   SubscriptionExportModal,
 } from "../../../PageComponents";
-import {  type PayoutHistoryTypes } from "../../../../types";
+import { type PayoutHistoryTypes } from "../../../../types";
 import { payouthistoryColumn, payouthistoryData } from "../../../../data";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { MySelect } from "../../../Forms";
 const { Text } = Typography;
 const PayoutHistoryTable = () => {
   const navigate = useNavigate();
@@ -34,9 +32,9 @@ const PayoutHistoryTable = () => {
   const [exportmodal, setExportModal] = useState<boolean>(false);
   const { t } = useTranslation();
 
-  const providerItem: { key: number; label: string }[] = [
-    { key: 1, label: t("Azeem Khan") },
-    { key: 2, label: t("Shujat Khan") },
+  const providerItem = [
+    { id: 1, name: t("Azeem Khan") },
+    { id: 2, name: t("Shujat Khan") },
   ];
 
   const handlePageChange = (page: number, size: number): void => {
@@ -44,18 +42,17 @@ const PayoutHistoryTable = () => {
     setPageSize(size);
   };
 
-  const handlePaymentClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedProvider(Number(key));
+  const handlePaymentChange = (value: any) => {
+    setselectedProvider(value);
   };
-  const selectedProviderLabel =
-    providerItem.find((item) => item.key === selectedProvider)?.label ||
-    t("Service Provider/Merchant Name");
-    const isRTL = i18n.language === "ar";
-         
+  const isRTL = i18n.language === "ar";
+
   return (
     <>
-      <Card className="radius-12 border-gray card-cs h-100"   
-           style={{ direction: isRTL ? "rtl" : "ltr" }}>
+      <Card
+        className="radius-12 border-gray card-cs h-100"
+        style={{ direction: isRTL ? "rtl" : "ltr" }}
+      >
         <Flex vertical gap={10} className="mb-2">
           <Flex vertical>
             <ModuleTopHeading level={5} name={t("Payout History")} />
@@ -66,20 +63,16 @@ const PayoutHistoryTable = () => {
           <Form layout="vertical" form={form}>
             <Row gutter={[16, 16]} justify="space-between" align="middle">
               <Col xl={14} md={24} span={24}>
-                <Dropdown
-                  menu={{
-                    items: providerItem,
-                    onClick: handlePaymentClick,
-                  }}
-                  trigger={["click"]}
-                >
-                  <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                    <Flex justify="space-between" align="center" gap={30}>
-                      {selectedProviderLabel}
-                      <DownOutlined />
-                    </Flex>
-                  </Button>
-                </Dropdown>
+                <MySelect
+                  withoutForm
+                  className="px-3 filter-bg fs-13 text-black"
+                  options={providerItem}
+                  placeholder={t("Service Provider/Merchant Name")}
+                  value={selectedProvider}
+                  onChange={handlePaymentChange}
+                  allowClear
+                  maxWidth={250}
+                />
               </Col>
               <Col span={24} md={24} xl={7}>
                 <Flex justify="end" gap={10}>

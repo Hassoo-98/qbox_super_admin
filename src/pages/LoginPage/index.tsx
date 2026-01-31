@@ -1,118 +1,148 @@
 import React from "react";
-import { Form, Input, Button, Card, Flex, Typography, message } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import {
+  Row,
+  Col,
+  Flex,
+  Image,
+  Typography,
+  Form,
+  Checkbox,
+  Button,
+  message,
+} from "antd";
+import { MyInput } from "../../components";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useLogin } from "../../api/hooks";
-import { useNavigate } from "react-router-dom";
+import type { LoginRequest, LoginResponse } from "../../api/auth";
+import "./Login.css";
 
-const { Title, Text } = Typography;
+const { Text, Title, Paragraph } = Typography;
 
 const LoginPage: React.FC = () => {
+  const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { mutate: login, isPending } = useLogin();
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: LoginRequest) => {
     login(values, {
-      onSuccess: (data) => {
-        messageApi.success("Login successful!");
-        // Typically you'd save the token here
-        localStorage.setItem("token", data.token || "");
+      onSuccess: (data: LoginResponse) => {
+        messageApi.success(t("Login successful"));
+        localStorage.setItem("token", data.token || data.accessToken || "");
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
         navigate("/");
       },
       onError: (error: any) => {
-        messageApi.error(error.message || "Login failed");
+        messageApi.error(error.message || t("Login failed"));
       },
     });
   };
 
   return (
-    <>
+    <div className="p-30">
       {contextHolder}
-      <Flex
-        align="center"
-        justify="center"
-        style={{
-          height: "100vh",
-          background: "linear-gradient(135deg, #1d39c4 0%, #001529 100%)",
-        }}
-      >
-        <Card
-          style={{
-            width: 400,
-            borderRadius: 16,
-            boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
-            border: "none",
-          }}
-        >
-          <Flex vertical align="center" gap={10} style={{ marginBottom: 30 }}>
-            <img
-              src="/assets/images/logo.png"
-              alt="Logo"
-              style={{ width: 120, marginBottom: 10 }}
-            />
-            <Title level={3} style={{ margin: 0 }}>
-              Welcome Back
-            </Title>
-            <Text type="secondary">Please enter your details to login</Text>
-          </Flex>
+      <div className="container">
+        <Row gutter={[12, 12]}>
+          <Col xs={24} sm={24} md={24} lg={12} className="login-left-side">
+            <div className="form-inner">
+              <Flex justify={i18n.language === "en" ? "start" : "end"}>
+                <Button
+                  className="text-brand border-brand"
+                  aria-labelledby="Arrow left"
+                  shape="circle"
+                  onClick={() => navigate("/")}
+                >
+                  <ArrowLeftOutlined />
+                </Button>
+              </Flex>
 
-          <Form
-            name="login"
-            layout="vertical"
-            onFinish={onFinish}
-            requiredMark={false}
-          >
-            <Form.Item
-              name="email"
-              rules={[
-                { required: true, message: "Please input your email!" },
-                { type: "email", message: "Please enter a valid email!" },
-              ]}
-            >
-              <Input
-                prefix={<UserOutlined style={{ color: "#bfbfbf" }} />}
-                placeholder="Email"
-                size="large"
-                style={{ borderRadius: 8 }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-              ]}
-            >
-              <Input.Password
-                prefix={<LockOutlined style={{ color: "#bfbfbf" }} />}
-                placeholder="Password"
-                size="large"
-                style={{ borderRadius: 8 }}
-              />
-            </Form.Item>
-
-            <Form.Item style={{ marginTop: 24 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                block
-                size="large"
-                loading={isPending}
-                style={{
-                  borderRadius: 8,
-                  height: 45,
-                  fontSize: 16,
-                  fontWeight: 600,
-                  background: "#1d39c4",
-                }}
+              <div className="logo">
+                <img
+                  src="/assets/images/logo.png"
+                  style={{ height: "70px" }}
+                  alt="Logo"
+                />
+              </div>
+              <Title level={3}>{t("Welcome Back")}</Title>
+              <Paragraph className="text-grey fs-16">
+                {t(
+                  "Please Sign in to access your system and manage platform activities.",
+                )}
+              </Paragraph>
+              <Form
+                layout="vertical"
+                form={form}
+                requiredMark={false}
+                className="mt-3"
+                onFinish={onFinish}
               >
-                Sign In
-              </Button>
-            </Form.Item>
-          </Form>
-        </Card>
-      </Flex>
-    </>
+                <MyInput
+                  label={t("Email Address")}
+                  name="email"
+                  type={"text"}
+                  required
+                  message={t("Please Enter Email Address")}
+                  placeholder={t("Enter Email Address")}
+                  className="bg-grey"
+                />
+                <MyInput
+                  label={t("Password")}
+                  type="password"
+                  name="password"
+                  required
+                  message={t("Please Enter Password")}
+                  placeholder={t("Enter Password")}
+                  className="bg-grey"
+                />
+                <Flex justify="space-between" className="mb-3">
+                  <Checkbox>{t("Remember Me")}</Checkbox>
+                  <NavLink to={"/forget-password"} className="fs-13 text-brand">
+                    {t("Forget Password?")}
+                  </NavLink>
+                </Flex>
+                <Button
+                  htmlType="submit"
+                  type="primary"
+                  className="btn bg-brand fs-16 mt-2"
+                  block
+                  loading={isPending}
+                >
+                  {t("Sign In")}
+                </Button>
+                <Flex justify="center" className="mt-1">
+                  <Paragraph className="fs-14">
+                    {t("Create an account?")}{" "}
+                    <NavLink to={"/signup"} className={"text-brand"}>
+                      {t("Sign Up")}
+                    </NavLink>
+                  </Paragraph>
+                </Flex>
+              </Form>
+            </div>
+          </Col>
+          <Col xs={0} sm={0} md={0} lg={12} className="login-right-side">
+            <Flex vertical gap={50} align="center" className="h-100">
+              <Image src="/assets/images/dashboard.png" preview={false} />
+              <Flex vertical gap={5}>
+                <Title className="m-0 text-white" level={3}>
+                  {t("Clinic Control at Your Fingertips")}
+                </Title>
+                <Text className="m-0 text-white fs-16">
+                  {t(
+                    "Access smart dashboards, patient insights, and tools to grow your clinic with ease.",
+                  )}
+                </Text>
+              </Flex>
+            </Flex>
+          </Col>
+        </Row>
+      </div>
+    </div>
   );
 };
 

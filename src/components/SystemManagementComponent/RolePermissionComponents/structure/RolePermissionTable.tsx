@@ -1,23 +1,12 @@
-import {
-  Typography,
-  Card,
-  Flex,
-  Table,
-  Form,
-  Row,
-  Col,
-  Dropdown,
-  Button,
-  type MenuProps,
-} from "antd";
-import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { Typography, Card, Flex, Table, Form, Row, Col, Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import {
   ConfirmModal,
   CustomPagination,
   DeleteModal,
   ModuleTopHeading,
 } from "../../../PageComponents";
-import { SearchInput } from "../../../Forms";
+import { SearchInput, MySelect } from "../../../Forms";
 import type { RolePermissionType } from "../../../../types";
 import { useState } from "react";
 import { rolepermissionColumn, rolepermissionData } from "../../../../data";
@@ -51,13 +40,14 @@ const RolePermissionTable = () => {
     setEditRoleItem(null);
   };
 
-  const handleStatusClick: MenuProps["onClick"] = ({ key }) => {
-    setSelectedStatus(key);
-  };
+  const statusOptions = statusItems(t).map((item) => ({
+    id: item.key,
+    name: item.label,
+  }));
 
-  const selectedStatusLabel =
-    statusItems(t).find((item) => item.key === selectedStatus)?.label ||
-    t("Status");
+  const handleStatusChange = (value: any) => {
+    setSelectedStatus(value);
+  };
 
   return (
     <>
@@ -70,7 +60,10 @@ const RolePermissionTable = () => {
                 {t("Manage all your roles in your system")}
               </Text>
             </Flex>
-            <Button className="btncancel text-black" onClick={()=>setAddRoleDrawer(true)}>
+            <Button
+              className="btncancel text-black"
+              onClick={() => setAddRoleDrawer(true)}
+            >
               <PlusOutlined /> {t("Add Role")}
             </Button>
           </Flex>
@@ -93,20 +86,16 @@ const RolePermissionTable = () => {
                   </Col>
                   <Col span={24} md={24} lg={12}>
                     <Flex gap={10}>
-                      <Dropdown
-                        menu={{
-                          items: statusItems(t),
-                          onClick: handleStatusClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedStatusLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
+                      <MySelect
+                        withoutForm
+                        className="px-3 filter-bg fs-13 text-black"
+                        options={statusOptions}
+                        placeholder={t("Status")}
+                        value={selectedStatus}
+                        onChange={handleStatusChange}
+                        allowClear
+                        maxWidth={150}
+                      />
                     </Flex>
                   </Col>
                 </Row>
@@ -119,7 +108,7 @@ const RolePermissionTable = () => {
             size="large"
             columns={rolepermissionColumn(
               { setStatusChanged, setDeleteItem },
-              t
+              t,
             )}
             dataSource={rolepermissionData}
             className="pagination table-cs table"
@@ -145,7 +134,9 @@ const RolePermissionTable = () => {
       <DeleteModal
         title={t("Delete Role")}
         subtitle={t(
-          t("This action in undone. Are you sure you want to delete this role?")
+          t(
+            "This action in undone. Are you sure you want to delete this role?",
+          ),
         )}
         visible={deleteItem}
         onClose={() => setDeleteItem(false)}

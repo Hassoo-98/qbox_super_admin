@@ -35,6 +35,7 @@ import type {
   PayoutRequestTypes,
   PayoutRequestInvoiceTypes,
 } from "../types";
+import type { Installment } from "../api/types/admin";
 import { statusColors } from "./statusColors";
 import { t } from "i18next";
 const { Text } = Typography;
@@ -111,7 +112,7 @@ const staffColumn = (
   setEditItem: (item: staffType) => void,
   setStatusChanged: (value: boolean) => void, // separate param
   setDeleteItem: (value: boolean) => void,
-  t: any
+  t: any,
 ): TableColumnsType<staffType> => [
   {
     title: t("Staff Name"),
@@ -267,6 +268,43 @@ const recentColumn = (t: any): TableColumnsType<RecentRequestType> => [
   },
 ];
 
+export const dashboardInstallmentColumn = (
+  t: any,
+): TableColumnsType<Installment> => [
+  {
+    title: t("QBox ID"),
+    dataIndex: "qbox_id",
+  },
+  {
+    title: t("QBox Image"),
+    dataIndex: "qbox_image",
+    render: (qbox_image: string) => (
+      <Avatar src={qbox_image} size={50} shape="square" />
+    ),
+    width: 100,
+  },
+  {
+    title: t("Homeowner Name"),
+    dataIndex: "homeowner_name",
+  },
+  {
+    title: t("Phone Number"),
+    dataIndex: "phone",
+  },
+  {
+    title: t("City"),
+    dataIndex: "city",
+  },
+  {
+    title: t("Short Address"),
+    dataIndex: "short_address",
+  },
+  {
+    title: t("Requested Date"),
+    dataIndex: "requested_date",
+  },
+];
+
 const homeownersColumn = ({
   setItemToDelete,
   navigate,
@@ -286,23 +324,23 @@ const homeownersColumn = ({
   },
   {
     title: t("Homeowner Name"),
-    dataIndex: "homeownername",
+    dataIndex: "name",
   },
   {
     title: t("QBox ID"),
-    dataIndex: "qboxid",
+    dataIndex: "qbox_id",
   },
   {
     title: t("QBox Image"),
-    dataIndex: "qboximage",
-    render: (qboximage: string) => (
-      <Avatar src={qboximage} size={50} shape="square" />
+    dataIndex: "avatar",
+    render: (avatar: string) => (
+      <Avatar src={avatar} size={50} shape="square" />
     ),
     width: 100,
   },
   {
     title: t("Phone Number"),
-    dataIndex: "phonenumber",
+    dataIndex: "phone",
   },
   {
     title: t("Email Address"),
@@ -344,9 +382,9 @@ const homeownersColumn = ({
   },
   {
     title: t("Account Status"),
-    dataIndex: "accountstatus",
-    render: (accountstatus: string) =>
-      accountstatus === "active" ? (
+    dataIndex: "status",
+    render: (status: string) =>
+      status === "Active" ? (
         <Text className="btnpill fs-12 success">{t("Active")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
@@ -354,7 +392,7 @@ const homeownersColumn = ({
   },
   {
     title: t("Account Created On"),
-    dataIndex: "createdon",
+    dataIndex: "joined_at",
   },
   {
     title: t("Action"),
@@ -514,7 +552,7 @@ const allqboxesColumn = ({
 
 const allpackagesColumn = (
   { navigate }: { navigate: (path: string) => void },
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<AllPackagesTypes> => [
   {
     title: t("Tracking ID"),
@@ -583,7 +621,7 @@ const allpackagesColumn = (
               onClick={(e) => {
                 e.preventDefault();
                 navigate(
-                  "/allqboxes/view/qboxallpackages/detailview/" + row?.key
+                  "/allqboxes/view/qboxallpackages/detailview/" + row?.key,
                 );
               }}
             >
@@ -607,7 +645,7 @@ const allpackagesColumn = (
 
 const qrhistoryColumn = (
   { navigate }: { navigate: (path: string) => void },
-  t: any
+  t: any,
 ): TableColumnsType<QRHistoryTypes> => [
   {
     title: t("QR Code"),
@@ -674,7 +712,7 @@ const qrhistoryColumn = (
 
 const subscriptionColumn = (
   { setDownloadItem }: subfileProps,
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<SubscriptionType> => [
   {
     title: t("Owner ID"),
@@ -751,7 +789,7 @@ const subscriptionColumn = (
 ];
 
 const revenuesubColumn = (
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<RevenueType> => [
   {
     title: t("Transaction ID"),
@@ -777,7 +815,7 @@ const revenuesubColumn = (
 ];
 
 const revenuecomColumn = (
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<RevenueType> => [
   {
     title: t("Tracking ID"),
@@ -810,7 +848,7 @@ const serviceproviderColumn = (
     setDeleteItem,
     setStatusChanged,
   }: ServiceProviderColumnParams,
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<ServiceProviderType> => [
   {
     title: t("Provider Name"),
@@ -963,7 +1001,7 @@ const serviceproviderColumn = (
 
 const allpackageproviderColumn = (
   { navigate }: { navigate: (path: string) => void },
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<AllPackageProviderType> => [
   {
     title: t("Tracking ID"),
@@ -1040,7 +1078,7 @@ const allpackageproviderColumn = (
                     e.preventDefault();
                     navigate(
                       "/serviceproviders/view/allpackages/detailview/" +
-                        row?.key
+                        row?.key,
                     );
                   }}
                 >
@@ -1068,7 +1106,7 @@ const allpackageproviderColumn = (
 
 const driverproviderColumn = (
   { setStatusChanged }: { setStatusChanged: (value: boolean) => void },
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<DriverProviderType> => [
   {
     title: t("Image"),
@@ -1163,7 +1201,7 @@ const driverproviderColumn = (
 ];
 
 const provideractivityColumn = (
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<any> => [
   {
     title: t("Date & Time"),
@@ -1191,7 +1229,7 @@ const provideractivityColumn = (
 
 const singleviewqrhistorytableColumn = (
   { setVedioModal }: { setVedioModal: (value: boolean) => void },
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<SingleViewQRHistoryTableType> => [
   {
     title: t("Driver Name"),
@@ -1256,7 +1294,7 @@ const rolepermissionColumn = (
     setStatusChanged: (value: boolean) => void;
     setDeleteItem: (value: boolean) => void;
   },
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<RolePermissionType> => [
   {
     title: t("Role Name"),
@@ -1334,7 +1372,7 @@ const rolepermissionColumn = (
 
 const payouthistoryColumn = (
   { navigate }: { navigate: (path: string) => void },
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<PayoutHistoryTypes> => [
   {
     title: t("Payout ID"),
@@ -1367,7 +1405,7 @@ const payouthistoryColumn = (
                   onClick={(e) => {
                     e.preventDefault();
                     navigate(
-                      "/payouthistory/singleviewpayouthistory/" + row?.key
+                      "/payouthistory/singleviewpayouthistory/" + row?.key,
                     );
                   }}
                 >
@@ -1394,7 +1432,7 @@ const payouthistoryColumn = (
 ];
 
 const payouthistoryinvoiceColumn = (
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<PayoutHistoryInvoiceTypes> => [
   {
     title: t("Total Deliveries"),
@@ -1422,7 +1460,7 @@ const payouthistoryinvoiceColumn = (
 ];
 
 const payouthistorypackagesColumn = (
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<PayoutHistorPackagesTypes> => [
   {
     title: t("Tracking ID"),
@@ -1464,7 +1502,7 @@ const payouthistorypackagesColumn = (
 
 const payoutrequestColumn = (
   { navigate }: { navigate: (path: string) => void },
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<PayoutRequestTypes> => [
   {
     title: t("Payout ID"),
@@ -1511,7 +1549,7 @@ const payoutrequestColumn = (
                   onClick={(e) => {
                     e.preventDefault();
                     navigate(
-                      "/payoutrequests/singleviewrequesthistory/" + row?.key
+                      "/payoutrequests/singleviewrequesthistory/" + row?.key,
                     );
                   }}
                 >
@@ -1539,7 +1577,7 @@ const payoutrequestColumn = (
 
 const payoutrequestinvoiceColumn = (
   { setPaidModal }: { setPaidModal: (value: boolean) => void },
-  t: (key: string) => string
+  t: (key: string) => string,
 ): TableColumnsType<PayoutRequestInvoiceTypes> => [
   {
     title: t("Total Deliveries"),

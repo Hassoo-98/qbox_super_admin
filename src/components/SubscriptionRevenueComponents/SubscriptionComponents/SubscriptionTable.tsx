@@ -6,24 +6,23 @@ import {
   Form,
   Row,
   Col,
-  Dropdown,
   Button,
-  type MenuProps,
   Image,
 } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+
 import { useState } from "react";
 import {
   CustomPagination,
   ModuleTopHeading,
   SubscriptionExportModal,
 } from "../../PageComponents";
-import { MyDatepicker, SearchInput } from "../../Forms";
+import { MyDatepicker, SearchInput, MySelect } from "../../Forms";
 import { type DownloadType, type SubscriptionType } from "../../../types";
 import { subscriptionColumn, subscriptionDate } from "../../../data";
 import { statusItemnew } from "../../../shared";
 import { useTranslation } from "react-i18next";
 import type { Dayjs } from "dayjs";
+import i18n from "../../../sources/i18n";
 
 const { Text } = Typography;
 const SubscriptionTable = () => {
@@ -34,36 +33,41 @@ const SubscriptionTable = () => {
   const [current, setCurrent] = useState<number>(1);
   const [_downloaditem, setDownloadItem] = useState<DownloadType | null>();
   const [selectedYear, setSelectedYear] = useState<[Dayjs, Dayjs] | undefined>(
-    undefined
+    undefined,
   );
   const [exportmodal, setExportModal] = useState<boolean>(false);
   const { t } = useTranslation();
 
-  const paymentItem: { key: string; label: string }[] = [
-    { key: "applepay", label: t("Apple Pay") },
-    { key: "stcpay", label: t("STC Pay") },
+  const paymentOptions = [
+    { id: "applepay", name: t("Apple Pay") },
+    { id: "stcpay", name: t("STC Pay") },
   ];
 
+  const statusOptions = statusItemnew(t).map((item) => ({
+    id: item.key,
+    name: item.label,
+  }));
+
+  const handlePaymentChange = (value: any) => {
+    setselectedPayment(value);
+  };
+  const handleStatusChange = (value: any) => {
+    setselectedStatus(value);
+  };
+
+  const isRTL = i18n.language === "ar";
   const handlePageChange = (page: number, size: number): void => {
     setCurrent(page);
     setPageSize(size);
   };
-  const handleStatusClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedStatus(key);
-  };
-  const handlePaymentClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedPayment(key);
-  };
-  const getStatusItemNew = statusItemnew(t);
-  const selectedStatusLabel =
-    getStatusItemNew.find((item) => item.key === selectedStatus)?.label ||
-    t("Status");
-  const selectedPaymentLabel =
-    paymentItem.find((item) => item.key === selectedPayment)?.label ||
-    t("Payment Method");
 
   return (
-    <>
+    <Flex
+      vertical
+      gap={10}
+      className="mb-2"
+      style={{ direction: isRTL ? "rtl" : "ltr" }}
+    >
       <Card className="radius-12 border-gray card-cs h-100">
         <Flex vertical gap={10} className="mb-2">
           <Flex vertical>
@@ -91,34 +95,26 @@ const SubscriptionTable = () => {
                   </Col>
                   <Col span={24} lg={12}>
                     <Flex gap={5}>
-                      <Dropdown
-                        menu={{
-                          items: paymentItem,
-                          onClick: handlePaymentClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedPaymentLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
-                      <Dropdown
-                        menu={{
-                          items: statusItemnew(t),
-                          onClick: handleStatusClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedStatusLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
+                      <MySelect
+                        withoutForm
+                        className="px-3 filter-bg fs-13 text-black"
+                        options={paymentOptions}
+                        placeholder={t("Payment Method")}
+                        value={selectedPayment}
+                        onChange={handlePaymentChange}
+                        allowClear
+                        maxWidth={150}
+                      />
+                      <MySelect
+                        withoutForm
+                        className="px-3 filter-bg fs-13 text-black"
+                        options={statusOptions}
+                        placeholder={t("Status")}
+                        value={selectedStatus}
+                        onChange={handleStatusChange}
+                        allowClear
+                        maxWidth={150}
+                      />
                     </Flex>
                   </Col>
                 </Row>
@@ -178,7 +174,7 @@ const SubscriptionTable = () => {
         visible={exportmodal}
         onClose={() => setExportModal(false)}
       />
-    </>
+    </Flex>
   );
 };
 

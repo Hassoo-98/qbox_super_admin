@@ -171,24 +171,21 @@ const Sidebar: React.FC = () => {
         navigate("/rolepermissions", { replace: true });
         break;
       case "11":
-        navigate("/qrlogs", { replace: true });
-        break;
-      case "12":
         navigate("/settingpage", { replace: true });
         break;
-      case "13":
+      case "12":
         navigate("/activitylogs", { replace: true });
         break;
-      case "14":
+      case "13":
         navigate("/subscriptionmanagement", { replace: true });
         break;
-      case "15":
+      case "14":
         navigate("/revenue", { replace: true });
         break;
-      case "16":
+      case "15":
         navigate("/payouthistory", { replace: true });
         break;
-      case "17":
+      case "16":
         navigate("/payoutrequests", { replace: true });
         break;
       default:
