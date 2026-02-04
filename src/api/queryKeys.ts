@@ -8,6 +8,7 @@ export const queryKeys = {
     homeOwners: () => [...queryKeys.admin.all, "homeOwners"] as const,
     homeOwnerDetail: (id: string | number) =>
       [...queryKeys.admin.homeOwners(), id] as const,
+    installments: () => [...queryKeys.admin.all, "installments"] as const,
   },
   auth: {
     user: ["auth", "user"] as const,

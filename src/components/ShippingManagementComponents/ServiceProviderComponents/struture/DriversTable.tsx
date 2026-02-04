@@ -1,20 +1,10 @@
-import {
-  Card,
-  Flex,
-  Table,
-  Form,
-  Row,
-  Col,
-  Dropdown,
-  Button,
-  type MenuProps,
-} from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import { Card, Flex, Table, Form, Row, Col } from "antd";
+
 import { useState } from "react";
 import type { DriverProviderType } from "../../../../types";
 import { statusItems } from "../../../../shared";
 import { driverproviderColumn, driverproviderData } from "../../../../data";
-import { SearchInput } from "../../../Forms";
+import { SearchInput, MySelect } from "../../../Forms";
 import { ConfirmModal } from "../../../PageComponents";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
@@ -24,12 +14,14 @@ const DriversTable = () => {
   const [statuschanged, setStatusChanged] = useState<boolean>(false);
   const [selectedStatus, setselectedStatus] = useState<string>("");
   const { t } = useTranslation();
-  const handleStatusClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedStatus(key);
+  const statusOptions = statusItems(t).map((item) => ({
+    id: item.key,
+    name: item.label,
+  }));
+
+  const handleStatusChange = (value: any) => {
+    setselectedStatus(value);
   };
-  const selectedStatusLabel =
-    statusItems(t).find((item) => item.key === selectedStatus)?.label ||
-    t("Status");
 
   const isRTL = i18n.language === "ar";
 
@@ -56,20 +48,16 @@ const DriversTable = () => {
                 />
               </Col>
               <Col span={24} lg={12}>
-                <Dropdown
-                  menu={{
-                    items: statusItems(t),
-                    onClick: handleStatusClick,
-                  }}
-                  trigger={["click"]}
-                >
-                  <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                    <Flex justify="space-between" align="center" gap={30}>
-                      {selectedStatusLabel}
-                      <DownOutlined />
-                    </Flex>
-                  </Button>
-                </Dropdown>
+                <MySelect
+                  withoutForm
+                  className="px-3 filter-bg fs-13 text-black"
+                  options={statusOptions}
+                  placeholder={t("Status")}
+                  value={selectedStatus}
+                  onChange={handleStatusChange}
+                  allowClear
+                  maxWidth={150}
+                />
               </Col>
             </Row>
           </Form>
@@ -92,7 +80,7 @@ const DriversTable = () => {
         visible={statuschanged}
         title={t("Are you sure?")}
         desc={t(
-          "Are you sure you want to status change of this service provider?"
+          "Are you sure you want to status change of this service provider?",
         )}
         onClose={() => setStatusChanged(false)}
       />

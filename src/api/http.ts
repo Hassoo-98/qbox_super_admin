@@ -1,5 +1,5 @@
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "https://demi.qbox.com";
+  import.meta.env.VITE_API_BASE_URL ?? "https://backend.qbox.sa/api";
 
 export type ApiError = {
   message: string;
@@ -13,7 +13,7 @@ type RequestOptions = Omit<RequestInit, "body"> & {
 
 export const request = async <T>(
   path: string,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
 ): Promise<T> => {
   const url = `${API_BASE_URL}${path}`;
   const headers = new Headers(options.headers);

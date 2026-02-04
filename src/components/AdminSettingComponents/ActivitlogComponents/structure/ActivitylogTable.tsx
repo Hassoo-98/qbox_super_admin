@@ -1,20 +1,8 @@
 import { useState } from "react";
-import {
-  Typography,
-  Card,
-  Flex,
-  Table,
-  Form,
-  Row,
-  Col,
-  Dropdown,
-  type MenuProps,
-  Button,
-} from "antd";
+import { Typography, Card, Flex, Table, Form, Row, Col } from "antd";
 import { CustomPagination, ModuleTopHeading } from "../../../PageComponents";
 import { activitylogData, activityColumn } from "../../../../data";
-import { SearchInput } from "../../../Forms";
-import { DownOutlined } from "@ant-design/icons";
+import { SearchInput, MySelect } from "../../../Forms";
 import type { ActivitylogTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
@@ -23,28 +11,28 @@ const ActivitylogTable: React.FC = () => {
   const [form] = Form.useForm();
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
-  const [selectedRole, setselectedRole] = useState<string>("");
-  const [selectedaction, setselectedAction] = useState<string>("");
+  const [selectedRole, setselectedRole] = useState<string | null>(null);
+  const [selectedaction, setselectedAction] = useState<string | null>(null);
   const { t } = useTranslation();
 
-  const roleItems: { key: string; label: string }[] = [
-    { key: "supervisor", label: t("Supervisor") },
-    { key: "admin", label: t("Admin") },
-    { key: "agent", label: t("Agent") },
+  const roleItems = [
+    { id: "supervisor", name: t("Supervisor") },
+    { id: "admin", name: t("Admin") },
+    { id: "agent", name: t("Agent") },
   ];
 
-  const actionItems: { key: string; label: string }[] = [
-    { key: "edit", label: t("Edit") },
-    { key: "delete", label: t("Delete") },
-    { key: "add", label: t("Add") },
+  const actionItems = [
+    { id: "edit", name: t("Edit") },
+    { id: "delete", name: t("Delete") },
+    { id: "add", name: t("Add") },
   ];
 
-  const handleRoleClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedRole(key);
+  const handleRoleChange = (value: any) => {
+    setselectedRole(value);
   };
 
-  const handleActionClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedAction(key);
+  const handleActionChange = (value: any) => {
+    setselectedAction(value);
   };
 
   const handlePageChange = (page: number, size: number): void => {
@@ -52,17 +40,14 @@ const ActivitylogTable: React.FC = () => {
     setPageSize(size);
   };
 
-  const selectedRoleLabel =
-    roleItems.find((item) => item.key === selectedRole)?.label || t("City");
-  const selectedActionLabel =
-    actionItems.find((item) => item.key === selectedaction)?.label ||
-    t("Action");
-      const isRTL = i18n.language === "ar";
-      
+  const isRTL = i18n.language === "ar";
 
   return (
     <>
-      <Card className="radius-12 border-gray card-cs h-100"   style={{ direction: isRTL ? "rtl" : "ltr" }}>
+      <Card
+        className="radius-12 border-gray card-cs h-100"
+        style={{ direction: isRTL ? "rtl" : "ltr" }}
+      >
         <Flex vertical gap={10} className="mb-2">
           <Flex vertical>
             <ModuleTopHeading level={5} name={t("Activity Log")} />
@@ -89,34 +74,25 @@ const ActivitylogTable: React.FC = () => {
                   </Col>
                   <Col span={24} md={24} lg={12}>
                     <Flex gap={5}>
-                      <Dropdown
-                        menu={{
-                          items: roleItems,
-                          onClick: handleRoleClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedRoleLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
-                      <Dropdown
-                        menu={{
-                          items: actionItems,
-                          onClick: handleActionClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedActionLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
+                      <MySelect
+                        withoutForm
+                        className="filter-bg fs-13 text-black"
+                        options={roleItems}
+                        placeholder={t("Role")}
+                        value={selectedRole}
+                        onChange={handleRoleChange}
+                        allowClear
+                      />
+                      <MySelect
+                        withoutForm
+                        className="filter-bg fs-13 text-black"
+                        options={actionItems}
+                        placeholder={t("Action")}
+                        value={selectedaction}
+                        onChange={handleActionChange}
+                        allowClear
+                        maxWidth={150}
+                      />
                     </Flex>
                   </Col>
                 </Row>

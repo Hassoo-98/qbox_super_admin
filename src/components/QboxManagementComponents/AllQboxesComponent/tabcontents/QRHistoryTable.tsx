@@ -1,18 +1,8 @@
 import { useState } from "react";
-import {
-  Flex,
-  Table,
-  Form,
-  Row,
-  Col,
-  Dropdown,
-  Button,
-  type MenuProps,
-} from "antd";
+import { Flex, Table, Form, Row, Col } from "antd";
 import { CustomPagination } from "../../../PageComponents";
 import { qrhistoryColumn, qrhistoryData } from "../../../../data";
-import { SearchInput } from "../../../Forms";
-import { DownOutlined } from "@ant-design/icons";
+import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
 import type { QRHistoryTypes } from "../../../../types";
 import i18n from "../../../../sources/i18n";
@@ -29,17 +19,14 @@ const QRHistoryTable: React.FC = () => {
     setCurrent(page);
     setPageSize(size);
   };
-  const Status: { key: number; label: string }[] = [
-    { key: 1, label: t("Active") },
-    { key: 2, label: t("Inactive") },
+  const statusItem = [
+    { id: 1, name: t("Active") },
+    { id: 2, name: t("Inactive") },
   ];
 
-  const handleStatusClick: MenuProps["onClick"] = ({ key }) => {
-    setSelectedstatus(Number(key));
+  const handleStatusChange = (value: any) => {
+    setSelectedstatus(value);
   };
-
-  const selectedStatuslabel =
-    Status.find((item) => item.key === seletedstatus)?.label || t("Status");
 
   return (
     <>
@@ -68,20 +55,16 @@ const QRHistoryTable: React.FC = () => {
                 </Col>
                 <Col span={24} md={24} lg={12}>
                   <Flex gap={5}>
-                    <Dropdown
-                      menu={{
-                        items: Status,
-                        onClick: handleStatusClick,
-                      }}
-                      trigger={["click"]}
-                    >
-                      <Button className="btncancel filter-bg fs-13 text-black">
-                        <Flex justify="space-between" align="center" gap={30}>
-                          {selectedStatuslabel}
-                          <DownOutlined />
-                        </Flex>
-                      </Button>
-                    </Dropdown>
+                    <MySelect
+                      withoutForm
+                      className="filter-bg fs-13 text-black"
+                      options={statusItem}
+                      placeholder={t("Status")}
+                      value={seletedstatus}
+                      onChange={handleStatusChange}
+                      allowClear
+                      maxWidth={150}
+                    />
                   </Flex>
                 </Col>
               </Row>

@@ -1,25 +1,27 @@
-import { Form, Select, Typography } from 'antd';
-import type { SelectProps } from 'antd';
-import './index.css';
+import { Form, Select, Typography } from "antd";
+import type { SelectProps } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import "./index.css";
 
 interface OptionType {
   id: string | number;
   name: string;
 }
 
-interface MySelectProps extends Omit<SelectProps, 'options' | 'value'> {
+interface MySelectProps extends Omit<SelectProps, "options" | "value"> {
   withoutForm?: boolean;
   name?: string;
   label?: string;
   placeholder?: string;
-  mode?: 'multiple' | 'tags';
+  mode?: "multiple" | "tags";
   disabled?: boolean;
   required?: boolean;
   message?: string;
-  value?: string | string[];
+  value?: string | string[] | number | number[] | null;
   options?: OptionType[];
   className?: string;
   error?: string;
+  maxWidth?: number | string;
 }
 
 export const MySelect: React.FC<MySelectProps> = ({
@@ -33,16 +35,19 @@ export const MySelect: React.FC<MySelectProps> = ({
   message,
   value,
   options = [],
-  className = '',
+  className = "",
   error,
+  maxWidth,
   ...props
 }) => {
   return withoutForm ? (
     <Select
       maxTagCount="responsive"
       className={`select without-form-select w-100 ${className}`}
+      style={{ maxWidth }}
       value={value}
       mode={mode}
+      suffixIcon={<DownOutlined />}
       disabled={disabled}
       {...props}
       placeholder={placeholder}
@@ -56,7 +61,11 @@ export const MySelect: React.FC<MySelectProps> = ({
   ) : (
     <Form.Item
       name={name}
-      label={label ? <Typography.Text className="fs-14 fw-400">{label}</Typography.Text> : null}
+      label={
+        label ? (
+          <Typography.Text className="fs-14 fw-400">{label}</Typography.Text>
+        ) : null
+      }
       rules={required ? [{ required, message }] : []}
       help={error}
       className="custom-select"
@@ -66,6 +75,7 @@ export const MySelect: React.FC<MySelectProps> = ({
         mode={mode}
         disabled={disabled}
         maxTagCount="responsive"
+        style={{ maxWidth }}
         {...props}
         placeholder={placeholder}
       >

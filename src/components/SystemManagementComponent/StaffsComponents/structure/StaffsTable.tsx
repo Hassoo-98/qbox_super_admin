@@ -1,23 +1,12 @@
-import {
-  Typography,
-  Card,
-  Flex,
-  Table,
-  Form,
-  Row,
-  Col,
-  Dropdown,
-  Button,
-  type MenuProps,
-} from "antd";
-import { DownOutlined, PlusOutlined } from "@ant-design/icons";
+import { Typography, Card, Flex, Table, Form, Row, Col, Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import {
   ConfirmModal,
   CustomPagination,
   DeleteModal,
   ModuleTopHeading,
 } from "../../../PageComponents";
-import { SearchInput } from "../../../Forms";
+import { SearchInput, MySelect } from "../../../Forms";
 import type { staffType } from "../../../../types";
 import { useState } from "react";
 import { staffColumn, staffData } from "../../../../data";
@@ -38,27 +27,29 @@ const StaffsTable = () => {
   const [edititem, setEditItem] = useState<staffType | null>(null);
   const [statuschanged, setStatusChanged] = useState<boolean>(false);
   const [deleteitem, setDeleteItem] = useState<boolean>(false);
-  const roleItems: { key: string; label: string }[] = [
-    { key: "supervisor", label: t("Supervisor") },
-    { key: "admin", label: t("Admin") },
-    { key: "agent", label: t("Agent") },
+  const roleItems = [
+    { id: "supervisor", name: t("Supervisor") },
+    { id: "admin", name: t("Admin") },
+    { id: "agent", name: t("Agent") },
   ];
+
+  const statusOptions = statusItems(t).map((item) => ({
+    id: item.key,
+    name: item.label,
+  }));
+
+  const handleRoleChange = (value: any) => {
+    setselectedRole(value);
+  };
+  const handleStatusChange = (value: any) => {
+    setselectedStatus(value);
+  };
+
   const isRTL = i18n.language === "ar";
   const handlePageChange = (page: number, size: number): void => {
     setCurrent(page);
     setPageSize(size);
   };
-  const handleRoleClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedRole(key);
-  };
-  const handleStatusClick: MenuProps["onClick"] = ({ key }) => {
-    setselectedStatus(key);
-  };
-  const selectedRoleLabel =
-    roleItems.find((item) => item.key === selectedRole)?.label || t("City");
-  const selectedStatusLabel =
-    statusItems(t).find((item) => item.key === selectedStatus)?.label ||
-    t("Status");
 
   return (
     <>
@@ -100,34 +91,26 @@ const StaffsTable = () => {
                   </Col>
                   <Col span={24} md={24} lg={12}>
                     <Flex gap={10}>
-                      <Dropdown
-                        menu={{
-                          items: roleItems,
-                          onClick: handleRoleClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedRoleLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
-                      <Dropdown
-                        menu={{
-                          items: statusItems(t),
-                          onClick: handleStatusClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                          <Flex justify="space-between" align="center" gap={30}>
-                            {selectedStatusLabel}
-                            <DownOutlined />
-                          </Flex>
-                        </Button>
-                      </Dropdown>
+                      <MySelect
+                        withoutForm
+                        className="filter-bg fs-13 text-black"
+                        options={roleItems}
+                        placeholder={t("Role")}
+                        value={selectedRole}
+                        onChange={handleRoleChange}
+                        allowClear
+                        maxWidth={150}
+                      />
+                      <MySelect
+                        withoutForm
+                        className="filter-bg fs-13 text-black"
+                        options={statusOptions}
+                        placeholder={t("Status")}
+                        value={selectedStatus}
+                        onChange={handleStatusChange}
+                        allowClear
+                        maxWidth={150}
+                      />
                     </Flex>
                   </Col>
                 </Row>
@@ -139,12 +122,12 @@ const StaffsTable = () => {
           <Table<staffType>
             size="large"
             columns={staffColumn(
-               setVisible,
-               setEditItem,
-               setStatusChanged,
-               setDeleteItem,
-               t
-             )}
+              setVisible,
+              setEditItem,
+              setStatusChanged,
+              setDeleteItem,
+              t,
+            )}
             dataSource={staffData}
             className="pagination table-cs table"
             showSorterTooltip={false}
@@ -186,7 +169,7 @@ const StaffsTable = () => {
       <DeleteModal
         title={t("Delete Staff")}
         subtitle={t(
-          "This action is undone. Are you sure you want to delete this staff?"
+          "This action is undone. Are you sure you want to delete this staff?",
         )}
         visible={deleteitem}
         onClose={() => setDeleteItem(false)}

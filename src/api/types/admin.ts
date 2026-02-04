@@ -10,6 +10,18 @@ export interface HomeOwner {
   [key: string]: any;
 }
 
+export interface Installment {
+  id: number;
+  qbox_id: string;
+  qbox_image: string;
+  homeowner_name: string;
+  phone_number: string;
+  city: string;
+  short_address: string;
+  request_date: string;
+  [key: string]: any;
+}
+
 export interface PaginatedResponse<T> {
   data: T[];
   meta: {

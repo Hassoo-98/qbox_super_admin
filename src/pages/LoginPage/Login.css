@@ -1,0 +1,35 @@
+/* login css  */
+.login-left-side {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-inner {
+  max-width: 500px;
+  width: 100%;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+}
+
+.logo img {
+  height: 40px;
+  margin-bottom: 20px;
+}
+
+.login-right-side {
+  padding: 130px 60px 130px 60px !important;
+  background-image: url("/assets/images/login-bg.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 992px) {
+  .form-inner {
+    padding: 0px;
+  }
+}

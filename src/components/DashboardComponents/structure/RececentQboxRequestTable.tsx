@@ -1,36 +1,21 @@
-import { Button, Card, Flex, Table } from "antd";
-import { ModuleTopHeading } from "../../PageComponents";
-import { recentrequestData, recentColumn } from "../../../data";
-import type { RecentRequestType } from "../../../types";
+import { Button } from "antd";
+import { GlobalTable } from "../../PageComponents";
+import { dashboardInstallmentColumn } from "../../../data/tableColumn";
 import { useTranslation } from "react-i18next";
-import i18n from "../../../sources/i18n";
+import { useDashboardInstallments } from "../../../api/hooks/useDashboardInstallments";
 const RececentQboxRequestTable = () => {
-   const isRTL = i18n.language === "ar";
-    
-     
   const { t } = useTranslation();
+  const { data: installments, isLoading } = useDashboardInstallments();
+
   return (
-    <Card className="radius-12 border-gray card-cs h-100"   style={{ direction: isRTL ? "rtl" : "ltr" }}>
-      <Flex justify="space-between" align="center" className="mb-2">
-        <ModuleTopHeading
-          level={5}
-          name={t("Recent QBox Installment Requests")}
-        />
-      <Button className="btncancel text-black">{t("View All")}</Button>
-      </Flex>
-      <Flex vertical gap={20}>
-        <Table<RecentRequestType>
-          size="large"
-          columns={recentColumn(t)}
-          dataSource={recentrequestData}
-          className="pagination table-cs table"
-          showSorterTooltip={false}
-          scroll={{ x: 1300 }}
-          rowHoverable={false}
-          pagination={false}
-        />
-      </Flex>
-    </Card>
+    <GlobalTable
+      title="Recent QBox Installment Requests"
+      extra={<Button className="btncancel text-black">{t("View All")}</Button>}
+      loading={isLoading}
+      columns={dashboardInstallmentColumn(t)}
+      dataSource={installments || []}
+      rowKey="id"
+    />
   );
 };
 
