@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .npm-cache
 yarn-cache
+.env
 
 # Editor directories and files
 .vscode/*
