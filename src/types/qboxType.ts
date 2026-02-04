@@ -284,3 +284,11 @@ export interface RolePermissionType {
   rolename: string;
   status: string;
 }
+
+
+export interface ApiError {
+status: number;
+code: string;
+message: string;
+errors?: Record<string, string>;
+}
