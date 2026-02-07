@@ -8,44 +8,37 @@ import {
   Form,
   Checkbox,
   Button,
-  message,
 } from "antd";
 import { MyInput } from "../../components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useLogin } from "../../api/hooks";
-import type { LoginRequest, LoginResponse } from "../../api/auth";
+import { useAuth } from "../../hooks/useAuth";
+import { message } from "antd";
 import "./Login.css";
 
 const { Text, Title, Paragraph } = Typography;
 
 const LoginPage: React.FC = () => {
   const [form] = Form.useForm();
-  const [messageApi, contextHolder] = message.useMessage();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { mutate: login, isPending } = useLogin();
-
-  const onFinish = (values: LoginRequest) => {
-    login(values, {
-      onSuccess: (data: LoginResponse) => {
-        messageApi.success(t("Login successful"));
-        localStorage.setItem("token", data.token || data.accessToken || "");
-        if (data.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
-        }
-        navigate("/");
+  const {login,isLoggingIn}=useAuth();
+  const onFinish=(values:any)=>{
+    login(values,{
+      onSuccess:()=>{
+        message.success("User login successfully")
+        navigate("/")
       },
-      onError: (error: any) => {
-        messageApi.error(error.message || t("Login failed"));
-      },
-    });
-  };
+      onError:(error:any)=>{
+        message.error(error.message || "Login Failed")
+      }
+    })
+  }
 
   return (
     <div className="p-30">
-      {contextHolder}
+    
       <div className="container">
         <Row gutter={[12, 12]}>
           <Col xs={24} sm={24} md={24} lg={12} className="login-left-side">
@@ -80,6 +73,7 @@ const LoginPage: React.FC = () => {
                 requiredMark={false}
                 className="mt-3"
                 onFinish={onFinish}
+              
               >
                 <MyInput
                   label={t("Email Address")}
@@ -109,8 +103,9 @@ const LoginPage: React.FC = () => {
                   htmlType="submit"
                   type="primary"
                   className="btn bg-brand fs-16 mt-2"
+                  loading={isLoggingIn}
                   block
-                  loading={isPending}
+                  // loading={isPending}
                 >
                   {t("Sign In")}
                 </Button>

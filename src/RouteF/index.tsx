@@ -1,13 +1,6 @@
 import { Sidebar, LoginPage } from "../pages";
-import { Routes, Route, Navigate } from "react-router-dom";
-
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-  return <>{children}</>;
-};
+import { Routes, Route} from "react-router-dom";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 const RouteF = () => {
   return (

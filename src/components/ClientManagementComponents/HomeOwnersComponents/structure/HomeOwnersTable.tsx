@@ -11,14 +11,14 @@ import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
 import type { HomerOwnerTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
-import { useHomeOwners } from "../../../../api/hooks";
+// import { useHomeOwners } from "../../../../api/hooks";
 
 const HomeOwnersTable: React.FC = () => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
 
   // Real Data Hook
-  const { data: owners, isLoading } = useHomeOwners();
+  // const { data: owners, isLoading } = useHomeOwners();
 
   const [activeModal, setActiveModal] = useState<boolean>(false);
   const [inactiveModal, setInactiveModal] = useState<boolean>(false);
@@ -83,7 +83,7 @@ const HomeOwnersTable: React.FC = () => {
   };
 
   // Map real data or use empty array
-  const dataSource = owners || [];
+  const dataSource = [];
 
   const filters = (
     <Form layout="vertical" form={form}>
@@ -144,7 +144,7 @@ const HomeOwnersTable: React.FC = () => {
         title={t("Home Owners")}
         description={t("Manage all the home owners in your system")}
         filters={filters}
-        loading={isLoading}
+        // loading={isLoading}
         columns={homeownersColumn({
           setItemToDelete,
           navigate,
