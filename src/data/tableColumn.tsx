@@ -38,6 +38,7 @@ import type {
 import type { Installment } from "../api/types/admin";
 import { statusColors } from "./statusColors";
 import { t } from "i18next";
+import type { HomeOwner } from "../types/AllQboxTypes";
 const { Text } = Typography;
 
 const installmentColumn = ({
@@ -321,19 +322,22 @@ const homeownersColumn = ({
   setDeleteItem: (value: boolean) => void;
   handleStatusClick: (status: "active" | "inactive") => void;
   t: any;
-}): TableColumnsType<HomerOwnerTypes> => [
+}): TableColumnsType<HomeOwner> => [
   {
     title: t("ID"),
     dataIndex: "id",
   },
   {
     title: t("Homeowner Name"),
-    dataIndex: "name",
+    dataIndex: "full_name",
   },
   {
-    title: t("QBox ID"),
-    dataIndex: "qbox_id",
-  },
+  title: t("QBox ID"),
+  render: (_, record: HomeOwner) =>
+    record.qboxes && record.qboxes.length > 0
+      ? record.qboxes.map(qbox => qbox.qbox_id).join(", ")
+      : "-",
+},
   {
     title: t("QBox Image"),
     dataIndex: "avatar",
@@ -344,7 +348,7 @@ const homeownersColumn = ({
   },
   {
     title: t("Phone Number"),
-    dataIndex: "phone",
+    dataIndex: "phone_number",
   },
   {
     title: t("Email Address"),
@@ -352,11 +356,11 @@ const homeownersColumn = ({
   },
   {
     title: t("Short Address"),
-    dataIndex: "shortaddress",
+    dataIndex: ["address", "short_address"],
   },
   {
     title: t("City"),
-    dataIndex: "city",
+    dataIndex: ["address", "city"],
   },
   {
     title: t("Total Deliveries"),
@@ -396,7 +400,8 @@ const homeownersColumn = ({
   },
   {
     title: t("Account Created On"),
-    dataIndex: "joined_at",
+    dataIndex: "date_joined",
+    render: (date: string) => date?.split("T")[0],
   },
   {
     title: t("Action"),
@@ -467,27 +472,27 @@ const allqboxesColumn = ({
 }): TableColumnsType<AllBoxesTypes> => [
   {
     title: t("QBox ID"),
-    dataIndex: "qboxid",
+    dataIndex: "qbox_id",
   },
   {
     title: t("Homeowner Name"),
-    dataIndex: "homeownername",
+    dataIndex: "homeowner_name_snapshot",
   },
   {
     title: t("Short Address"),
-    dataIndex: "shortaddress",
+    dataIndex: "short_address_snapshot",
   },
   {
     title: t("City"),
-    dataIndex: "city",
+    dataIndex: "city_snapshot",
   },
   {
     title: t("QBox Status"),
-    dataIndex: "qboxstatus",
-    render: (qboxstatus: string) =>
-      qboxstatus === "online" ? (
+    dataIndex: "status",
+    render: (status: string) =>
+      status === "online" ? (
         <Text className="btnpill fs-12 success">{t("Online")}</Text>
-      ) : qboxstatus === "offline" ? (
+      ) : status === "offline" ? (
         <Text className="btnpill fs-12 inactive">{t("Offline")}</Text>
       ) : (
         <Text className="btnpill fs-12 pending">{t("Error")}</Text>
@@ -495,13 +500,13 @@ const allqboxesColumn = ({
   },
   {
     title: t("Last Online"),
-    dataIndex: "lastonline",
+    dataIndex: "last_online",
   },
   {
     title: t("LED Indicator"),
-    dataIndex: "ledindicator",
-    render: (subscriptionplane: string) =>
-      subscriptionplane === "green" ? (
+    dataIndex: "led_indicator",
+    render: (led_indicator: string) =>
+      led_indicator === "green" ? (
         <Text className="btnpill fs-12 success">{t("Green")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Red")}</Text>
@@ -509,9 +514,9 @@ const allqboxesColumn = ({
   },
   {
     title: t("Camera Status"),
-    dataIndex: "camerastatus",
-    render: (subscriptionplane: string) =>
-      subscriptionplane === "working" ? (
+    dataIndex: "camera_status",
+    render: (camera_status: string) =>
+      camera_status === "Working" ? (
         <Text className="btnpill fs-12 success">{t("Working")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Not Working")}</Text>
@@ -519,7 +524,8 @@ const allqboxesColumn = ({
   },
   {
     title: t("Activation Date"),
-    dataIndex: "activationdate",
+    dataIndex: "activation_date",
+    render: (date: string) => date?.split("T")[0],
   },
   {
     title: t("Action"),

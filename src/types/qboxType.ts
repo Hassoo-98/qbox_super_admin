@@ -69,16 +69,18 @@ export interface HomerOwnerTypes {
 
 export interface AllBoxesTypes {
   key: number;
-  homeownername: string;
-  qboxid: string;
+  qbox_id:string;
+  homeowner: string;
+  homeowner_name_snapshot:string;
+  short_address_snapshot:string;
+  city_snapshot: string;
   shortaddress: string;
   city: string;
-  qboxstatus: "online" | "offline" | "error";
-  lastonline: string;
-  ledindicator: "green" | "red";
-  camerastatus: "working" | "notworking";
-  activationdate: string;
-  phonenumber: string;
+  status: "online" | "offline" | "error";
+  last_online: string;
+  led_indicator: "green" | "red";
+  camera_status: "working" | "notworking";
+  activation_date: string;
 }
 export interface staffType {
   key: number;
@@ -288,7 +290,6 @@ export interface RolePermissionType {
   rolename: string;
   status: string;
 }
-
 
 export interface ApiError {
 status: number;
