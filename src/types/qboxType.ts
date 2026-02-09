@@ -82,11 +82,15 @@ export interface AllBoxesTypes {
 }
 export interface staffType {
   key: number;
+  id: string;
   staffName: string;
+  name: string;
   phoneNumber: string;
+  phone_number: string;
   email: string;
   role: string;
   status: string;
+  is_active: boolean;
 }
 
 export interface AllPackagesTypes {

@@ -47,7 +47,7 @@ interface StaffUpdateDeleteResponse{
 }
 export const StaffService = {
     getAllStaff : async (
-        params:GetAllStaffParams
+        params?:GetAllStaffParams
     ) : Promise<StaffGetResponse> =>{
         try{
             const {data} = await api.get("/staff/", {params});

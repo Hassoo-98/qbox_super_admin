@@ -1,11 +1,12 @@
 import { CloseOutlined } from '@ant-design/icons'
-import { Button, Col, Divider, Drawer, Flex, Form, Row, Typography } from 'antd'
+import { Button, Col, Divider, Drawer, Flex, Form, Row, Typography, message } from 'antd'
 import type React from 'react';
 import { MyInput, MySelect } from '../../../Forms';
 import { staffrole } from '../../../../shared';
 import type { staffType } from '../../../../types';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
+import { useStaff } from '../../../../hooks/useStaff';
 
 interface props {
     edititem?: staffType | null
@@ -17,6 +18,7 @@ const { Title } = Typography
 const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
     const { t } = useTranslation();
     const [form] = Form.useForm();
+    const { createStaff, updateStaff, isCreatingStaff, isUpdatingStaff } = useStaff();
 
     useEffect(() => {
         if (visible && edititem) {
@@ -31,6 +33,34 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
         }
     }, [visible, edititem])
 
+    const handleSubmit = async (values: any) => {
+        try {
+            const payload = {
+                name: values.staffName,
+                phone_number: values.phoneNumber,
+                email: values.email,
+                role: values.role,
+                password: values.password,
+                is_active: true,
+            };
+
+            if (edititem?.id) {
+                // Update existing staff
+                await updateStaff({ id: edititem.id, payload });
+                message.success(t("Staff updated successfully"));
+            } else {
+                // Create new staff
+                await createStaff(payload);
+                message.success(t("Staff created successfully"));
+            }
+            
+            onClose();
+            form.resetFields();
+        } catch (error) {
+            message.error(t("An error occurred"));
+        }
+    };
+
     return (
         <Drawer
             title={null}
@@ -43,7 +73,12 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
                     <Button className='btncancel text-black border-gray' onClick={onClose}>
                         {t("Cancel")}
                     </Button>
-                    <Button type="primary" className='btnsave border-0 text-white brand-bg' onClick={() => { form.submit() }}>
+                    <Button 
+                        type="primary" 
+                        className='btnsave border-0 text-white brand-bg' 
+                        onClick={() => { form.submit() }}
+                        loading={isCreatingStaff || isUpdatingStaff}
+                    >
                         {edititem ? t("Update") : t('Save')}
                     </Button>
                 </Flex>
@@ -63,6 +98,7 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
                 <Form layout="vertical"
                     form={form}
                     requiredMark={false}
+                    onFinish={handleSubmit}
                 >
                     <Row>
                         <Col span={24}>
@@ -103,16 +139,18 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
                                 placeholder={t("Enter email address")}
                             />
                         </Col>
-                        <Col span={24}>
-                            <MyInput
-                                label={t("Password")}
-                                name="password"
-                                type='password'
-                                required
-                                message={t("Please enter password")}
-                                placeholder={t("Enter password")}
-                            />
-                        </Col>
+                        {!edititem && (
+                            <Col span={24}>
+                                <MyInput
+                                    label={t("Password")}
+                                    name="password"
+                                    type='password'
+                                    required
+                                    message={t("Please enter password")}
+                                    placeholder={t("Enter password")}
+                                />
+                            </Col>
+                        )}
                     </Row>
                 </Form>
             </Flex>

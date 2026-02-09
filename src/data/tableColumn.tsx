@@ -116,11 +116,11 @@ const staffColumn = (
 ): TableColumnsType<staffType> => [
   {
     title: t("Staff Name"),
-    dataIndex: "staffName",
+    dataIndex: "name",
   },
   {
     title: t("Phone Number"),
-    dataIndex: "phoneNumber",
+    dataIndex: "phone_number",
   },
   {
     title: t("Email Address"),
@@ -134,6 +134,7 @@ const staffColumn = (
     title: t("Status"),
     dataIndex: "status",
     render: (status) => {
+      
       return status === "active" ? (
         <Text className="btnpill fs-12 success">{t("Active")}</Text>
       ) : (
@@ -145,7 +146,9 @@ const staffColumn = (
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_value: unknown, row: staffType) => (
+    render: (_value: unknown, row: staffType) => {
+      console.log("row:",row);
+      return (
       <Dropdown
         menu={{
           items: [
@@ -206,7 +209,8 @@ const staffColumn = (
           />
         </Button>
       </Dropdown>
-    ),
+      )
+    },
   },
 ];
 

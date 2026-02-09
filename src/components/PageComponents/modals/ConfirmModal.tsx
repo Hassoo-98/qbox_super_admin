@@ -2,12 +2,14 @@ import { Modal, Flex, Button, Typography, Divider } from "antd";
 import { useTranslation } from "react-i18next";
 const { Text, Title } = Typography;
 import i18n from "../../../sources/i18n";
+import { useGlobalContext } from "../../../context/globalContext";
 
 interface ActiveModalProps {
   visible: boolean;
   onClose: () => void;
   title: string;
   desc: string;
+  onConfirm:()=>void
 }
 
 const ConfirmModal: React.FC<ActiveModalProps> = ({
@@ -15,9 +17,10 @@ const ConfirmModal: React.FC<ActiveModalProps> = ({
   onClose,
   title,
   desc,
+  onConfirm
 }) => {
   const { t } = useTranslation();
-     const isRTL = i18n.language === "ar";
+  const isRTL = i18n.language === "ar";
       
     
   return (
@@ -35,7 +38,9 @@ const ConfirmModal: React.FC<ActiveModalProps> = ({
           >
             {t("Cancel")}
           </Button>
-          <Button className={`btnsave border-0 text-white bg-delivery-failed`}>
+          <Button className={`btnsave border-0 text-white bg-delivery-failed`}
+          onClick={onConfirm}
+          >
             {t("Confirm")}
           </Button>
         </Flex>
