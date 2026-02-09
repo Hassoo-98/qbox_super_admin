@@ -1,24 +1,45 @@
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-const GlobalContext = createContext(null);
+type ModalsState = {
+  staffUpdate: boolean;
+  staffDelete: boolean;
+  staffStatus: boolean;
+};
 
-export const GlobalProvider = ({ children }) => {
- const [modals,setModals]=({
-    staffUpdate:false,
-    staffDelete:false,
-    staffStatus:false
- })
- const [tableSelectedIds,setTableSelectedIds]=useState({
-  staffSelectedId:null
- })
+type TableSelectedIds = {
+  staffSelectedId: string | null;
+};
+
+type GlobalContextType = {
+  modals: ModalsState;
+  setModals: React.Dispatch<React.SetStateAction<ModalsState>>;
+  tableSelectedIds: TableSelectedIds;
+  setTableSelectedIds: React.Dispatch<React.SetStateAction<TableSelectedIds>>;
+};
+
+const initialModals: ModalsState = {
+  staffUpdate: false,
+  staffDelete: false,
+  staffStatus: false,
+};
+
+const initialTableSelectedIds: TableSelectedIds = {
+  staffSelectedId: null,
+};
+
+const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
+
+export const GlobalProvider: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
+  const [modals, setModals] = useState<ModalsState>(initialModals);
+  const [tableSelectedIds, setTableSelectedIds] = useState<TableSelectedIds>(initialTableSelectedIds);
 
   return (
     <GlobalContext.Provider
       value={{
-       modals,
-       setModals,
-       tableSelectedIds,
-       setTableSelectedIds
+        modals,
+        setModals,
+        tableSelectedIds,
+        setTableSelectedIds,
       }}
     >
       {children}
@@ -27,7 +48,7 @@ export const GlobalProvider = ({ children }) => {
 };
 
 // Custom hook (clean usage)
-export const useGlobalContext = () => {
+export const useGlobalContext = (): GlobalContextType => {
   const context = useContext(GlobalContext);
   if (!context) {
     throw new Error("useGlobalContext must be used inside GlobalProvider");
