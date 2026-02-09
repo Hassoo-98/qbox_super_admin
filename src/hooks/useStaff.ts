@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StaffService } from "../services/staff.service";
-import type { staffType } from "../types";
+
 
 interface GetAllStaffParams {
   search?: string;
