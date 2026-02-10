@@ -11,14 +11,16 @@ import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
 import type { HomerOwnerTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
-// import { useHomeOwners } from "../../../../api/hooks";
+import { useHomeowner } from "../../../../hooks/useHomeOwner";
 
 const HomeOwnersTable: React.FC = () => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
 
   // Real Data Hook
-  // const { data: owners, isLoading } = useHomeOwners();
+  const {HomeonwerList, isLoadingHomeonwerList, HomeonwerError} = useHomeowner();
+  const HomeonwerData  = Array.isArray(HomeonwerList?.data?.items) ? HomeonwerList?.data?.items : [];
+  const totalHomeonwers = HomeonwerList?.data?.total || 0;
 
   const [activeModal, setActiveModal] = useState<boolean>(false);
   const [inactiveModal, setInactiveModal] = useState<boolean>(false);
@@ -82,8 +84,7 @@ const HomeOwnersTable: React.FC = () => {
     setselecteAccountstatus(value);
   };
 
-  // Map real data or use empty array
-  const dataSource = [];
+  
 
   const filters = (
     <Form layout="vertical" form={form}>
@@ -144,7 +145,7 @@ const HomeOwnersTable: React.FC = () => {
         title={t("Home Owners")}
         description={t("Manage all the home owners in your system")}
         filters={filters}
-        // loading={isLoading}
+        loading={isLoadingHomeonwerList}
         columns={homeownersColumn({
           setItemToDelete,
           navigate,
@@ -152,10 +153,10 @@ const HomeOwnersTable: React.FC = () => {
           handleStatusClick,
           t,
         })}
-        dataSource={dataSource as any}
+        dataSource={HomeonwerData as any}
         rowKey="key"
         paginationProps={{
-          total: dataSource.length,
+          total: totalHomeonwers,
           current: current,
           pageSize: pageSize,
           onPageChange: handlePageChange,
