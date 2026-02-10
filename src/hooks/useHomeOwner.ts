@@ -15,9 +15,16 @@ const {data:HomeonwerList, isLoading:isLoadingHomeonwerList, error:HomeonwerErro
     queryKey: ["homeonwer", params],
     queryFn:() => HomeownerService.getallhomeowners(params as GetAllHomeownersParams),
 })
+const changeStatusMutation = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: { is_active: boolean } }) =>
+        HomeownerService.changeHomeownerStatus(id, payload),
+});
 return{
     HomeonwerList,
     isLoadingHomeonwerList,
-    HomeonwerError
+    HomeonwerError,
+    homeOwnerChangeStatus: changeStatusMutation.mutate,
+    isHomeOwnerChangingStatus: changeStatusMutation.isPending,
+    HomeOwnerError: changeStatusMutation.error
 }
 }
