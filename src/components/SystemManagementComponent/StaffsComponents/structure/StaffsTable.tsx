@@ -200,19 +200,17 @@ const StaffsTable: React.FC = () => {
   onConfirm={() => {
     if (!editItem?.id) return;
 
-    // Toggle status: if active -> deactivate, if inactive -> activate
     const newStatus = !editItem.is_active;
 
     changeStaffStatus(
       { id: editItem.id, is_active: newStatus },
       {
         onSuccess: () => {
-          // Update local editItem state immediately for UI consistency
           setEditItem((prev) => prev ? { ...prev, is_active: newStatus } : prev);
           setStatusChanged(false); // close modal
         },
         onError: () => {
-          setStatusChanged(false); // close modal even if error
+          setStatusChanged(false);
         },
       }
     );
