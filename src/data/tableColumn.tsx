@@ -327,20 +327,14 @@ export const dashboardInstallmentColumn = (
 ];
 
 const homeownersColumn = ({
-  setItemToDelete,
   navigate,
-  setDeleteItem,
-  handleStatusClick,
   modals,
   setModals,
   tableSelectedIds,
   setTableSelectedIds,
   t,
 }: {
-  setItemToDelete: (item: HomerOwnerTypes) => void;
   navigate: (path: string) => void;
-  setDeleteItem: (value: boolean) => void;
-  handleStatusClick: (status: "active" | "inactive") => void;
   modals:any;
   setModals:any;
   tableSelectedIds:any;
@@ -402,21 +396,22 @@ const homeownersColumn = ({
   },
   {
     title: t("QBox Status"),
-    dataIndex: "qboxstatus",
-    render: (qboxstatus: string) =>
-      qboxstatus === "online" ? (
+    dataIndex: ["qboxes", "status"],
+    render: (status: string) =>
+      status === "Online" ? (
         <Text className="btnpill fs-12 success">{t("Online")}</Text>
-      ) : qboxstatus === "offline" ? (
+      ) : status === "Offline" ? (
         <Text className="btnpill fs-12 inactive">{t("Offline")}</Text>
       ) : (
         <Text className="btnpill fs-12 pending">{t("Error")}</Text>
       ),
   },
+
   {
     title: t("Account Status"),
-    dataIndex: "status",
-    render: (status: string) =>
-      status==="active" ? (
+    dataIndex: "is_active",
+    render: (is_active: boolean) =>
+      is_active === true ? (
         <Text className="btnpill fs-12 success">{t("Active")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
@@ -431,12 +426,12 @@ const homeownersColumn = ({
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_, row: HomerOwnerTypes) => {
+    render: (_, row: HomeOwner) => {
       const items: MenuProps["items"] = [
         {
           label: (
             <NavLink
-              to="/"
+              to="#"
               onClick={()=>
               (
                 setModals((prev:any)=>({...prev,homeOwnerStatus:true})),
@@ -445,7 +440,8 @@ const homeownersColumn = ({
               )
               }
             >
-              {row.accountstatus === "active" ? t("Inactive") : t("Active")}
+              {/* {row.accountstatus === "active" ? t("Inactive") : t("Active")} */}
+              error
             </NavLink>
           ),
           key: "1",
@@ -453,10 +449,14 @@ const homeownersColumn = ({
         {
           label: (
             <NavLink
-              to="/"
+              to="#"
               onClick={(e) => {
                 e.preventDefault();
-                navigate("/homeowners/homeownersdetails/" + row?.key);
+                   setTableSelectedIds((prev: any) => ({
+          ...prev,
+          homeOwnerSelectedId: row.id, 
+        }));
+                navigate("/homeowners/homeownersdetails/" + row?.id);
               }}
             >
               {t("View")}
@@ -467,11 +467,14 @@ const homeownersColumn = ({
         {
           label: (
             <NavLink
-              to="/"
+              to="#"
               onClick={(e) => {
                 e.preventDefault();
-                setItemToDelete(row);
-                setDeleteItem(true);
+                setModals((prev:any) =>({...prev, homeownerDelete:true}));
+                setTableSelectedIds((prev:any) => ({
+                  ...prev,
+                  homeOwnerSelectedId:row.id,
+                }))
               }}
             >
               {t("Delete")}

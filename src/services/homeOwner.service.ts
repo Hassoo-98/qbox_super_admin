@@ -44,7 +44,7 @@ export const HomeownerService = {
         id:string
     ):Promise<GetSingleOrDeleteOrStatusResponse>=>{
         try{
-            const {data} = await api.delete(`/home_owner/${id}/delete/`);
+            const {data} = await api.delete(`/home_owner/${id}/delete`);
             return data;
         }catch(error){
             normalizeApiError(error);
