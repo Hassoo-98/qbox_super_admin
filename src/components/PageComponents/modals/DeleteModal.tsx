@@ -2,10 +2,13 @@ import { Modal, Flex, Button, Typography } from "antd";
 import type { HomerOwnerTypes } from "../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../sources/i18n";
+
 const { Text, Title } = Typography;
+
 interface DeleteModalProps {
   visible: boolean;
   onClose: () => void;
+  onConfirm: () => void;
   title: string;
   subtitle: string;
   item?: HomerOwnerTypes | null;
@@ -14,20 +17,20 @@ interface DeleteModalProps {
 export const DeleteModal: React.FC<DeleteModalProps> = ({
   visible,
   onClose,
+  onConfirm,
   item,
   title,
   subtitle,
 }) => {
   const { t } = useTranslation();
-   const isRTL = i18n.language === "ar";
-   
+  const isRTL = i18n.language === "ar";
+
   return (
     <Modal
       open={visible}
       onCancel={onClose}
-       
-      style={{ direction: isRTL ? "rtl" : "ltr" }}
       centered
+      style={{ direction: isRTL ? "rtl" : "ltr" }}
       footer={
         <Flex justify="center" gap={5}>
           <Button
@@ -38,7 +41,7 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({
           </Button>
           <Button
             className="btnsave border-0 text-white bg-delivery-failed"
-            onClick={onClose}
+            onClick={onConfirm}
           >
             {t("Confirm")}
           </Button>
@@ -50,20 +53,18 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({
           src="/assets/icons/delete.png"
           width={50}
           alt="bin icon"
-          fetchPriority="high"
         />
         <Title level={5} className="m-0">
           {title}
         </Title>
         <Text className="fs-14 text-center">
           {subtitle}
-          <>
-            {item ? (
-              <>
-                <b>{item?.homeownername || "this account"}</b> ?
-              </>
-            ) : null}
-          </>
+          {item ? (
+            <>
+              {" "}
+              <b>{item?.homeownername || "this account"}</b>?
+            </>
+          ) : null}
         </Text>
       </Flex>
     </Modal>

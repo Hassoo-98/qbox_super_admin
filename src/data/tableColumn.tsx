@@ -7,7 +7,7 @@ import {
   type MenuProps,
   Flex,
   Select,
-} from "antd";
+} from "antd"; 
 import { NavLink } from "react-router-dom";
 import type {
   ActivitylogTypes,
@@ -109,12 +109,16 @@ const installmentColumn = ({
 ];
 
 const staffColumn = (
-  setVisible: (visible: boolean) => void,
+  setVisible: (v: boolean) => void,
   setEditItem: (item: staffType) => void,
-  setStatusChanged: (value: boolean) => void, // separate param
-  setDeleteItem: (value: boolean) => void,
-  t: any,
+  setStatusChanged: (v: boolean) => void,
+  modals: any,
+  setModals: any,
+  tableSelectedIds: any,
+  setTableSelectedIds: any,
+  t: (key: string) => string,
 ): TableColumnsType<staffType> => [
+
   {
     title: t("Staff Name"),
     dataIndex: "name",
@@ -134,12 +138,20 @@ const staffColumn = (
   {
     title: t("Status"),
     dataIndex: "status",
-    render: (status) => {
-      
-      return status === "active" ? (
-        <Text className="btnpill fs-12 success">{t("Active")}</Text>
-      ) : (
-        <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
+    render: (_status, row) => {
+      const active = !!row.is_active;
+      return (
+        <Text
+          className={`btnpill fs-12 ${active ? "success" : "inactive"}`}
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            // open confirm modal and set the selected edit item so the confirm modal can toggle
+            setStatusChanged(true);
+            setEditItem(row);
+          }}
+        >
+          {active ? t("Active") : t("Inactive")}
+        </Text>
       );
     },
   },
@@ -168,20 +180,24 @@ const staffColumn = (
               ),
               key: "1",
             },
-            {
+         {
               label: (
-                <NavLink
-                  to="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setDeleteItem(true);
-                  }}
-                >
-                  {t("Delete")}
-                </NavLink>
-              ),
-              key: "2",
-            },
+                 <NavLink
+                   to="#"
+                   onClick={(e) => {
+                     e.preventDefault();
+                     setModals((prev) => ({ ...prev, staffDelete: true }));
+                     setTableSelectedIds((prev) => ({
+                     ...prev,
+                     staffSelectedId: row.id,
+           }));
+           }}
+    >
+      {t("Delete")}
+    </NavLink>
+  ),
+  key: "2",
+},
             {
               label: (
                 <NavLink
@@ -192,7 +208,7 @@ const staffColumn = (
                     setEditItem(row);
                   }}
                 >
-                  {row.status === "active" ? t("InActive") : t("Active")}
+                  {row.is_active ? t("InActive") : t("Active")}
                 </NavLink>
               ),
               key: "3",

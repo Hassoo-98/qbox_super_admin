@@ -5,7 +5,7 @@ import { MyInput, MySelect } from '../../../Forms';
 import { staffrole } from '../../../../shared';
 import type { staffType } from '../../../../types';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useStaff } from '../../../../hooks/useStaff';
 
 interface props {
@@ -19,6 +19,14 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
     const { t } = useTranslation();
     const [form] = Form.useForm();
     const { createStaff, updateStaff, isCreatingStaff, isUpdatingStaff } = useStaff();
+    const [isFormValid, setIsFormValid] = useState(false);
+
+    // check validity whenever fields change or when form is reset/populated
+    const checkFormValid = useCallback(() => {
+        const hasErrors = form.getFieldsError().some((f) => (f.errors || []).length > 0);
+        const touched = form.isFieldsTouched(true);
+        setIsFormValid(touched && !hasErrors);
+    }, [form]);
 
     useEffect(() => {
         if (visible && edititem) {
@@ -31,7 +39,8 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
         } else {
             form.resetFields()
         }
-    }, [visible, edititem])
+        checkFormValid();
+    }, [visible, edititem, form, checkFormValid])
 
     const handleSubmit = async (values: any) => {
         try {
@@ -56,7 +65,7 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
             
             onClose();
             form.resetFields();
-        } catch (error) {
+        } catch {
             message.error(t("An error occurred"));
         }
     };
@@ -69,20 +78,22 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
             closeIcon={false}
             width={600}
             footer={
-                <Flex justify='end' gap={5}>
-                    <Button className='btncancel text-black border-gray' onClick={onClose}>
-                        {t("Cancel")}
-                    </Button>
-                    <Button 
-                        type="primary" 
-                        className='btnsave border-0 text-white brand-bg' 
-                        onClick={() => { form.submit() }}
-                        loading={isCreatingStaff || isUpdatingStaff}
-                    >
-                        {edititem ? t("Update") : t('Save')}
-                    </Button>
-                </Flex>
-            }
+                    <Flex justify='end' gap={5}>
+                        <Button className='btncancel text-black border-gray' onClick={onClose}>
+                            {t("Cancel")}
+                        </Button>
+                        <Button 
+                            type="primary" 
+                            className='btnsave border-0 text-white brand-bg' 
+                            onClick={() => { form.submit() }}
+                            loading={isCreatingStaff || isUpdatingStaff}
+                            disabled={!isFormValid}
+                        >
+                            {edititem ? t("Update") : t('Save')}
+                        </Button>
+                    </Flex>
+                }
+                footerStyle={{ position: 'sticky', bottom: 0, background: 'var(--white-text)', zIndex: 10, padding: '12px 24px', borderTop: '1px solid var(--border-gray)' }}
         >
             <Flex vertical gap={10}>
                 <Flex vertical gap={0}>
@@ -99,6 +110,7 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
                     form={form}
                     requiredMark={false}
                     onFinish={handleSubmit}
+                    onValuesChange={() => checkFormValid()}
                 >
                     <Row>
                         <Col span={24}>

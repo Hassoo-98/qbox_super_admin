@@ -41,6 +41,23 @@ export const useStaff = (params?: GetAllStaffParams) => {
   const changeStatusMutation = useMutation({
     mutationFn: ({ id, is_active }: { id: string; is_active: boolean }) => 
       StaffService.ChangeStatusStaff(id, { is_active }),
+    // optimistic update: update cache immediately, rollback on error, and refetch on success
+    onMutate: async ({ id, is_active }: { id: string; is_active: boolean }) => {
+      await queryClient.cancelQueries({ queryKey: ["staff", params] });
+      const previous = queryClient.getQueryData<any>(["staff", params]);
+      queryClient.setQueryData(["staff", params], (old: any) => {
+        if (!old) return old;
+        const items = Array.isArray(old.data?.items) ? old.data.items : [];
+        const newItems = items.map((it: any) => (it.id === id ? { ...it, is_active } : it));
+        return { ...old, data: { ...old.data, items: newItems } };
+      });
+      return { previous };
+    },
+    onError: (_err, _variables, context: any) => {
+      if (context?.previous) {
+        queryClient.setQueryData(["staff", params], context.previous);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["staff"] });
     },
