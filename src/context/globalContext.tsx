@@ -4,10 +4,12 @@ type ModalsState = {
   staffUpdate: boolean;
   staffDelete: boolean;
   staffStatus: boolean;
+  homeOwnerStatus:boolean;
 };
 
 type TableSelectedIds = {
   staffSelectedId: string | null;
+  homeOwnerSelectedId:string | null
 };
 
 type GlobalContextType = {
@@ -21,10 +23,12 @@ const initialModals: ModalsState = {
   staffUpdate: false,
   staffDelete: false,
   staffStatus: false,
+  homeOwnerStatus:false
 };
 
 const initialTableSelectedIds: TableSelectedIds = {
   staffSelectedId: null,
+  homeOwnerSelectedId:null
 };
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -47,7 +51,6 @@ export const GlobalProvider: React.FC<React.PropsWithChildren<unknown>> = ({ chi
   );
 };
 
-// Custom hook (clean usage)
 export const useGlobalContext = (): GlobalContextType => {
   const context = useContext(GlobalContext);
   if (!context) {
