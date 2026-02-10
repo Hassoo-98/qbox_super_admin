@@ -186,8 +186,8 @@ const staffColumn = (
                    to="#"
                    onClick={(e) => {
                      e.preventDefault();
-                     setModals((prev) => ({ ...prev, staffDelete: true }));
-                     setTableSelectedIds((prev) => ({
+                     setModals((prev:any) => ({ ...prev, staffDelete: true }));
+                     setTableSelectedIds((prev:any) => ({
                      ...prev,
                      staffSelectedId: row.id,
            }));
@@ -331,12 +331,20 @@ const homeownersColumn = ({
   navigate,
   setDeleteItem,
   handleStatusClick,
+  modals,
+  setModals,
+  tableSelectedIds,
+  setTableSelectedIds,
   t,
 }: {
   setItemToDelete: (item: HomerOwnerTypes) => void;
   navigate: (path: string) => void;
   setDeleteItem: (value: boolean) => void;
   handleStatusClick: (status: "active" | "inactive") => void;
+  modals:any;
+  setModals:any;
+  tableSelectedIds:any;
+  setTableSelectedIds:any;
   t: any;
 }): TableColumnsType<HomeOwner> => [
   {
@@ -408,7 +416,7 @@ const homeownersColumn = ({
     title: t("Account Status"),
     dataIndex: "status",
     render: (status: string) =>
-      status === "Active" ? (
+      status==="active" ? (
         <Text className="btnpill fs-12 success">{t("Active")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
@@ -429,10 +437,13 @@ const homeownersColumn = ({
           label: (
             <NavLink
               to="/"
-              onClick={(e) => {
-                e.preventDefault();
-                handleStatusClick(row.accountstatus);
-              }}
+              onClick={()=>
+              (
+                setModals((prev:any)=>({...prev,homeOwnerStatus:true})),
+                 setTableSelectedIds((perv:any)=>({...perv,homeOwnerSelectedId:row.id}))
+              
+              )
+              }
             >
               {row.accountstatus === "active" ? t("Inactive") : t("Active")}
             </NavLink>
