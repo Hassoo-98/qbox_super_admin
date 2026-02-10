@@ -60,7 +60,7 @@ export const StaffService = {
         payload:StaffCreatePayload
     ):Promise<StaffUpdateDeleteResponse> =>{
         try{
-            const {data} = await api.post("/staff/create/",payload);
+            const {data} = await api.post("/staff/create",payload);
             return data;
         }catch(error){
             return normalizeApiError(error);
@@ -93,7 +93,7 @@ export const StaffService = {
         id:string
     ): Promise<StaffUpdateDeleteResponse>=>{
         try{
-            const {data} = await api.delete(`staff/${id}/delete`)
+            const {data} = await api.delete(`/staff/${id}/delete`)
             return data;
         }catch(error){
             return normalizeApiError(error)
@@ -104,7 +104,7 @@ export const StaffService = {
         payload:Staff | Partial<Staff>
     ): Promise<StaffUpdateDeleteResponse> =>{
         try{
-            const {data} = await api.patch(`/staff/${id}`, payload);
+            const {data} = await api.patch(`/staff/${id}/update`, payload);
             return data;
         }catch(error){
             return normalizeApiError(error);

@@ -169,9 +169,13 @@ const staffColumn = (
                 <NavLink
                   to="#"
                   onClick={(e) => {
-                    e.preventDefault();
-                    setVisible(true);
-                    setEditItem(row);
+                  e.preventDefault();
+                  setModals((prev: any) => ({ ...prev, staffUpdate: true }));
+                  setTableSelectedIds((prev: any) => ({
+                    ...prev,
+                    staffSelectedId: row.id,
+                  }));
+                  setEditItem(row);
                   }}
                 >
                   {t("Edit")}
