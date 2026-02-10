@@ -5,6 +5,7 @@ type ModalsState = {
   staffDelete: boolean;
   staffStatus: boolean;
   homeOwnerStatus:boolean;
+  homeownerDelete:boolean;
 };
 
 type TableSelectedIds = {
@@ -23,7 +24,8 @@ const initialModals: ModalsState = {
   staffUpdate: false,
   staffDelete: false,
   staffStatus: false,
-  homeOwnerStatus:false
+  homeOwnerStatus:false,
+  homeownerDelete:false
 };
 
 const initialTableSelectedIds: TableSelectedIds = {
