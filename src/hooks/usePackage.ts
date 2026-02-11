@@ -1,10 +1,20 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { PackageService } from "../services/package.service";
+import type { PackageParams } from "../types/AllQboxTypes";
+import { useParams } from "react-router-dom";
+export const usePackage = (params: PackageParams) => {
+  const {id} = useParams<{id:string}>();
+  const { data: packageList, isLoading: isLoadingpackageList, error: packageListError } = useQuery({
+    queryKey: ["packages", params],
+    queryFn: () => PackageService.getAllPackages(params as PackageParams),
+  })
 
-export const usePackage = () => {
-  const getSinglePackageMutation = useMutation({
-    mutationFn: (id: string) => PackageService.getSinglePackage(id),
-  });
+  const {} = useQuery({
+    queryKey:["single-package", id],
+    queryFn:() => PackageService.getSinglePackage(id as string),
+    enabled: !!id, 
+  })
+
   const changeStatusMutation = useMutation({
     mutationFn: ({
       id,
@@ -23,17 +33,17 @@ export const usePackage = () => {
 
   return {
     // actions
-    getPackage: getSinglePackageMutation.mutate,
+    packageList,
     changePackageStatus: changeStatusMutation.mutate,
     deletePackage: deleteMutation.mutate,
 
     // loading states
-    isGettingPackage: getSinglePackageMutation.isPending,
+    isLoadingpackageList,
     isChangingStatus: changeStatusMutation.isPending,
     isDeletingPackage: deleteMutation.isPending,
 
     // errors
-    getPackageError: getSinglePackageMutation.error,
+    packageListError,
     changeStatusError: changeStatusMutation.error,
     deletePackageError: deleteMutation.error,
   };

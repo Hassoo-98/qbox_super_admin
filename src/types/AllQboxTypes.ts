@@ -98,6 +98,7 @@ export interface PackageItem {
   driver_name: string;
   qr_code: string;
   package_status: string;
+  package_type: string;
   shipment_status: string;
   last_update: string;   
   created_at: string; 
@@ -164,5 +165,12 @@ export interface GetAllQboxResponse {
   success: boolean;
   statusCode: number;
   data: QboxData;
+  message: string;
+}
+
+export interface CrudQboxResponse {
+  success: boolean;
+  statusCode: number;
+  data: QboxItem;
   message: string;
 }

@@ -11,26 +11,27 @@ import {
 } from "antd";
 import { BreadCrumb } from "../../../PageComponents";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AllPackagesTable, QRHistoryTable } from "../tabcontents";
-import { allboxesData } from "../../../../data";
+// import { allboxesData } from "../../../../data";
 import { useTranslation } from "react-i18next";
-
+import { useQbox } from "../../../../hooks/useQbox";
 const { Title, Text } = Typography;
 const ViewQboxDeatils = () => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const navigate = useNavigate();
-  const { id } = useParams();
-  const details = allboxesData?.find((list) => list?.key === Number(id));
+  // const { id } = useParams();
+  // const details = allboxesData?.find((list) => list?.key === Number(id));
   const [view, setView] = useState<string>("All Packages");
   const isRTL = i18n.language === "ar";
-
+  const {Qbox, QboxError, isLoadingQbox} = useQbox();
+  const QboxData = Qbox?.data;
   return (
     <div style={{ direction: isRTL ? "rtl" : "ltr" }}>
       <Flex vertical gap={20}>
         <BreadCrumb
-          items={[{ title: t("QBox Management") }, { title: "BV5432" }]}
+          items={[{ title: t("QBox Management") }, { title: QboxData?.qbox_id }]}
         />
         <Card className="radius-12 border-gray card-cs h-100">
           <Row gutter={[24, 24]}>
@@ -44,7 +45,8 @@ const ViewQboxDeatils = () => {
                     {isArabic ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
                   </Button>
                   <Title level={4} className="fw-500 m-0">
-                    {t("QBox ID")}
+                    {/* {t("QBox ID")} */}
+                    {QboxData?.qbox_id}
                   </Title>
                   <Text className="btnpill fs-12 inactive py-1">
                     {t("Inactive")}
@@ -60,7 +62,7 @@ const ViewQboxDeatils = () => {
                       preview={false}
                       width={18}
                     />
-                    <Text className="pt-1">{details?.homeownername}</Text>
+                    <Text className="pt-1">{QboxData?.homeowner_name_snapshot}</Text>
                   </Flex>
                   <Flex align="center" gap={7}>
                     <Image
@@ -68,7 +70,7 @@ const ViewQboxDeatils = () => {
                       preview={false}
                       width={18}
                     />
-                    <Text className="pt-1">{details?.phonenumber}</Text>
+                    <Text className="pt-1">Phone Number</Text>
                   </Flex>
                   <Flex align="center" gap={7}>
                     <Image
@@ -76,7 +78,7 @@ const ViewQboxDeatils = () => {
                       preview={false}
                       width={18}
                     />
-                    <Text className="pt-1">{details?.shortaddress}</Text>
+                    <Text className="pt-1">{QboxData?.short_address_snapshot}</Text>
                   </Flex>
                 </Flex>
                 <Flex>
@@ -93,7 +95,7 @@ const ViewQboxDeatils = () => {
               </Flex>
             </Col>
             <Col span={24}>
-              {view === "All Packages" && <AllPackagesTable />}
+              {view === "All Packages" && <AllPackagesTable packagesData={QboxData?.packages}/>}
               {view === "QR History" && <QRHistoryTable />}
             </Col>
           </Row>

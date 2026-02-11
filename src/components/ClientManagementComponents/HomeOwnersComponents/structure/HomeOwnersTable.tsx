@@ -177,10 +177,8 @@ const HomeOwnersTable: React.FC = () => {
         loading={isLoadingHomeownerList}
         columns={homeownersColumn({
           navigate,
-          modals,
           setModals,
           setTableSelectedIds,
-          tableSelectedIds,
           t,
         })}
         dataSource={HomeonwerData as any}
