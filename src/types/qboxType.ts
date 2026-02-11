@@ -229,20 +229,32 @@ export type CityType = {
 
 export type ServiceProviderType = {
   key: number;
-  providerName: ProviderNameData;
-  contactpersonName: string;
-  totalDeliveries: number;
-  regDrivers: number;
-  cities: CityType[];
-  status: "active" | "inactive";
+  id: number;
+  name: string;
+  is_approved: boolean;
+  business_registration_number: string;
+  contact_person_name: string;
+  phone_number: string;
+  email: string;
+  operating_cities: string[];
+  settlement_cycle_days: number;
+  markup_type: string;
+  markup_value: string;
+  first_kg_charge: string;
+  additional_kg_charge: string;
+  fuel_surcharge_percentage: string;
+  fuel_surcharge_enabled: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 };
 
 export type ServiceProviderColumnParams = {
   setVisible: (value: boolean) => void;
   setEditItem: (item: ServiceProviderType) => void;
   navigate: (path: string) => void;
-  setStatusChanged: (value: boolean) => void;
-  setDeleteItem: (value: boolean) => void;
+  setStatusChanged: (value: number) => void;
+  setDeleteItem: (value: number) => void;
 };
 
 export type AllPackageProviderType = {

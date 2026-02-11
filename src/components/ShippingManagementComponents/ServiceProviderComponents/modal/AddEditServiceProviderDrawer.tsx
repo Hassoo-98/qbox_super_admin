@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import type { RcFile } from 'antd/es/upload';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../../../sources/i18n';
+import { useServiceProvider } from '../../../../hooks/useServiceProvider';
 
 interface props {
     edititem?: ServiceProviderType | null
@@ -26,6 +27,50 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
         t("Monday"), t("Tuesday"), t("Wednesday"), t("Thursday"),
         t("Friday"), t("Saturday"), t("Sunday")
     ];
+    const { createServiceProvider, updateServiceProvider } = useServiceProvider();
+
+
+const handleSubmit = async (values: any) => {
+    console.log("FORM VALUES:", values); // Check values before sending
+
+    const payload = {
+        name: values.serviceproviderName,
+        business_registration_number: values.businessReg,
+        contact_person_name: values.contactpersonName,
+        phone_number: values.phoneNumber,
+        email: values.email,
+        cities: values.operatingCities, // array of IDs
+        settlement_cycle: values.settlementCycle,
+        markup_type: values.markupType,
+        markup_value: values.markupValue,
+        delivery_charges: {
+            first: values.first,
+            charge: values.charge,
+            additional_kg: values.additionalKg,
+        },
+        // Add working_hours or tax fuel if backend requires
+    };
+
+    try {
+        if (edititem) {
+            // Update API call
+            await updateServiceProvider({ id: edititem.id, payload });
+            console.log("Updated successfully");
+        } else {
+            // Create API call
+            await createServiceProvider(payload);
+            console.log("Created successfully");
+        }
+
+        form.resetFields();
+        setPreviewImage(null);
+        onClose();
+
+    } catch (error) {
+        console.error("API Error:", error);
+    }
+};
+
 
     useEffect(() => {
         if (visible && edititem) {
@@ -60,9 +105,14 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
                     <Button className='btncancel text-black border-gray' onClick={onClose}>
                         {t("Cancel")}
                     </Button>
-                    <Button type="primary" className='btnsave border-0 text-white bg-slate-blue' onClick={() => form.submit()}>
-                        {edititem ? t("Update") : t("Save")}
-                    </Button>
+                    <Button
+    type="primary"
+    className='btnsave border-0 text-white bg-slate-blue'
+    onClick={() => form.submit()}
+>
+    {edititem ? t("Update") : t("Save")}
+</Button>
+
                 </Flex>
             }
         >
@@ -76,7 +126,8 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
                     </Button>
                 </Flex>
 
-                <Form layout="vertical" form={form} requiredMark={false}>
+                <Form layout="vertical" form={form} requiredMark={false} onFinish={handleSubmit}>
+
                     <Row gutter={12}>
 
                         <Col span={24}>
