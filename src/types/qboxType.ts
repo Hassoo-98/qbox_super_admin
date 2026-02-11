@@ -68,7 +68,7 @@ export interface HomerOwnerTypes {
 }
 
 export interface AllBoxesTypes {
-  key: number;
+  id: number;
   qbox_id:string;
   homeowner: string;
   homeowner_name_snapshot:string;
@@ -96,16 +96,16 @@ export interface staffType {
 }
 
 export interface AllPackagesTypes {
-  key: number;
-  trackingid: string;
+  id: number;
+  tracking_id: string;
   img: string;
-  senderplatformname: string;
-  serviceprovider: string;
-  drivername: string;
-  qrcode: string;
-  packagetype: "incoming" | "send" | "return";
+  merchant_name: string;
+  service_provider: string;
+  driver_name: string;
+  qr_code: string;
+  package_status: "Incoming" | "Send" | "Return";
   status: string;
-  lastupdate: string;
+  last_update: string;
 }
 
 export interface QRHistoryTypes {

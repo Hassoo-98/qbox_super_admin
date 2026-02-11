@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Typography, Card, Flex, Table, Form, Row, Col } from "antd";
-import { CustomPagination, ModuleTopHeading } from "../../../PageComponents";
+import { CustomPagination, DeleteModal, ModuleTopHeading } from "../../../PageComponents";
 import { allqboxesColumn } from "../../../../data";
 import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import type { AllBoxesTypes } from "../../../../types";
 import i18n from "../../../../sources/i18n";
 import { useTranslation } from "react-i18next";
 import { useQbox } from "../../../../hooks/useQbox";
+import { useGlobalContext } from "../../../../context/globalContext";
 const { Text } = Typography;
 const AllQboxesTable: React.FC = () => {
   const { t } = useTranslation();
@@ -21,7 +22,8 @@ const AllQboxesTable: React.FC = () => {
     setCurrent(page);
     setPageSize(size);
   };
-  const {QboxList, isLoadingQboxList, QboxError} = useQbox();
+  const{modals, setModals, tableSelectedIds, setTableSelectedIds} = useGlobalContext();
+  const {QboxList, isLoadingQboxList, QboxListError, deleteQbox} = useQbox();
   const QboxData = Array.isArray(QboxList?.data?.items) ? QboxList?.data?.items : [];
   const TotalQboxes = QboxList?.data?.total || 0;
   const Cities = [
@@ -43,7 +45,25 @@ const AllQboxesTable: React.FC = () => {
     setQboxstatus(value);
   };
   const isRTL = i18n.language === "ar";
-
+  const handleQboxDelete =() =>{
+      if(!tableSelectedIds.qboxSelectedId) return;
+      deleteQbox(tableSelectedIds.qboxSelectedId, {
+        onSuccess:() =>{
+          setModals((prev) => ({...prev, qboxDelete:false}));
+          setTableSelectedIds((prev) => ({
+            ...prev,
+            qboxSelectedId:null
+          }))
+        },
+        onError: () =>{
+           setModals((prev) => ({...prev, qboxDelete:false}));
+          setTableSelectedIds((prev) => ({
+            ...prev,
+            qboxSelectedId:null
+          }))
+        }
+      })
+  }
   return (
     <>
       <Card
@@ -107,7 +127,7 @@ const AllQboxesTable: React.FC = () => {
           <Table<AllBoxesTypes>
             size="large"
             loading={isLoadingQboxList}
-            columns={allqboxesColumn({ navigate })}
+            columns={allqboxesColumn({ navigate, modals, setModals, setTableSelectedIds, tableSelectedIds })}
             dataSource={QboxData as any}
             rowKey="id"
             className="pagination table-cs table"
@@ -124,6 +144,15 @@ const AllQboxesTable: React.FC = () => {
           />
         </Flex>
       </Card>
+      <DeleteModal
+       title={t("Delete Account")}
+        subtitle={t("Are you sure you want to delete")}
+        visible={modals.qboxDelete}
+        onConfirm={handleQboxDelete}
+        onClose={()=>
+          setModals((prev) => ({...prev, qboxDelete:false}))
+        }
+      />
     </>
   );
 };

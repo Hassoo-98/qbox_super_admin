@@ -26,7 +26,7 @@ export const useHomeowner = (params?: GetAllHomeownersParams) => {
             HomeownerService.changeHomeownerStatus(id, payload),
     });
 
-    // Delete staff mutation
+    // Delete Homeowner mutation
     const deleteMutation = useMutation({
         mutationFn: (id: string) => HomeownerService.deleteHomeowner(id),
         onSuccess: () => {

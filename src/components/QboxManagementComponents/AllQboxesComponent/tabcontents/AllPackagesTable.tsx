@@ -7,13 +7,15 @@ import { useNavigate } from "react-router-dom";
 import type { AllPackagesTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
-const AllPackagesTable: React.FC = () => {
+import { useGlobalContext } from "../../../../context/globalContext";
+const AllPackagesTable: React.FC = ({packagesData}) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
   const [seletedpackage, setSelectedpackage] = useState<number | null>(null);
   const navigate = useNavigate();
+  const {setTableSelectedIds} = useGlobalContext();
   const handlePageChange = (page: number, size: number): void => {
     setCurrent(page);
     setPageSize(size);
@@ -76,8 +78,8 @@ const AllPackagesTable: React.FC = () => {
       <Flex vertical gap={20}>
         <Table<AllPackagesTypes>
           size="large"
-          columns={allpackagesColumn({ navigate }, t)}
-          dataSource={allpackagesData}
+          columns={allpackagesColumn({ navigate, setTableSelectedIds }, t)}
+          dataSource={packagesData as any}
           className="pagination table-cs table"
           showSorterTooltip={false}
           scroll={{ x: 1300 }}

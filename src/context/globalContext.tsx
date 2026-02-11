@@ -6,11 +6,14 @@ type ModalsState = {
   staffStatus: boolean;
   homeOwnerStatus:boolean;
   homeownerDelete:boolean;
+  qboxDelete: boolean;
 };
 
 type TableSelectedIds = {
   staffSelectedId: string | null;
-  homeOwnerSelectedId:string | null
+  homeOwnerSelectedId:string | null;
+  qboxSelectedId:string | null;
+  packageSelectedId:string | null;
 };
 
 type GlobalContextType = {
@@ -25,12 +28,15 @@ const initialModals: ModalsState = {
   staffDelete: false,
   staffStatus: false,
   homeOwnerStatus:false,
-  homeownerDelete:false
+  homeownerDelete:false,
+  qboxDelete: false,
 };
 
 const initialTableSelectedIds: TableSelectedIds = {
   staffSelectedId: null,
-  homeOwnerSelectedId:null
+  homeOwnerSelectedId:null,
+  qboxSelectedId:null,
+  packageSelectedId:null,
 };
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);

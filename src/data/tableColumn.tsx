@@ -328,16 +328,12 @@ export const dashboardInstallmentColumn = (
 
 const homeownersColumn = ({
   navigate,
-  modals,
   setModals,
-  tableSelectedIds,
   setTableSelectedIds,
   t,
 }: {
   navigate: (path: string) => void;
-  modals:any;
   setModals:any;
-  tableSelectedIds:any;
   setTableSelectedIds:any;
   t: any;
 }): TableColumnsType<HomeOwner> => [
@@ -453,9 +449,9 @@ const homeownersColumn = ({
               onClick={(e) => {
                 e.preventDefault();
                    setTableSelectedIds((prev: any) => ({
-          ...prev,
-          homeOwnerSelectedId: row.id, 
-        }));
+                  ...prev,
+                  homeOwnerSelectedId: row.id, 
+                }));
                 navigate("/homeowners/homeownersdetails/" + row?.id);
               }}
             >
@@ -497,8 +493,15 @@ const homeownersColumn = ({
 
 const allqboxesColumn = ({
   navigate,
+  modals,
+  setModals,
+  setTableSelectedIds,
 }: {
   navigate: (path: string) => void;
+   modals:any;
+  setModals:any;
+  tableSelectedIds:any;
+  setTableSelectedIds:any;
 }): TableColumnsType<AllBoxesTypes> => [
   {
     title: t("QBox ID"),
@@ -565,11 +568,15 @@ const allqboxesColumn = ({
       const items: MenuProps["items"] = [
         {
           label: (
-            <NavLink
-              to="/"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate("/allqboxes/view/" + row?.key);
+                <NavLink
+                  to="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                      setTableSelectedIds((prev: any) => ({
+              ...prev,
+              qboxSelectedId: row.id, 
+            }));
+                  navigate("/allqboxes/view/" + row?.id);
               }}
             >
               {t("View")}
@@ -577,6 +584,24 @@ const allqboxesColumn = ({
           ),
           key: "1",
         },
+        //  {
+        //   label: (
+        //     <NavLink
+        //       to="#"
+        //       onClick={(e) => {
+        //         e.preventDefault();
+        //         setModals((prev:any) =>({...prev, qboxDelete:true}));
+        //         setTableSelectedIds((prev:any) => ({
+        //           ...prev,
+        //           tableSelectedIds:row.id,
+        //         }))
+        //       }}
+        //     >
+        //       {t("Delete")}
+        //     </NavLink>
+        //   ),
+        //   key: "2",
+        // },
       ];
 
       return (
@@ -591,36 +616,41 @@ const allqboxesColumn = ({
 ];
 
 const allpackagesColumn = (
-  { navigate }: { navigate: (path: string) => void },
+  { navigate,
+    setTableSelectedIds,
+   }: { 
+    navigate: (path: string) => void 
+    setTableSelectedIds:any,
+  },
   t: (key: string) => string,
 ): TableColumnsType<AllPackagesTypes> => [
   {
     title: t("Tracking ID"),
-    dataIndex: "trackingid",
+    dataIndex: "tracking_id",
   },
   {
     title: t("Sender/Platform Name"),
-    dataIndex: "senderplatformname",
+    dataIndex: "merchant_name",
   },
   {
     title: t("Service Provider"),
-    dataIndex: "serviceprovider",
+    dataIndex: "service_provider",
   },
   {
     title: t("Driver Name"),
-    dataIndex: "drivername",
+    dataIndex: "driver_name",
   },
   {
     title: t("QR Code"),
-    dataIndex: "qrcode",
+    dataIndex: "qr_code",
   },
   {
-    title: t("Package Type"),
-    dataIndex: "packagetype",
-    render: (packagetype: string) =>
-      packagetype === "incoming" ? (
+    title: t("Package Status"),
+    dataIndex: "package_type",
+    render: (package_status: string) =>
+      package_status === "Incoming" ? (
         <Text className="btnpill fs-12 incoming">{t("Incoming")}</Text>
-      ) : packagetype === "return" ? (
+      ) : package_status === "Return" ? (
         <Text className="btnpill fs-12 return">{t("Return")}</Text>
       ) : (
         <Text className="btnpill fs-12 pending text-brown">{t("Send")}</Text>
@@ -646,7 +676,8 @@ const allpackagesColumn = (
   },
   {
     title: t("Last Update"),
-    dataIndex: "lastupdate",
+    dataIndex: "last_update",
+    render: (date: string) => date?.split("T")[0],
   },
   {
     title: t("Action"),
@@ -660,8 +691,12 @@ const allpackagesColumn = (
               to="/"
               onClick={(e) => {
                 e.preventDefault();
+                setTableSelectedIds((prev:any) =>({
+                  ...prev,
+                  packageSelectedId:row.id
+                }))
                 navigate(
-                  "/allqboxes/view/qboxallpackages/detailview/" + row?.key,
+                  "/allqboxes/view/qboxallpackages/detailview/" + row?.id,
                 );
               }}
             >
