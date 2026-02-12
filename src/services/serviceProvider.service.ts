@@ -76,10 +76,7 @@ export const ServiceProviderService = {
     payload: ServiceProviderCreatePayload
   ): Promise<ServiceProviderUpdateDeleteResponse> => {
     try {
-      const { data } = await api.post(
-        "/service_provider/create",
-        payload
-      );
+      const { data } = await api.post("/service_provider/", payload);
       return data;
     } catch (error) {
       return normalizeApiError(error);
@@ -99,11 +96,11 @@ export const ServiceProviderService = {
 
   changeStatusServiceProvider: async (
     id: number,
-    payload: { is_active: boolean }
+    payload: { is_approved: boolean }
   ): Promise<ServiceProviderUpdateDeleteResponse> => {
     try {
       const { data } = await api.patch(
-        `/service_provider/${id}/change-status`,
+        `/service_provider/${id}/approve`,
         payload
       );
       return data;
@@ -112,13 +109,9 @@ export const ServiceProviderService = {
     }
   },
 
-  deleteServiceProvider: async (
-    id: number
-  ): Promise<ServiceProviderUpdateDeleteResponse> => {
+  deleteServiceProvider: async (id: number): Promise<ServiceProviderUpdateDeleteResponse> => {
     try {
-      const { data } = await api.delete(
-        `/service_provider/${id}/delete`
-      );
+      const { data } = await api.delete(`/service_provider/${id}/delete`);
       return data;
     } catch (error) {
       return normalizeApiError(error);
@@ -130,10 +123,7 @@ export const ServiceProviderService = {
     payload: ServiceProvider | Partial<ServiceProvider>
   ): Promise<ServiceProviderUpdateDeleteResponse> => {
     try {
-      const { data } = await api.patch(
-        `/service_provider/${id}/update`,
-        payload
-      );
+      const { data } = await api.patch(`/service_provider/${id}`, payload);
       return data;
     } catch (error) {
       return normalizeApiError(error);
