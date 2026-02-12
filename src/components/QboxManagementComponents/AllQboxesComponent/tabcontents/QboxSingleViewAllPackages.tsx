@@ -57,8 +57,8 @@ const QboxSingleViewAllPackages = () => {
         <BreadCrumb
           items={[
             { title: t("QBox Management") },
-            { title: t("Qbox ID"), to: `/` },
-            { title: t(`Tracking ID`) },
+            { title: qboxSelectedId, to: `/` },
+            { title: selectedPackage?.tracking_id },
           ]}
         />
         <Card className="card-bg card-cs radius-12 border-gray">
@@ -78,11 +78,11 @@ const QboxSingleViewAllPackages = () => {
                 </Flex>
                 <Flex gap={5}>
                   <Text
-                    className={`sm-pill radius-20 fs-12 text-white ${statusColors[selectedPackage?.package_status ?? ""] ||
+                    className={`sm-pill radius-20 fs-12 text-white ${statusColors[selectedPackage?.package_type ?? ""] ||
                       "bg-delivery-failed"
                       }`}
                   >
-                    {selectedPackage?.package_status}
+                    {selectedPackage?.package_type}
                   </Text>
                 </Flex>
               </Flex>

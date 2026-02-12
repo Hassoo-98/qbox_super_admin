@@ -99,41 +99,41 @@ const Sidebar: React.FC = () => {
     let tab = location?.pathname?.split("/")[1];
     tab =
       tab === ""
-        ? "1"
+        ? "2"
         : tab === "homeowners" || tab === "homeowners/homeownersdetails"
-          ? "2"
+          ? "3"
           : tab === "requestsqueue" ||
               tab === "requestsqueue/accountapprovaldetails" ||
               tab === "requestsqueue/relocationapprovaldetails"
-            ? "3"
+            ? "4"
             : tab === "allqboxes"
-              ? "4"
+              ? "5"
               : tab === "installementpending"
-                ? "5"
+                ? "6"
                 : tab === "serviceproviders"
-                  ? "6"
+                  ? "7"
                   : tab === "allshipments"
-                    ? "7"
+                    ? "8"
                     : tab === "serviceproviderrequest"
-                      ? "8"
+                      ? "9"
                       : tab === "staffs"
-                        ? "9"
+                        ? "10"
                         : tab === "rolepermissions"
-                          ? "10"
+                          ? "11"
                           : tab === "qrlogs"
-                            ? "11"
+                            ? "12"
                             : tab === "settingpage"
-                              ? "12"
+                              ? "13"
                               : tab === "activitylogs"
-                                ? "13"
+                                ? "14"
                                 : tab === "subscriptionmanagement"
-                                  ? "14"
+                                  ? "15"
                                   : tab === "revenue"
-                                    ? "15"
+                                    ? "16"
                                     : tab === "payouthistory"
-                                      ? "16"
+                                      ? "17"
                                       : tab === "payoutrequests"
-                                        ? "17"
+                                        ? "18"
                                         : "1";
     setCurrentTab(tab);
   }, [location]);
@@ -170,22 +170,25 @@ const Sidebar: React.FC = () => {
       case "10":
         navigate("/rolepermissions", { replace: true });
         break;
-      case "11":
-        navigate("/settingpage", { replace: true });
+       case "11":
+        navigate("/qrlogs", { replace: true });
         break;
       case "12":
-        navigate("/activitylogs", { replace: true });
+        navigate("/settingpage", { replace: true });
         break;
       case "13":
-        navigate("/subscriptionmanagement", { replace: true });
+        navigate("/activitylogs", { replace: true });
         break;
       case "14":
-        navigate("/revenue", { replace: true });
+        navigate("/subscriptionmanagement", { replace: true });
         break;
       case "15":
-        navigate("/payouthistory", { replace: true });
+        navigate("/revenue", { replace: true });
         break;
       case "16":
+        navigate("/payouthistory", { replace: true });
+        break;
+      case "17":
         navigate("/payoutrequests", { replace: true });
         break;
       default:

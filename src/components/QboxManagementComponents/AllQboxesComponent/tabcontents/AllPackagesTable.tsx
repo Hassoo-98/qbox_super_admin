@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Flex, Table, Form, Row, Col } from "antd";
 import { CustomPagination } from "../../../PageComponents";
-import { allpackagesColumn, allpackagesData } from "../../../../data";
+import { allpackagesColumn } from "../../../../data";
 import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
-import type { AllPackagesTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
 import { useGlobalContext } from "../../../../context/globalContext";
-const AllPackagesTable: React.FC = ({packagesData}) => {
+import type { AllPackagesTableProps, PackageItem } from "../../../../types/AllQboxTypes";
+const AllPackagesTable: React.FC<AllPackagesTableProps> = ({packagesData}) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const [pageSize, setPageSize] = useState<number>(10);
@@ -76,7 +76,7 @@ const AllPackagesTable: React.FC = ({packagesData}) => {
         </Form>
       </Flex>
       <Flex vertical gap={20}>
-        <Table<AllPackagesTypes>
+        <Table<PackageItem>
           size="large"
           columns={allpackagesColumn({ navigate, setTableSelectedIds }, t)}
           dataSource={packagesData as any}

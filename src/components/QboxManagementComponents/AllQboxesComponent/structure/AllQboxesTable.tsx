@@ -4,11 +4,11 @@ import { CustomPagination, DeleteModal, ModuleTopHeading } from "../../../PageCo
 import { allqboxesColumn } from "../../../../data";
 import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
-import type { AllBoxesTypes } from "../../../../types";
 import i18n from "../../../../sources/i18n";
 import { useTranslation } from "react-i18next";
 import { useQbox } from "../../../../hooks/useQbox";
 import { useGlobalContext } from "../../../../context/globalContext";
+import type { QboxItem } from "../../../../types/AllQboxTypes";
 const { Text } = Typography;
 const AllQboxesTable: React.FC = () => {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ const AllQboxesTable: React.FC = () => {
     setPageSize(size);
   };
   const{modals, setModals, tableSelectedIds, setTableSelectedIds} = useGlobalContext();
-  const {QboxList, isLoadingQboxList, QboxListError, deleteQbox} = useQbox();
+  const {QboxList, isLoadingQboxList, deleteQbox} = useQbox();
   const QboxData = Array.isArray(QboxList?.data?.items) ? QboxList?.data?.items : [];
   const TotalQboxes = QboxList?.data?.total || 0;
   const Cities = [
@@ -124,7 +124,7 @@ const AllQboxesTable: React.FC = () => {
           </Form>
         </Flex>
         <Flex vertical gap={20}>
-          <Table<AllBoxesTypes>
+          <Table<QboxItem>
             size="large"
             loading={isLoadingQboxList}
             columns={allqboxesColumn({ navigate, modals, setModals, setTableSelectedIds, tableSelectedIds })}

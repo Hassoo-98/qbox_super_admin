@@ -76,10 +76,10 @@ export interface AllBoxesTypes {
   city_snapshot: string;
   shortaddress: string;
   city: string;
-  status: "online" | "offline" | "error";
+  status: "Online" | "Offline" | "Error";
   last_online: string;
-  led_indicator: "green" | "red";
-  camera_status: "working" | "notworking";
+  led_indicator: "Green" | "Red";
+  camera_status: "Working" | "Notworking";
   activation_date: string;
 }
 export interface staffType {
@@ -103,7 +103,8 @@ export interface AllPackagesTypes {
   service_provider: string;
   driver_name: string;
   qr_code: string;
-  package_status: "Incoming" | "Send" | "Return";
+  package_type: "Incoming" | "Send" | "Return";
+  shipment_status:string,
   status: string;
   last_update: string;
 }

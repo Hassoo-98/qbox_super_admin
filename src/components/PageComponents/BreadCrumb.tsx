@@ -7,7 +7,7 @@ const { Text } = Typography;
 
 
 interface BreadCrumbItem {
-  title: string;
+  title: React.ReactNode;
   to?: string;
 }
 

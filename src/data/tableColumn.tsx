@@ -38,7 +38,7 @@ import type {
 import type { Installment } from "../api/types/admin";
 import { statusColors } from "./statusColors";
 import { t } from "i18next";
-import type { HomeOwner } from "../types/AllQboxTypes";
+import type { HomeOwner, PackageItem, QboxItem } from "../types/AllQboxTypes";
 const { Text } = Typography;
 
 const installmentColumn = ({
@@ -502,7 +502,7 @@ const allqboxesColumn = ({
   setModals:any;
   tableSelectedIds:any;
   setTableSelectedIds:any;
-}): TableColumnsType<AllBoxesTypes> => [
+}): TableColumnsType<QboxItem> => [
   {
     title: t("QBox ID"),
     dataIndex: "qbox_id",
@@ -523,9 +523,9 @@ const allqboxesColumn = ({
     title: t("QBox Status"),
     dataIndex: "status",
     render: (status: string) =>
-      status === "online" ? (
+      status === "Online" ? (
         <Text className="btnpill fs-12 success">{t("Online")}</Text>
-      ) : status === "offline" ? (
+      ) : status === "Offline" ? (
         <Text className="btnpill fs-12 inactive">{t("Offline")}</Text>
       ) : (
         <Text className="btnpill fs-12 pending">{t("Error")}</Text>
@@ -539,7 +539,7 @@ const allqboxesColumn = ({
     title: t("LED Indicator"),
     dataIndex: "led_indicator",
     render: (led_indicator: string) =>
-      led_indicator === "green" ? (
+      led_indicator === "Green" ? (
         <Text className="btnpill fs-12 success">{t("Green")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Red")}</Text>
@@ -584,24 +584,24 @@ const allqboxesColumn = ({
           ),
           key: "1",
         },
-        //  {
-        //   label: (
-        //     <NavLink
-        //       to="#"
-        //       onClick={(e) => {
-        //         e.preventDefault();
-        //         setModals((prev:any) =>({...prev, qboxDelete:true}));
-        //         setTableSelectedIds((prev:any) => ({
-        //           ...prev,
-        //           tableSelectedIds:row.id,
-        //         }))
-        //       }}
-        //     >
-        //       {t("Delete")}
-        //     </NavLink>
-        //   ),
-        //   key: "2",
-        // },
+         {
+          label: (
+            <NavLink
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setModals((prev:any) =>({...prev, qboxDelete:true}));
+                setTableSelectedIds((prev:any) => ({
+                  ...prev,
+                  qboxSelectedId:row.id,
+                }))
+              }}
+            >
+              {t("Delete")}
+            </NavLink>
+          ),
+          key: "2",
+        },
       ];
 
       return (
@@ -623,7 +623,7 @@ const allpackagesColumn = (
     setTableSelectedIds:any,
   },
   t: (key: string) => string,
-): TableColumnsType<AllPackagesTypes> => [
+): TableColumnsType<PackageItem> => [
   {
     title: t("Tracking ID"),
     dataIndex: "tracking_id",
@@ -645,12 +645,12 @@ const allpackagesColumn = (
     dataIndex: "qr_code",
   },
   {
-    title: t("Package Status"),
+    title: t("Package Type"),
     dataIndex: "package_type",
-    render: (package_status: string) =>
-      package_status === "Incoming" ? (
+    render: (package_type: string) =>
+      package_type === "Incoming" ? (
         <Text className="btnpill fs-12 incoming">{t("Incoming")}</Text>
-      ) : package_status === "Return" ? (
+      ) : package_type === "Return" ? (
         <Text className="btnpill fs-12 return">{t("Return")}</Text>
       ) : (
         <Text className="btnpill fs-12 pending text-brown">{t("Send")}</Text>
@@ -658,21 +658,20 @@ const allpackagesColumn = (
   },
   {
     title: t("Status"),
-    dataIndex: "status",
-    render: (status: string) => {
-      const label = t(status); // use translated label
-      const colorClass = statusColors[label];
-
-      return (
-        <Text
-          className={`btnpill fs-12 text-white ${
-            colorClass || "bg-default text-white"
-          }`}
-        >
-          {label}
-        </Text>
-      );
-    },
+    dataIndex: "shipment_status",
+    render: (shipment_status: string) => {
+  const formattedStatus = shipment_status.replace("-", " "); // hyphen remove
+  const colorClass = statusColors[formattedStatus];
+  return (
+    <Text
+      className={`btnpill fs-12 text-white ${
+        colorClass || "bg-default"
+      }`}
+    >
+      {formattedStatus}
+    </Text>
+  );
+},
   },
   {
     title: t("Last Update"),

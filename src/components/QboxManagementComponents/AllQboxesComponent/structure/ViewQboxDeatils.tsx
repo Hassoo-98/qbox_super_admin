@@ -25,7 +25,7 @@ const ViewQboxDeatils = () => {
   // const details = allboxesData?.find((list) => list?.key === Number(id));
   const [view, setView] = useState<string>("All Packages");
   const isRTL = i18n.language === "ar";
-  const {Qbox, QboxError, isLoadingQbox} = useQbox();
+  const { Qbox } = useQbox();
   const QboxData = Qbox?.data;
   return (
     <div style={{ direction: isRTL ? "rtl" : "ltr" }}>
@@ -48,9 +48,15 @@ const ViewQboxDeatils = () => {
                     {/* {t("QBox ID")} */}
                     {QboxData?.qbox_id}
                   </Title>
-                  <Text className="btnpill fs-12 inactive py-1">
-                    {t("Inactive")}
-                  </Text>
+                  {
+                    QboxData?.status === "Online" ? (
+                      <Text className="btnpill fs-12 py-1 success">{t("Online")}</Text>
+                    ) : QboxData?.status === "Offline" ? (
+                      <Text className="btnpill fs-12 py-1 inactive">{t("Offline")}</Text>
+                    ) : (
+                      <Text className="btnpill fs-12 py-1 pending">{t("Error")}</Text>
+                    )
+                  }
                   <Text className="btnpill fs-12 bg-light-gray py-1">
                     {t("Locker Open")}
                   </Text>
@@ -95,7 +101,7 @@ const ViewQboxDeatils = () => {
               </Flex>
             </Col>
             <Col span={24}>
-              {view === "All Packages" && <AllPackagesTable packagesData={QboxData?.packages}/>}
+              {view === "All Packages" && <AllPackagesTable packagesData={QboxData?.packages ?? []} />}
               {view === "QR History" && <QRHistoryTable />}
             </Col>
           </Row>
