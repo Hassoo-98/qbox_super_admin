@@ -899,12 +899,12 @@ const serviceproviderColumn = (
   },
   {
     title: t("Status"),
-    dataIndex: "is_active",
-    render: (is_active: boolean) =>
-      is_active ? (
-        <Text className="btnpill fs-12 success">{t("Active")}</Text>
+    dataIndex: "is_approved",
+    render: (is_approved: boolean) =>
+      is_approved ? (
+        <Text className="btnpill fs-12 success">{t("Approved")}</Text>
       ) : (
-        <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
+        <Text className="btnpill fs-12 inactive">{t("Rejected")}</Text>
       ),
   },
   {
@@ -944,7 +944,7 @@ const serviceproviderColumn = (
               ),
               key: "2",
             },
-            row?.is_active
+            row?.is_approved
               ? {
                   label: (
                     <NavLink
@@ -954,13 +954,13 @@ const serviceproviderColumn = (
                         setStatusChanged(row?.id);
                       }}
                     >
-                      {t("Inactive")}
+                      {t("Rejected")}
                     </NavLink>
                   ),
                   key: "3",
                 }
               : null,
-            !row?.is_active
+            !row?.is_approved
               ? {
                   label: (
                     <NavLink
@@ -970,7 +970,7 @@ const serviceproviderColumn = (
                         setStatusChanged(row?.id);
                       }}
                     >
-                      {t("Active")}
+                      {t("Approved")}
                     </NavLink>
                   ),
                   key: "4",
