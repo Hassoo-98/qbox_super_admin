@@ -45,19 +45,22 @@ const ServiceProviderTable = () => {
   } = useServiceProvider({
     search,
     city: selectedCity,
-    is_active: selectedStatus,
+    is_approved: selectedStatus,
     page: 1,
     limit: 10,
   });
 
   // ✅ Format API data for table
   console.log("Raw API Response:", serviceProviderList);
-  const tableData =
-    serviceProviderList?.map((item: ServiceProvider) => ({
-      ...item,
-      key: item.id,
-    })) || [];
-    console.log("Fetched Service Providers:",tableData);
+  const items = Array.isArray(serviceProviderList)
+    ? serviceProviderList
+    : serviceProviderList?.data?.items ?? [];
+
+  const tableData = (items || []).map((item: ServiceProvider) => ({
+    ...item,
+    key: item.id,
+  }));
+  console.log("Fetched Service Providers:", tableData);
 
   const cityItem = [
     { id: "qatif", name: t("Qatif") },
@@ -214,7 +217,7 @@ const ServiceProviderTable = () => {
           if (currentItem) {
             await changeServiceProviderStatus({
               id: selectedId,
-              is_active: !currentItem.is_active,
+              is_approved: !currentItem.is_approved,
             });
           }
           setStatusChanged(false);
