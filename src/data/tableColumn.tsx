@@ -330,11 +330,13 @@ const homeownersColumn = ({
   navigate,
   setModals,
   setTableSelectedIds,
+  setSelectedRowStatus,
   t,
 }: {
   navigate: (path: string) => void;
   setModals:any;
   setTableSelectedIds:any;
+  setSelectedRowStatus:any
   t: any;
 }): TableColumnsType<HomeOwner> => [
   {
@@ -431,13 +433,15 @@ const homeownersColumn = ({
               onClick={()=>
               (
                 setModals((prev:any)=>({...prev,homeOwnerStatus:true})),
-                 setTableSelectedIds((perv:any)=>({...perv,homeOwnerSelectedId:row.id}))
+                setTableSelectedIds((perv:any)=>({...perv,homeOwnerSelectedId:row.id})),
+                setSelectedRowStatus({
+                    homeownerCurrentStatus: row.is_active, 
+                  })
               
               )
               }
             >
-              {/* {row.accountstatus === "active" ? t("Inactive") : t("Active")} */}
-              error
+              {row?.is_active ? "Inactive" : "Active"}
             </NavLink>
           ),
           key: "1",

@@ -9,6 +9,7 @@ interface ActiveModalProps {
   onClose: () => void;
   title: string;
   desc: string;
+  img:string;
   onConfirm:()=>void
 }
 
@@ -17,6 +18,7 @@ const ConfirmModal: React.FC<ActiveModalProps> = ({
   onClose,
   title,
   desc,
+  img,
   onConfirm
 }) => {
   const { t } = useTranslation();
@@ -38,7 +40,7 @@ const ConfirmModal: React.FC<ActiveModalProps> = ({
           >
             {t("Cancel")}
           </Button>
-          <Button className={`btnsave border-0 text-white bg-delivery-failed`}
+          <Button className={`btnsave border-0 text-white ${title === "Inactivate Account"  ? "bg-delivery-failed" : ""}  bg-slate-blue`}
           onClick={onConfirm}
           >
             {t("Confirm")}
@@ -48,7 +50,7 @@ const ConfirmModal: React.FC<ActiveModalProps> = ({
     >
       <Flex vertical align="center" className="mt-3" gap={10}>
         <img
-          src="/assets/icons/inactive.png"
+          src={`/assets/icons/${img}`}
           width={50}
           alt="bin icon"
           fetchPriority="high"

@@ -19,7 +19,7 @@ const HomeOwnersTable: React.FC = () => {
   const [form] = Form.useForm();
 
   // Real Data Hook
-  const { HomeownerList, isLoadingHomeownerList, HomeonwerListError, homeOwnerChangeStatus, isHomeOwnerChangingStatus, deleteHomeowner } = useHomeowner();
+  const { HomeownerList, isLoadingHomeownerList, HomeonwerListError, homeOwnerChangeStatus, isHomeOwnerChangingStatus, deleteHomeowner, RefetchHomeownerList } = useHomeowner();
   const HomeonwerData = Array.isArray(HomeownerList?.data?.items) ? HomeownerList?.data?.items : [];
   const totalHomeonwers = HomeownerList?.data?.total || 0;
 
@@ -65,7 +65,7 @@ const HomeOwnersTable: React.FC = () => {
     { id: 1, name: t("Active") },
     { id: 2, name: t("Inactive") },
   ];
-  const { modals, setModals, tableSelectedIds, setTableSelectedIds } = useGlobalContext();
+  const { modals, setModals, tableSelectedIds, setTableSelectedIds, selectedRowStatus, setSelectedRowStatus } = useGlobalContext();
 
   const handleCityChange = (value: any) => {
     setselectedCity(value);
@@ -78,16 +78,17 @@ const HomeOwnersTable: React.FC = () => {
   const handleAccountstatusChange = (value: any) => {
     setselecteAccountstatus(value);
   };
-  const changeStatus = (is_active: boolean) => {
+  const changeStatus = (currentStatus: boolean | null) => {
     if (!tableSelectedIds.homeOwnerSelectedId) {
       message.error("homwOwner is not selected");
       return;
     }
     homeOwnerChangeStatus(
-      { id: tableSelectedIds.homeOwnerSelectedId, payload: { is_active } },
+      { id: tableSelectedIds.homeOwnerSelectedId, payload: { is_active: !currentStatus } },
       {
         onSuccess: () => {
           message.success("Home owner status changed"),
+          RefetchHomeownerList(),
           setModals((prev: any) => ({ ...prev, homeOwnerStatus: false })),
           setTableSelectedIds((perv: any) => ({ ...perv, homeOwnerSelectedId: null }))
         }
@@ -179,6 +180,7 @@ const HomeOwnersTable: React.FC = () => {
           navigate,
           setModals,
           setTableSelectedIds,
+          setSelectedRowStatus,
           t,
         })}
         dataSource={HomeonwerData as any}
@@ -192,15 +194,16 @@ const HomeOwnersTable: React.FC = () => {
       />
       <ConfirmModal
         visible={modals.homeOwnerStatus}
-        title={t("Inactivate Account")}
-        desc={t("Are you sure you want to inactive this account?")}
+        img={selectedRowStatus?.homeownerCurrentStatus ? "inactive.png" : "active.png"}
+        title={selectedRowStatus?.homeownerCurrentStatus ? t("Inactivate Account") : t("Activate Account")}
+        desc={selectedRowStatus?.homeownerCurrentStatus ? t("Are you sure you want to inactive this account?") : t("Are you sure you want to active this account?")}
         onClose={() => {
           setModals((prev) => ({ ...prev, homeOwnerStatus: false }));
           setTableSelectedIds((prev) => ({ ...prev, homeOwnerSelectedId: null }));
         }}
-        onConfirm={() => changeStatus(false)}
+        onConfirm={() => changeStatus(selectedRowStatus?.homeownerCurrentStatus)}
       />
-      <ActiveModal
+      {/* <ActiveModal
         visible={modals.homeOwnerStatus}
         title={t("Activate Account")}
         desc={t("Are you sure you want to active this account?")}
@@ -209,7 +212,7 @@ const HomeOwnersTable: React.FC = () => {
           setTableSelectedIds((prev) => ({ ...prev, homeOwnerSelectedId: null }));
         }}
         onConfirm={() => changeStatus(true)}
-      />
+      /> */}
       <DeleteModal
         title={t("Delete Account")}
         subtitle={t("Are you sure you want to delete")}
