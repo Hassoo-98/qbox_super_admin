@@ -1,6 +1,6 @@
 const statusItems = (t: any) => [
-  { key: "active", label: t("Active") },
-  { key: "inactive", label: t("InActive") },
+  { key: "approved", label: t("Approved") },
+  { key: "rejected", label: t("Rejected") },
 ];
 const staffrole = (t: any) => [
   {
