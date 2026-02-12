@@ -31,33 +31,29 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
 
 
 const handleSubmit = async (values: any) => {
-    console.log("FORM VALUES:", values); // Check values before sending
+    console.log("FORM VALUES:", values);
 
-    const payload = {
+    const payload: any = {
         name: values.serviceproviderName,
         business_registration_number: values.businessReg,
         contact_person_name: values.contactpersonName,
         phone_number: values.phoneNumber,
         email: values.email,
-        cities: values.operatingCities, // array of IDs
-        settlement_cycle: values.settlementCycle,
+        operating_cities: values.operatingCities,
+        settlement_cycle_days: values.settlementCycle,
         markup_type: values.markupType,
         markup_value: values.markupValue,
-        delivery_charges: {
-            first: values.first,
-            charge: values.charge,
-            additional_kg: values.additionalKg,
-        },
-        // Add working_hours or tax fuel if backend requires
+        first_kg_charge: values.charge,
+        additional_kg_charge: values.additionalKg,
+        fuel_surcharge_percentage: values.taxFuel,
+        fuel_surcharge_enabled: values.taxFuelEnabled ?? false,
     };
 
     try {
         if (edititem) {
-            // Update API call
             await updateServiceProvider({ id: edititem.id, payload });
             console.log("Updated successfully");
         } else {
-            // Create API call
             await createServiceProvider(payload);
             console.log("Created successfully");
         }
@@ -65,7 +61,6 @@ const handleSubmit = async (values: any) => {
         form.resetFields();
         setPreviewImage(null);
         onClose();
-
     } catch (error) {
         console.error("API Error:", error);
     }
@@ -75,18 +70,31 @@ const handleSubmit = async (values: any) => {
     useEffect(() => {
         if (visible && edititem) {
             form.setFieldsValue({
-                serviceproviderName: edititem?.providerName?.name,
-                settlementCycle: edititem?.totalDeliveries,
-                contactpersonName: edititem?.contactpersonName,
-                operatingCities: edititem?.cities?.map(city => city.id),
+                // support both mock shape (providerName) and API shape (name, operating_cities...)
+                serviceproviderName: (edititem as any)?.providerName?.name ?? (edititem as any)?.name,
+                businessReg: (edititem as any)?.business_registration_number,
+                settlementCycle: (edititem as any)?.totalDeliveries ?? (edititem as any)?.settlement_cycle_days,
+                contactpersonName: (edititem as any)?.contactpersonName ?? (edititem as any)?.contact_person_name,
+                phoneNumber: (edititem as any)?.phoneNumber ?? (edititem as any)?.phone_number,
+                email: (edititem as any)?.email,
+                operatingCities: (edititem as any)?.cities?.map?.((c: any) => c.id) ?? (edititem as any)?.operating_cities,
+                markupType: (edititem as any)?.markup_type,
+                markupValue: (edititem as any)?.markup_value,
+                first: (edititem as any)?.first,
+                charge: (edititem as any)?.first_kg_charge,
+                additionalKg: (edititem as any)?.additional_kg_charge ?? (edititem as any)?.additionalKg,
+                taxFuel: (edititem as any)?.fuel_surcharge_percentage,
+                taxFuelEnabled: (edititem as any)?.fuel_surcharge_enabled,
             });
-            setPreviewImage(edititem?.providerName?.img);
+
+            setPreviewImage((edititem as any)?.providerName?.img ?? (edititem as any)?.img ?? null);
         } else {
             form.resetFields();
+            setPreviewImage(null);
         }
-    }, [visible, edititem]);
+    }, [visible, edititem, form]);
 
-    const handleUpload = async (_file: RcFile | RcFile[]) => {};
+    const handleUpload = async (_file: RcFile | RcFile[]) => { /* implement if needed */ };
 
     const handleChangeImage = () => setPreviewImage(null);
   
@@ -291,15 +299,17 @@ const handleSubmit = async (values: any) => {
                         </Col>
 
                         <Col span={6}>
-                            <Flex align="center" gap={10}>
-                                <Switch size="small" />
-                                <Text>{t("Tax fuel")}</Text>
-                            </Flex>
+                            <Form.Item name="taxFuelEnabled" valuePropName="checked" style={{ marginBottom: 0 }}>
+                                <Flex align="center" gap={10}>
+                                    <Switch size="small" />
+                                    <Text>{t("Tax fuel")}</Text>
+                                </Flex>
+                            </Form.Item>
                         </Col>
 
                         <Col span={18}>
                             <MyInput
-                                withoutForm
+                                name="taxFuel"
                                 required
                                 message={t("Please enter tax fuel")}
                                 addonAfter="%"
