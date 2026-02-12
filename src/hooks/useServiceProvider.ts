@@ -56,19 +56,19 @@ export const useServiceProvider = (params?: GetAllServiceProviderParams) => {
   const changeStatusMutation = useMutation({
     mutationFn: ({
       id,
-      is_active,
+      is_approved,
     }: {
       id: number;
-      is_active: boolean;
+      is_approved: boolean;
     }) =>
-      ServiceProviderService.changeStatusServiceProvider(id, { is_active }),
+      ServiceProviderService.changeStatusServiceProvider(id, { is_approved }),
 
     onMutate: async ({
       id,
-      is_active,
+      is_approved,
     }: {
       id: number;
-      is_active: boolean;
+      is_approved: boolean;
     }) => {
       await queryClient.cancelQueries({
         queryKey: ["service-provider", params],
