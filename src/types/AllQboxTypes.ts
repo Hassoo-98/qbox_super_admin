@@ -90,18 +90,19 @@ export interface PackageDetails {
 }
 
 export interface PackageItem {
-  id: string;
+ id: string;
   qbox: string;
   tracking_id: string;
   merchant_name: string;
   service_provider: string;
   driver_name: string;
   qr_code: string;
-  package_status: string;
-  package_type: string;
+  package_type: "Incoming" | "Send" | "Return";
+  outgoing_status: string | null;
+  city: string;
   shipment_status: string;
-  last_update: string;   
-  created_at: string; 
+  last_update: string;
+  created_at: string;
   details: PackageDetails;
 }
 
@@ -124,6 +125,10 @@ export interface CrudPackageResponse {
   statusCode: number;
   data: PackageItem;
   message: string;
+}
+
+export interface AllPackagesTableProps {
+  packagesData: PackageItem[];
 }
 
 // Qbox Interfaces 

@@ -29,7 +29,7 @@ export const qboxServices = {
         id:string,
     ) : Promise<CrudQboxResponse> => {
         try{
-            const {data} = await api.get(`/qbox/${id}/delete`);
+            const {data} = await api.delete(`/qbox/${id}/delete`);
             return data;
         }catch(error){
         normalizeApiError(error);
