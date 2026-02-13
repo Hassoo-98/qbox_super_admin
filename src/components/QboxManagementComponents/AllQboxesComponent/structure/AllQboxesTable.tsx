@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { Typography, Card, Flex, Table, Form, Row, Col } from "antd";
-import { CustomPagination, ModuleTopHeading } from "../../../PageComponents";
-import { allboxesData, allqboxesColumn } from "../../../../data";
+import { CustomPagination, DeleteModal, ModuleTopHeading } from "../../../PageComponents";
+import { allqboxesColumn } from "../../../../data";
 import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
-import type { AllBoxesTypes } from "../../../../types";
 import i18n from "../../../../sources/i18n";
 import { useTranslation } from "react-i18next";
+import { useQbox } from "../../../../hooks/useQbox";
+import { useGlobalContext } from "../../../../context/globalContext";
+import type { QboxItem } from "../../../../types/AllQboxTypes";
 const { Text } = Typography;
 const AllQboxesTable: React.FC = () => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
@@ -19,7 +22,11 @@ const AllQboxesTable: React.FC = () => {
     setCurrent(page);
     setPageSize(size);
   };
-  const { t } = useTranslation();
+  const isRTL = i18n.language === "ar";
+  const { modals, setModals, tableSelectedIds, setTableSelectedIds } = useGlobalContext();
+  const { QboxList, isLoadingQboxList, deleteQbox } = useQbox();
+  const QboxData = Array.isArray(QboxList?.data?.items) ? QboxList?.data?.items : [];
+  const TotalQboxes = QboxList?.data?.total || 0;
   const Cities = [
     { id: 1, name: t("Qatif") },
     { id: 2, name: t("Qaseem") },
@@ -35,11 +42,31 @@ const AllQboxesTable: React.FC = () => {
     setCity(value);
   };
 
-  const handleQboxStatusChange = (value: any) => {
+  const handleQboxStatusChange = (value: number | null) => {
     setQboxstatus(value);
   };
-  const isRTL = i18n.language === "ar";
+  
+  
 
+  const handleQboxDelete = () => {
+    if (!tableSelectedIds.qboxSelectedId) return;
+    deleteQbox(tableSelectedIds.qboxSelectedId, {
+      onSuccess: () => {
+        setModals((prev) => ({ ...prev, qboxDelete: false }));
+        setTableSelectedIds((prev) => ({
+          ...prev,
+          qboxSelectedId: null
+        }))
+      },
+      onError: () => {
+        setModals((prev) => ({ ...prev, qboxDelete: false }));
+        setTableSelectedIds((prev) => ({
+          ...prev,
+          qboxSelectedId: null
+        }))
+      }
+    })
+  }
   return (
     <>
       <Card
@@ -100,24 +127,40 @@ const AllQboxesTable: React.FC = () => {
           </Form>
         </Flex>
         <Flex vertical gap={20}>
-          <Table<AllBoxesTypes>
+          <Table<QboxItem>
             size="large"
-            columns={allqboxesColumn({ navigate })}
-            dataSource={allboxesData}
+            loading={isLoadingQboxList}
+            columns={allqboxesColumn({ navigate, modals, setModals, setTableSelectedIds, tableSelectedIds })}
+            dataSource={QboxData as any}
+            rowKey="id"
             className="pagination table-cs table"
             showSorterTooltip={false}
             scroll={{ x: 1300 }}
             rowHoverable={false}
             pagination={false}
           />
-          <CustomPagination
-            total={12}
-            current={current}
-            pageSize={pageSize}
-            onPageChange={handlePageChange}
-          />
+          {
+            TotalQboxes > 10 && (
+              <CustomPagination
+                total={TotalQboxes}
+                current={current}
+                pageSize={pageSize}
+                onPageChange={handlePageChange}
+              />
+            )
+          }
+
         </Flex>
       </Card>
+      <DeleteModal
+        title={t("Delete Account")}
+        subtitle={t("Are you sure you want to delete")}
+        visible={modals.qboxDelete}
+        onConfirm={handleQboxDelete}
+        onClose={() =>
+          setModals((prev) => ({ ...prev, qboxDelete: false }))
+        }
+      />
     </>
   );
 };

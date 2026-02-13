@@ -75,6 +75,8 @@ const StaffsTable: React.FC = () => {
     : [];
 
   const totalStaff = staffList?.total || 0;
+  
+
 
   const roleItems = [
     { id: "supervisor", name: t("Supervisor") },
@@ -233,14 +235,12 @@ const StaffsTable: React.FC = () => {
   onConfirm={() => {
     if (!editItem?.id) return;
 
-    // Toggle status: if active -> deactivate, if inactive -> activate
     const newStatus = !editItem.is_active;
 
         changeStaffStatus(
       { id: editItem.id, is_active: newStatus },
       {
         onSuccess: () => {
-          // Update local editItem state immediately for UI consistency
           setEditItem((prev) => prev ? { ...prev, is_active: newStatus } : prev);
           setStatusChanged(false); // close modal
         },

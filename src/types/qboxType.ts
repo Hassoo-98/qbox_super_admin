@@ -68,17 +68,19 @@ export interface HomerOwnerTypes {
 }
 
 export interface AllBoxesTypes {
-  key: number;
-  homeownername: string;
-  qboxid: string;
+  id: number;
+  qbox_id:string;
+  homeowner: string;
+  homeowner_name_snapshot:string;
+  short_address_snapshot:string;
+  city_snapshot: string;
   shortaddress: string;
   city: string;
-  qboxstatus: "online" | "offline" | "error";
-  lastonline: string;
-  ledindicator: "green" | "red";
-  camerastatus: "working" | "notworking";
-  activationdate: string;
-  phonenumber: string;
+  status: "Online" | "Offline" | "Error";
+  last_online: string;
+  led_indicator: "Green" | "Red";
+  camera_status: "Working" | "Notworking";
+  activation_date: string;
 }
 export interface staffType {
   key: number;
@@ -94,16 +96,17 @@ export interface staffType {
 }
 
 export interface AllPackagesTypes {
-  key: number;
-  trackingid: string;
+  id: number;
+  tracking_id: string;
   img: string;
-  senderplatformname: string;
-  serviceprovider: string;
-  drivername: string;
-  qrcode: string;
-  packagetype: "incoming" | "send" | "return";
+  merchant_name: string;
+  service_provider: string;
+  driver_name: string;
+  qr_code: string;
+  package_type: "Incoming" | "Send" | "Return";
+  shipment_status:string,
   status: string;
-  lastupdate: string;
+  last_update: string;
 }
 
 export interface QRHistoryTypes {
@@ -300,7 +303,6 @@ export interface RolePermissionType {
   rolename: string;
   status: string;
 }
-
 
 export interface ApiError {
 status: number;

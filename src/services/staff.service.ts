@@ -9,71 +9,72 @@ interface GetAllStaffParams{
     page:number,
     limit:number
 }
-interface StaffCreatePayload{
-    name:string,
-    phone_number:string,
-    email:string,
-    role:string,
-    password:string,
-    is_active:boolean
+
+interface Staff {
+  id: string;
+  name: string;
+  phone_number: string;
+  email: string;
+  role: "agent" | "admin" | "staff";
+  is_active: boolean;
+  is_staff: boolean;
+  date_joined: string;
+  last_login: string | null;
 }
-interface Staff{
-    id:string,
-    name:string,
-    phone_number:string,
-    email:string,
-    role:string,
-    password?:string,
-    is_active:boolean,
-    is_staff:boolean
+
+interface StaffListData {
+  items: Staff[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+};
+interface GetStaffListResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: StaffListData;
 }
-interface StaffGetResponse{
-    success:boolean;
-    statusCode:number;
-    data:{
-        items:Staff[]
-    },
-    total:number;
-    page:number;
-    message:string;
-    limit:number;
-    hasMore:boolean;
+
+interface CrudStaffResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: Staff;
 }
-interface StaffUpdateDeleteResponse{
-    success:boolean;
-    statusCode:number;
-    data:Staff;
-    message:string;
-}
+
 export const StaffService = {
     getAllStaff : async (
-        params?:GetAllStaffParams
-    ) : Promise<StaffGetResponse> =>{
+        params:GetAllStaffParams
+    ) : Promise<GetStaffListResponse> =>{
         try{
             const {data} = await api.get("/staff/", {params});
             return data;
         }catch(error){
-            return normalizeApiError(error);
+            normalizeApiError(error);
+            throw error;
         }
     },
     createStaff : async(
-        payload:StaffCreatePayload
-    ):Promise<StaffUpdateDeleteResponse> =>{
+        payload:Staff
+    ):Promise<CrudStaffResponse> =>{
         try{
             const {data} = await api.post("/staff/create",payload);
             return data;
         }catch(error){
-            return normalizeApiError(error);
+            normalizeApiError(error);
+            throw error;
         }
     },
     getSingleStaff : async(
         id:string,
-    ):Promise<StaffGetResponse> =>{
+    ):Promise<CrudStaffResponse> =>{
         try{
             const {data} = await api.get(`/staff/${id}`)
             return data;
         }catch(error){
-            return normalizeApiError(error);
+            normalizeApiError(error);
+            throw error;
         }
     },
     ChangeStatusStaff : async(
@@ -81,33 +82,36 @@ export const StaffService = {
         payload:{
             is_active:boolean
         }
-    ):Promise<StaffUpdateDeleteResponse> =>{
+    ):Promise<CrudStaffResponse> =>{
         try{
             const {data} = await api.patch(`/staff/${id}/change-status`, payload);
             return data;
         }catch(error){
-            return normalizeApiError(error);
+            normalizeApiError(error);
+            throw error;
         }
     },
     DeleteStaff : async(
         id:string
-    ): Promise<StaffUpdateDeleteResponse>=>{
+    ): Promise<CrudStaffResponse> =>{
         try{
             const {data} = await api.delete(`/staff/${id}/delete`)
             return data;
         }catch(error){
-            return normalizeApiError(error)
+            normalizeApiError(error);
+            throw error;
         }
     },
     UpdateStaff: async(
         id:string,
         payload:Staff | Partial<Staff>
-    ): Promise<StaffUpdateDeleteResponse> =>{
+    ): Promise<CrudStaffResponse> =>{
         try{
             const {data} = await api.patch(`/staff/${id}/update`, payload);
             return data;
         }catch(error){
-            return normalizeApiError(error);
+            normalizeApiError(error);
+            throw error;
         }
     }
 }

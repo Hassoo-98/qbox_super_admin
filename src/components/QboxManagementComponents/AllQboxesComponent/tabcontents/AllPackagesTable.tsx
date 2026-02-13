@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { Flex, Table, Form, Row, Col } from "antd";
 import { CustomPagination } from "../../../PageComponents";
-import { allpackagesColumn, allpackagesData } from "../../../../data";
+import { allpackagesColumn } from "../../../../data";
 import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
-import type { AllPackagesTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
-const AllPackagesTable: React.FC = () => {
+import { useGlobalContext } from "../../../../context/globalContext";
+import type { AllPackagesTableProps, PackageItem } from "../../../../types/AllQboxTypes";
+const AllPackagesTable: React.FC<AllPackagesTableProps> = ({packagesData}) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
   const [seletedpackage, setSelectedpackage] = useState<number | null>(null);
   const navigate = useNavigate();
+  const {setTableSelectedIds} = useGlobalContext();
   const handlePageChange = (page: number, size: number): void => {
     setCurrent(page);
     setPageSize(size);
@@ -74,10 +76,10 @@ const AllPackagesTable: React.FC = () => {
         </Form>
       </Flex>
       <Flex vertical gap={20}>
-        <Table<AllPackagesTypes>
+        <Table<PackageItem>
           size="large"
-          columns={allpackagesColumn({ navigate }, t)}
-          dataSource={allpackagesData}
+          columns={allpackagesColumn({ navigate, setTableSelectedIds }, t)}
+          dataSource={packagesData as any}
           className="pagination table-cs table"
           showSorterTooltip={false}
           scroll={{ x: 1300 }}

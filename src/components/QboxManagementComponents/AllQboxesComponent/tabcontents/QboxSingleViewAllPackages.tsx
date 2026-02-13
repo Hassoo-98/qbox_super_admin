@@ -1,12 +1,12 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Card, Col, Flex, Image, Row, Typography } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BreadCrumb } from "../../../PageComponents";
-import { allpackagesData } from "../../../../data";
 import { ProviderActivityTable } from "../../../ShippingManagementComponents";
-
-
+import { useGlobalContext } from "../../../../context/globalContext";
+import { useQueryClient } from "@tanstack/react-query";
+import type { PackageItem, CrudQboxResponse } from "../../../../types/AllQboxTypes";
 const statusColors: Record<string, string> = {
   "Shipment Created": "bg-shipment",
   "Out for Pickup": "bg-outpickup",
@@ -23,13 +23,17 @@ const QboxSingleViewAllPackages = () => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const navigate = useNavigate();
-  const { id } = useParams();
-  const details = allpackagesData?.find((list) => list?.key === Number(id));
+  const querClient = useQueryClient();
 
+  const { tableSelectedIds: { packageSelectedId, qboxSelectedId } } = useGlobalContext();
+  const lastqbox = querClient.getQueryData<CrudQboxResponse>(["single-qbox", qboxSelectedId]);
+  const selectedPackage = lastqbox?.data?.packages?.find(
+    (pkg: PackageItem) => pkg.id === packageSelectedId
+  );
   const cardData = [
     {
       icon: "/assets/icons/pkg.webp",
-      title: t("Electronics"),
+      title: selectedPackage?.details?.package_type,
       subtitle: t("Package Type"),
     },
     {
@@ -39,22 +43,22 @@ const QboxSingleViewAllPackages = () => {
     },
     {
       icon: "/assets/icons/kg.webp",
-      title: "1 kg",
+      title: selectedPackage?.details?.package_weight,
       subtitle: t("Package Weight"),
     },
   ];
 
-   const isRTL = i18n.language === "ar";
-    
+  const isRTL = i18n.language === "ar";
+
   return (
     <>
-      <Flex vertical gap={10}  
-         style={{ direction: isRTL ? "rtl" : "ltr" }}>
+      <Flex vertical gap={10}
+        style={{ direction: isRTL ? "rtl" : "ltr" }}>
         <BreadCrumb
           items={[
             { title: t("QBox Management") },
-            { title: t("Qbox ID"), to: `/` },
-            { title: t(`Tracking ID`) },
+            { title: qboxSelectedId, to: `/` },
+            { title: selectedPackage?.tracking_id },
           ]}
         />
         <Card className="card-bg card-cs radius-12 border-gray">
@@ -69,17 +73,16 @@ const QboxSingleViewAllPackages = () => {
                     {isArabic ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
                   </Button>
                   <Title level={5} className="fw-500 m-0">
-                    {details?.trackingid}
+                    {selectedPackage?.tracking_id}
                   </Title>
                 </Flex>
                 <Flex gap={5}>
                   <Text
-                    className={`sm-pill radius-20 fs-12 text-white ${
-                      statusColors[details?.status ?? ""] ||
+                    className={`sm-pill radius-20 fs-12 text-white ${statusColors[selectedPackage?.package_type ?? ""] ||
                       "bg-delivery-failed"
-                    }`}
+                      }`}
                   >
-                    {details?.status}
+                    {selectedPackage?.package_type}
                   </Text>
                 </Flex>
               </Flex>
@@ -89,7 +92,7 @@ const QboxSingleViewAllPackages = () => {
                 <Flex vertical gap={15}>
                   <Text className="fs-15 fw-500">{t("Package Image")}</Text>
                   <img
-                    src={details?.img}
+                    src={selectedPackage?.img}
                     alt="provider image"
                     className="radius-12 object-cover w-100 border-gray"
                     fetchPriority="high"
@@ -100,17 +103,17 @@ const QboxSingleViewAllPackages = () => {
                       <Text className="text-gray fs-13">
                         {t("Package Type")}
                       </Text>
-                      {details?.packagetype === "incoming" ? (
+                      {selectedPackage?.package_type === "Incoming" ? (
                         <Text className="sm-pill sky-status radius-12 fs-12">
-                          {details?.packagetype}
+                          {selectedPackage?.package_type}
                         </Text>
-                      ) : details?.packagetype === "send" ? (
+                      ) : selectedPackage?.package_type === "Send" ? (
                         <Text className="sm-pill radius-12 fs-12 bg-light-yellow text-brown">
-                          {details?.packagetype}
+                          {selectedPackage?.package_type}
                         </Text>
                       ) : (
                         <Text className="sm-pill radius-12 fs-12 inactive">
-                          {details?.packagetype}
+                          {selectedPackage?.package_type}
                         </Text>
                       )}
                     </Flex>
@@ -118,23 +121,23 @@ const QboxSingleViewAllPackages = () => {
                       <Text className="text-gray fs-13">
                         {t("Sender / Platform Name")}
                       </Text>
-                      <Text className="fs-13">{t("Azeem Khan")}</Text>
+                      <Text className="fs-13">{selectedPackage?.merchant_name}</Text>
                     </Flex>
                     <Flex align="center" gap={10} justify="space-between">
                       <Text className="text-gray fs-13">
                         {t("Courier / Service Provider")}
                       </Text>
-                      <Text className="fs-13">{t("XYZ Providers")}</Text>
+                      <Text className="fs-13">{selectedPackage?.service_provider}</Text>
                     </Flex>
                     <Flex align="center" gap={10} justify="space-between">
                       <Text className="text-gray fs-13">
                         {t("Driver Name")}
                       </Text>
-                      <Text className="fs-13">{t("Ahmed Al-Mujeeb")}</Text>
+                      <Text className="fs-13">{selectedPackage?.driver_name}</Text>
                     </Flex>
                     <Flex align="center" gap={10} justify="space-between">
                       <Text className="text-gray fs-13">{t("QR Code")}</Text>
-                      <Text className="fs-13">SB-JH-001</Text>
+                      <Text className="fs-13">{selectedPackage?.qr_code}</Text>
                     </Flex>
                   </Flex>
                   <Text className="fs-15 fw-500">{t("What inside")}</Text>
@@ -168,11 +171,7 @@ const QboxSingleViewAllPackages = () => {
                       {t("Package Description")}
                     </Text>
                     <Text className="text-gray">
-                      Contrary to popular belief, Lorem Ipsum is not simply
-                      random text. It has roots in a piece of classical Latin
-                      literature from 45 BC, making it over 2000 years old.
-                      Richard McClintock, a Latin professor at Hampden-Sydney
-                      College in Virginia, 
+                     {selectedPackage?.details?.summary}
                     </Text>
                   </Flex>
                 </Flex>

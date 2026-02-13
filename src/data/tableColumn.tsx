@@ -38,6 +38,7 @@ import type {
 import type { Installment } from "../api/types/admin";
 import { statusColors } from "./statusColors";
 import { t } from "i18next";
+import type { HomeOwner, PackageItem, QboxItem } from "../types/AllQboxTypes";
 const { Text } = Typography;
 
 const installmentColumn = ({
@@ -189,8 +190,8 @@ const staffColumn = (
                    to="#"
                    onClick={(e) => {
                      e.preventDefault();
-                     setModals((prev) => ({ ...prev, staffDelete: true }));
-                     setTableSelectedIds((prev) => ({
+                     setModals((prev:any) => ({ ...prev, staffDelete: true }));
+                     setTableSelectedIds((prev:any) => ({
                      ...prev,
                      staffSelectedId: row.id,
            }));
@@ -330,30 +331,33 @@ export const dashboardInstallmentColumn = (
 ];
 
 const homeownersColumn = ({
-  setItemToDelete,
   navigate,
-  setDeleteItem,
-  handleStatusClick,
+  setModals,
+  setTableSelectedIds,
+  setSelectedRowStatus,
   t,
 }: {
-  setItemToDelete: (item: HomerOwnerTypes) => void;
   navigate: (path: string) => void;
-  setDeleteItem: (value: boolean) => void;
-  handleStatusClick: (status: "active" | "inactive") => void;
+  setModals:any;
+  setTableSelectedIds:any;
+  setSelectedRowStatus:any
   t: any;
-}): TableColumnsType<HomerOwnerTypes> => [
+}): TableColumnsType<HomeOwner> => [
   {
     title: t("ID"),
     dataIndex: "id",
   },
   {
     title: t("Homeowner Name"),
-    dataIndex: "name",
+    dataIndex: "full_name",
   },
   {
-    title: t("QBox ID"),
-    dataIndex: "qbox_id",
-  },
+  title: t("QBox ID"),
+  render: (_, record: HomeOwner) =>
+    record.qboxes && record.qboxes.length > 0
+      ? record.qboxes.map(qbox => qbox.qbox_id).join(", ")
+      : "-",
+},
   {
     title: t("QBox Image"),
     dataIndex: "avatar",
@@ -364,7 +368,7 @@ const homeownersColumn = ({
   },
   {
     title: t("Phone Number"),
-    dataIndex: "phone",
+    dataIndex: "phone_number",
   },
   {
     title: t("Email Address"),
@@ -372,11 +376,11 @@ const homeownersColumn = ({
   },
   {
     title: t("Short Address"),
-    dataIndex: "shortaddress",
+    dataIndex: ["address", "short_address"],
   },
   {
     title: t("City"),
-    dataIndex: "city",
+    dataIndex: ["address", "city"],
   },
   {
     title: t("Total Deliveries"),
@@ -394,21 +398,22 @@ const homeownersColumn = ({
   },
   {
     title: t("QBox Status"),
-    dataIndex: "qboxstatus",
-    render: (qboxstatus: string) =>
-      qboxstatus === "online" ? (
+    dataIndex: ["qboxes", "status"],
+    render: (status: string) =>
+      status === "Online" ? (
         <Text className="btnpill fs-12 success">{t("Online")}</Text>
-      ) : qboxstatus === "offline" ? (
+      ) : status === "Offline" ? (
         <Text className="btnpill fs-12 inactive">{t("Offline")}</Text>
       ) : (
         <Text className="btnpill fs-12 pending">{t("Error")}</Text>
       ),
   },
+
   {
     title: t("Account Status"),
-    dataIndex: "status",
-    render: (status: string) =>
-      status === "Active" ? (
+    dataIndex: "is_active",
+    render: (is_active: boolean) =>
+      is_active === true ? (
         <Text className="btnpill fs-12 success">{t("Active")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
@@ -416,24 +421,31 @@ const homeownersColumn = ({
   },
   {
     title: t("Account Created On"),
-    dataIndex: "joined_at",
+    dataIndex: "date_joined",
+    render: (date: string) => date?.split("T")[0],
   },
   {
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_, row: HomerOwnerTypes) => {
+    render: (_, row: HomeOwner) => {
       const items: MenuProps["items"] = [
         {
           label: (
             <NavLink
-              to="/"
-              onClick={(e) => {
-                e.preventDefault();
-                handleStatusClick(row.accountstatus);
-              }}
+              to="#"
+              onClick={()=>
+              (
+                setModals((prev:any)=>({...prev,homeOwnerStatus:true})),
+                setTableSelectedIds((perv:any)=>({...perv,homeOwnerSelectedId:row.id})),
+                setSelectedRowStatus({
+                    homeownerCurrentStatus: row.is_active, 
+                  })
+              
+              )
+              }
             >
-              {row.accountstatus === "active" ? t("Inactive") : t("Active")}
+              {row?.is_active ? "Inactive" : "Active"}
             </NavLink>
           ),
           key: "1",
@@ -441,10 +453,14 @@ const homeownersColumn = ({
         {
           label: (
             <NavLink
-              to="/"
+              to="#"
               onClick={(e) => {
                 e.preventDefault();
-                navigate("/homeowners/homeownersdetails/" + row?.key);
+                   setTableSelectedIds((prev: any) => ({
+                  ...prev,
+                  homeOwnerSelectedId: row.id, 
+                }));
+                navigate("/homeowners/homeownersdetails/" + row?.id);
               }}
             >
               {t("View")}
@@ -455,11 +471,14 @@ const homeownersColumn = ({
         {
           label: (
             <NavLink
-              to="/"
+              to="#"
               onClick={(e) => {
                 e.preventDefault();
-                setItemToDelete(row);
-                setDeleteItem(true);
+                setModals((prev:any) =>({...prev, homeownerDelete:true}));
+                setTableSelectedIds((prev:any) => ({
+                  ...prev,
+                  homeOwnerSelectedId:row.id,
+                }))
               }}
             >
               {t("Delete")}
@@ -482,32 +501,39 @@ const homeownersColumn = ({
 
 const allqboxesColumn = ({
   navigate,
+  modals,
+  setModals,
+  setTableSelectedIds,
 }: {
   navigate: (path: string) => void;
-}): TableColumnsType<AllBoxesTypes> => [
+   modals:any;
+  setModals:any;
+  tableSelectedIds:any;
+  setTableSelectedIds:any;
+}): TableColumnsType<QboxItem> => [
   {
     title: t("QBox ID"),
-    dataIndex: "qboxid",
+    dataIndex: "qbox_id",
   },
   {
     title: t("Homeowner Name"),
-    dataIndex: "homeownername",
+    dataIndex: "homeowner_name_snapshot",
   },
   {
     title: t("Short Address"),
-    dataIndex: "shortaddress",
+    dataIndex: "short_address_snapshot",
   },
   {
     title: t("City"),
-    dataIndex: "city",
+    dataIndex: "city_snapshot",
   },
   {
     title: t("QBox Status"),
-    dataIndex: "qboxstatus",
-    render: (qboxstatus: string) =>
-      qboxstatus === "online" ? (
+    dataIndex: "status",
+    render: (status: string) =>
+      status === "Online" ? (
         <Text className="btnpill fs-12 success">{t("Online")}</Text>
-      ) : qboxstatus === "offline" ? (
+      ) : status === "Offline" ? (
         <Text className="btnpill fs-12 inactive">{t("Offline")}</Text>
       ) : (
         <Text className="btnpill fs-12 pending">{t("Error")}</Text>
@@ -515,13 +541,13 @@ const allqboxesColumn = ({
   },
   {
     title: t("Last Online"),
-    dataIndex: "lastonline",
+    dataIndex: "last_online",
   },
   {
     title: t("LED Indicator"),
-    dataIndex: "ledindicator",
-    render: (subscriptionplane: string) =>
-      subscriptionplane === "green" ? (
+    dataIndex: "led_indicator",
+    render: (led_indicator: string) =>
+      led_indicator === "Green" ? (
         <Text className="btnpill fs-12 success">{t("Green")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Red")}</Text>
@@ -529,9 +555,9 @@ const allqboxesColumn = ({
   },
   {
     title: t("Camera Status"),
-    dataIndex: "camerastatus",
-    render: (subscriptionplane: string) =>
-      subscriptionplane === "working" ? (
+    dataIndex: "camera_status",
+    render: (camera_status: string) =>
+      camera_status === "Working" ? (
         <Text className="btnpill fs-12 success">{t("Working")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Not Working")}</Text>
@@ -539,7 +565,8 @@ const allqboxesColumn = ({
   },
   {
     title: t("Activation Date"),
-    dataIndex: "activationdate",
+    dataIndex: "activation_date",
+    render: (date: string) => date?.split("T")[0],
   },
   {
     title: t("Action"),
@@ -549,17 +576,39 @@ const allqboxesColumn = ({
       const items: MenuProps["items"] = [
         {
           label: (
-            <NavLink
-              to="/"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate("/allqboxes/view/" + row?.key);
+                <NavLink
+                  to="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                      setTableSelectedIds((prev: any) => ({
+              ...prev,
+              qboxSelectedId: row.id, 
+            }));
+                  navigate("/allqboxes/view/" + row?.id);
               }}
             >
               {t("View")}
             </NavLink>
           ),
           key: "1",
+        },
+         {
+          label: (
+            <NavLink
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setModals((prev:any) =>({...prev, qboxDelete:true}));
+                setTableSelectedIds((prev:any) => ({
+                  ...prev,
+                  qboxSelectedId:row.id,
+                }))
+              }}
+            >
+              {t("Delete")}
+            </NavLink>
+          ),
+          key: "2",
         },
       ];
 
@@ -575,36 +624,41 @@ const allqboxesColumn = ({
 ];
 
 const allpackagesColumn = (
-  { navigate }: { navigate: (path: string) => void },
+  { navigate,
+    setTableSelectedIds,
+   }: { 
+    navigate: (path: string) => void 
+    setTableSelectedIds:any,
+  },
   t: (key: string) => string,
-): TableColumnsType<AllPackagesTypes> => [
+): TableColumnsType<PackageItem> => [
   {
     title: t("Tracking ID"),
-    dataIndex: "trackingid",
+    dataIndex: "tracking_id",
   },
   {
     title: t("Sender/Platform Name"),
-    dataIndex: "senderplatformname",
+    dataIndex: "merchant_name",
   },
   {
     title: t("Service Provider"),
-    dataIndex: "serviceprovider",
+    dataIndex: "service_provider",
   },
   {
     title: t("Driver Name"),
-    dataIndex: "drivername",
+    dataIndex: "driver_name",
   },
   {
     title: t("QR Code"),
-    dataIndex: "qrcode",
+    dataIndex: "qr_code",
   },
   {
     title: t("Package Type"),
-    dataIndex: "packagetype",
-    render: (packagetype: string) =>
-      packagetype === "incoming" ? (
+    dataIndex: "package_type",
+    render: (package_type: string) =>
+      package_type === "Incoming" ? (
         <Text className="btnpill fs-12 incoming">{t("Incoming")}</Text>
-      ) : packagetype === "return" ? (
+      ) : package_type === "Return" ? (
         <Text className="btnpill fs-12 return">{t("Return")}</Text>
       ) : (
         <Text className="btnpill fs-12 pending text-brown">{t("Send")}</Text>
@@ -612,25 +666,25 @@ const allpackagesColumn = (
   },
   {
     title: t("Status"),
-    dataIndex: "status",
-    render: (status: string) => {
-      const label = t(status); // use translated label
-      const colorClass = statusColors[label];
-
-      return (
-        <Text
-          className={`btnpill fs-12 text-white ${
-            colorClass || "bg-default text-white"
-          }`}
-        >
-          {label}
-        </Text>
-      );
-    },
+    dataIndex: "shipment_status",
+    render: (shipment_status: string) => {
+  const formattedStatus = shipment_status.replace("-", " "); // hyphen remove
+  const colorClass = statusColors[formattedStatus];
+  return (
+    <Text
+      className={`btnpill fs-12 text-white ${
+        colorClass || "bg-default"
+      }`}
+    >
+      {formattedStatus}
+    </Text>
+  );
+},
   },
   {
     title: t("Last Update"),
-    dataIndex: "lastupdate",
+    dataIndex: "last_update",
+    render: (date: string) => date?.split("T")[0],
   },
   {
     title: t("Action"),
@@ -644,8 +698,12 @@ const allpackagesColumn = (
               to="/"
               onClick={(e) => {
                 e.preventDefault();
+                setTableSelectedIds((prev:any) =>({
+                  ...prev,
+                  packageSelectedId:row.id
+                }))
                 navigate(
-                  "/allqboxes/view/qboxallpackages/detailview/" + row?.key,
+                  "/allqboxes/view/qboxallpackages/detailview/" + row?.id,
                 );
               }}
             >

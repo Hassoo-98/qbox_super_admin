@@ -21,7 +21,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { homeownersData } from "../../../../data";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
-
+import { useHomeowner } from "../../../../hooks/useHomeOwner";
+import { useGlobalContext } from "../../../../context/globalContext";
 const { Text, Title } = Typography;
 
 const HomeOwnersDetails: React.FC = () => {
@@ -34,6 +35,26 @@ const HomeOwnersDetails: React.FC = () => {
   const { id } = useParams();
   const details = homeownersData?.find((list) => list?.key === Number(id));
 
+  const { Homeowner, homeOwnerChangeStatus } = useHomeowner()
+  const homeOwnerdetial = Homeowner?.data;
+  const { modals, setModals, tableSelectedIds, setTableSelectedIds } = useGlobalContext();
+  const changeStatus = (is_active: boolean) => {
+    console.log("is_active value being sent:", is_active);
+    if (!tableSelectedIds.homeOwnerSelectedId) {
+      // message.error("homwOwner is not selected");
+      return;
+    }
+    homeOwnerChangeStatus(
+      { id: tableSelectedIds.homeOwnerSelectedId, payload: { is_active } },
+      {
+        onSuccess: () => {
+          // message.success("Home owner status changed"),
+          setModals((prev: any) => ({ ...prev, homeOwnerStatus: false })),
+            setTableSelectedIds((perv: any) => ({ ...perv, homeOwnerSelectedId: null }))
+        }
+      }
+    );
+  };
   interface DetailItem {
     key: string;
     type: React.ReactNode;
@@ -49,67 +70,67 @@ const HomeOwnersDetails: React.FC = () => {
     {
       key: "1",
       type: <Text className="text-gray">{t("Full Name")}</Text>,
-      detail: <Text>{details?.homeownername}</Text>,
+      detail: <Text>{homeOwnerdetial?.full_name}</Text>,
     },
     {
       key: "2",
       type: <Text className="text-gray">{t("Email Address")}</Text>,
-      detail: <Text>{details?.email}</Text>,
+      detail: <Text>{homeOwnerdetial?.email}</Text>,
     },
     {
       key: "3",
       type: <Text className="text-gray">{t("Phone Number")}</Text>,
-      detail: <Text>{details?.phonenumber}</Text>,
+      detail: <Text>{homeOwnerdetial?.phone_number}</Text>,
     },
     {
       key: "4",
       type: <Text className="text-gray">{t("Short Address")}</Text>,
-      detail: <Text>{details?.shortaddress}</Text>,
+      detail: <Text>{homeOwnerdetial?.address?.short_address}</Text>,
     },
     {
       key: "5",
       type: <Text className="text-gray">{t("City")}</Text>,
-      detail: <Text>{details?.city}</Text>,
+      detail: <Text>{homeOwnerdetial?.address?.city}</Text>,
     },
     {
       key: "6",
       type: <Text className="text-gray">{t("District")}</Text>,
-      detail: <Text>{details?.district}</Text>,
+      detail: <Text>{homeOwnerdetial?.address?.district}</Text>,
     },
     {
       key: "7",
       type: <Text className="text-gray">{t("Street")}</Text>,
-      detail: <Text>{details?.street}</Text>,
+      detail: <Text>{homeOwnerdetial?.address?.street}</Text>,
     },
     {
       key: "8",
       type: <Text className="text-gray">{t("Postal Code")}</Text>,
-      detail: <Text>{details?.postalcode}</Text>,
+      detail: <Text>{homeOwnerdetial?.address?.postal_code}</Text>,
     },
     {
       key: "9",
       type: <Text className="text-gray">{t("Building #")}</Text>,
-      detail: <Text>{details?.building}</Text>,
+      detail: <Text>{homeOwnerdetial?.address?.building_number}</Text>,
     },
     {
       key: "10",
       type: <Text className="text-gray">{t("ID Type & Number")}</Text>,
-      detail: <Text>{details?.idtypenumber}</Text>,
+      detail: <Text>not found</Text>,
     },
     {
       key: "11",
       type: <Text className="text-gray">{t("Secondary Number")}</Text>,
-      detail: <Text>{details?.secondarynumber}</Text>,
+      detail: <Text>{homeOwnerdetial?.address?.secondary_building_number}</Text>,
     },
     {
       key: "12",
       type: <Text className="text-gray">{t("Preferred Location")}</Text>,
-      detail: <Text>{details?.preferdlocation}</Text>,
+      detail: <Text>{homeOwnerdetial?.installation_location_preference}</Text>,
     },
     {
       key: "13",
       type: <Text className="text-gray">{t("Instruction")}</Text>,
-      detail: <Text>{details?.instruction}</Text>,
+      detail: <Text>{homeOwnerdetial?.installation_access_instruction}</Text>,
     },
   ];
 
@@ -120,7 +141,7 @@ const HomeOwnersDetails: React.FC = () => {
           items={[
             { title: t("Client Management") },
             { title: t("Home Owners") },
-            { title: details?.homeownername || "" },
+            { title: homeOwnerdetial?.full_name || "" },
           ]}
         />
 
@@ -134,7 +155,7 @@ const HomeOwnersDetails: React.FC = () => {
                 {isRTL ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
               </Button>
               <Title level={4} className="fw-500 m-0">
-                ID . {details?.homeownername}
+                ID . {homeOwnerdetial?.full_name}
               </Title>
               {details?.subscriptionplane === "active" ? (
                 <Text className="btnpill fs-12 success py-1">
@@ -146,21 +167,28 @@ const HomeOwnersDetails: React.FC = () => {
                 </Text>
               )}
             </Flex>
-            {details?.accountstatus === "active" ? (
+            {homeOwnerdetial?.is_active ? (
               <Button
                 className="btncancel bg-red text-white"
-                onClick={() => setInactiveStatus(true)}
+                onClick={() => {
+                  setModals(prev => ({ ...prev, homeOwnerStatus: true }));
+                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: homeOwnerdetial.id }));
+                }}
               >
                 {t("Inactive Account")}
               </Button>
             ) : (
               <Button
                 className="btncancel bg-green text-white"
-                onClick={() => setActiveStatus(true)}
+                onClick={() => {
+                  setModals(prev => ({ ...prev, homeOwnerStatus: true }));
+                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: homeOwnerdetial.id }));
+                }}
               >
                 {t("Active Account")}
               </Button>
             )}
+
           </Flex>
 
           <Row gutter={[16, 16]}>
@@ -177,7 +205,7 @@ const HomeOwnersDetails: React.FC = () => {
               >
                 <div style={{ width: "200px", position: "relative" }}>
                   <img
-                    src={details?.qboximage}
+                    src={homeOwnerdetial?.installation_qbox_image_url}
                     alt="Package"
                     style={{
                       width: "100%",
@@ -265,17 +293,30 @@ const HomeOwnersDetails: React.FC = () => {
       </Flex>
 
       <ConfirmModal
-        visible={inactivestatus}
-        title={t("Inactivate Account")}
-        desc={t("Are you sure you want to inactive this account?")}
-        onClose={() => setInactiveStatus(false)}
+        visible={modals.homeOwnerStatus}
+        title={homeOwnerdetial?.is_active ? t("Inactivate Staff") : t("Activate Staff")}
+        desc={
+          homeOwnerdetial?.is_active
+            ? t("Are you sure you want to inactivate this staff?")
+            : t("Are you sure you want to activate this staff?")
+
+        }
+        onClose={() => {
+          setModals((prev) => ({ ...prev, homeOwnerStatus: false }));
+          setTableSelectedIds((prev) => ({ ...prev, homeOwnerSelectedId: null }));
+        }}
+        onConfirm={() => changeStatus(true)}
       />
-      <ActiveModal
-        visible={activestatus}
+      {/* <ActiveModal
+        visible={modals.homeOwnerStatus}
         title={t("Activate Account")}
         desc={t("Are you sure you want to active this account?")}
-        onClose={() => setActiveStatus(false)}
-      />
+        onClose={() => {
+          setModals((prev) => ({ ...prev, homeOwnerStatus: false }));
+          setTableSelectedIds((prev) => ({ ...prev, homeOwnerSelectedId: null }));
+        }}
+        onConfirm={() => changeStatus(false)}
+      /> */}
     </>
   );
 };

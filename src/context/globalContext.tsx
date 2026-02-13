@@ -4,34 +4,56 @@ type ModalsState = {
   staffUpdate: boolean;
   staffDelete: boolean;
   staffStatus: boolean;
+  homeOwnerStatus:boolean;
+  homeownerDelete:boolean;
+  qboxDelete: boolean;
 };
 
 type TableSelectedIds = {
   staffSelectedId: string | null;
+  homeOwnerSelectedId:string | null;
+  qboxSelectedId:string | null;
+  packageSelectedId:string | null;
 };
 
+type SelectedRowStatus = {
+    homeownerCurrentStatus: boolean | null;
+}
 type GlobalContextType = {
   modals: ModalsState;
   setModals: React.Dispatch<React.SetStateAction<ModalsState>>;
   tableSelectedIds: TableSelectedIds;
   setTableSelectedIds: React.Dispatch<React.SetStateAction<TableSelectedIds>>;
+  selectedRowStatus : SelectedRowStatus;
+  setSelectedRowStatus : React.Dispatch<React.SetStateAction<SelectedRowStatus>>;
 };
 
 const initialModals: ModalsState = {
   staffUpdate: false,
   staffDelete: false,
   staffStatus: false,
+  homeOwnerStatus:false,
+  homeownerDelete:false,
+  qboxDelete: false,
 };
 
 const initialTableSelectedIds: TableSelectedIds = {
   staffSelectedId: null,
+  homeOwnerSelectedId:null,
+  qboxSelectedId:null,
+  packageSelectedId:null,
 };
+
+const intialSelectedRowStatus : SelectedRowStatus ={
+  homeownerCurrentStatus: null,
+}
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
   const [modals, setModals] = useState<ModalsState>(initialModals);
   const [tableSelectedIds, setTableSelectedIds] = useState<TableSelectedIds>(initialTableSelectedIds);
+  const [selectedRowStatus, setSelectedRowStatus] = useState<SelectedRowStatus>(intialSelectedRowStatus);
 
   return (
     <GlobalContext.Provider
@@ -40,6 +62,8 @@ export const GlobalProvider: React.FC<React.PropsWithChildren<unknown>> = ({ chi
         setModals,
         tableSelectedIds,
         setTableSelectedIds,
+        selectedRowStatus,
+        setSelectedRowStatus
       }}
     >
       {children}
@@ -47,7 +71,6 @@ export const GlobalProvider: React.FC<React.PropsWithChildren<unknown>> = ({ chi
   );
 };
 
-// Custom hook (clean usage)
 export const useGlobalContext = (): GlobalContextType => {
   const context = useContext(GlobalContext);
   if (!context) {

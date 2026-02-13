@@ -6,15 +6,16 @@ import i18n from "../../../sources/i18n";
 interface ActiveModalProps {
   visible: boolean;
   onClose: () => void;
-  title:string,
-  desc:string
+  title: string;
+  onConfirm: () => void;
+  desc: string;
 }
 
-const ActiveModal: React.FC<ActiveModalProps> = ({visible, onClose, title, desc}) => {
+const ActiveModal: React.FC<ActiveModalProps> = ({ visible, onClose, onConfirm, title, desc }) => {
   const {t} = useTranslation();
     const isRTL = i18n.language === "ar";
-  
    
+    
   return (
     <Modal
         title={null}
@@ -24,10 +25,10 @@ const ActiveModal: React.FC<ActiveModalProps> = ({visible, onClose, title, desc}
         centered
         footer={
             <Flex justify='center' gap={5}>
-                <Button  onClick={onClose} className='btncancel text-black border-gray' >
+                <Button onClick={onClose} className='btncancel text-black border-gray'>
                     {t('Cancel')}
                 </Button>
-                <Button className={`btnsave border-0 text-white bg-slate-blue`}>
+                <Button className={`btnsave border-0 text-white bg-slate-blue`} onClick={onConfirm}>
                     {t('Confirm')}
                 </Button>
             </Flex>
@@ -48,4 +49,4 @@ const ActiveModal: React.FC<ActiveModalProps> = ({visible, onClose, title, desc}
   )
 }
 
-export {ActiveModal} 
+export {ActiveModal}
