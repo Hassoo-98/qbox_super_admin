@@ -11,11 +11,11 @@ interface GetAllHomeownersParams {
 }
 export const useHomeowner = (params?: GetAllHomeownersParams) => {
    const { id } = useParams<{ id: string }>();
-    const { data: HomeownerList, isLoading: isLoadingHomeownerList, error: HomeonwerListError, refetch:RefetchHomeownerList} = useQuery({
-        queryKey: ["homeonwer", params],
+    const { data: HomeownerList, isLoading: isLoadingHomeownerList, error: HomeownerListError} = useQuery({
+        queryKey: ["homeowner", params],
         queryFn: () => HomeownerService.getallhomeowners(params as GetAllHomeownersParams),
     })
-    const { data: Homeowner, isLoading: isLoadingHomeowner, error: HomeonwerError } = useQuery({
+    const { data: Homeowner, isLoading: isLoadingHomeowner, error: HomeownerError } = useQuery({
         queryKey: ["single-homeowner", id],
         queryFn: () => HomeownerService.getSingleHomeowner(id as string),
         enabled: !!id,
@@ -32,11 +32,10 @@ export const useHomeowner = (params?: GetAllHomeownersParams) => {
     return {
         HomeownerList,
         isLoadingHomeownerList,
-        HomeonwerListError,
-        RefetchHomeownerList,
+        HomeownerListError,
         Homeowner,
         isLoadingHomeowner,
-        HomeonwerError,
+        HomeownerError,
         homeOwnerChangeStatus: changeStatusMutation.mutate,
         isHomeOwnerChangingStatus: changeStatusMutation.isPending,
         HomeOwnerError: changeStatusMutation.error,
