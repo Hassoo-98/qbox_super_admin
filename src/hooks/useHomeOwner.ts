@@ -12,7 +12,7 @@ interface GetAllHomeownersParams {
 export const useHomeowner = (params?: GetAllHomeownersParams) => {
     const queryClient = useQueryClient();
    const { id } = useParams<{ id: string }>();
-    const { data: HomeownerList, isLoading: isLoadingHomeownerList, error: HomeonwerListError } = useQuery({
+    const { data: HomeownerList, isLoading: isLoadingHomeownerList, error: HomeonwerListError, refetch:RefetchHomeownerList} = useQuery({
         queryKey: ["homeonwer", params],
         queryFn: () => HomeownerService.getallhomeowners(params as GetAllHomeownersParams),
     })
@@ -37,6 +37,7 @@ export const useHomeowner = (params?: GetAllHomeownersParams) => {
         HomeownerList,
         isLoadingHomeownerList,
         HomeonwerListError,
+        RefetchHomeownerList,
         Homeowner,
         isLoadingHomeowner,
         HomeonwerError,

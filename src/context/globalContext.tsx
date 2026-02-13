@@ -16,11 +16,16 @@ type TableSelectedIds = {
   packageSelectedId:string | null;
 };
 
+type SelectedRowStatus = {
+    homeownerCurrentStatus: boolean | null;
+}
 type GlobalContextType = {
   modals: ModalsState;
   setModals: React.Dispatch<React.SetStateAction<ModalsState>>;
   tableSelectedIds: TableSelectedIds;
   setTableSelectedIds: React.Dispatch<React.SetStateAction<TableSelectedIds>>;
+  selectedRowStatus : SelectedRowStatus;
+  setSelectedRowStatus : React.Dispatch<React.SetStateAction<SelectedRowStatus>>;
 };
 
 const initialModals: ModalsState = {
@@ -39,11 +44,16 @@ const initialTableSelectedIds: TableSelectedIds = {
   packageSelectedId:null,
 };
 
+const intialSelectedRowStatus : SelectedRowStatus ={
+  homeownerCurrentStatus: null,
+}
+
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
   const [modals, setModals] = useState<ModalsState>(initialModals);
   const [tableSelectedIds, setTableSelectedIds] = useState<TableSelectedIds>(initialTableSelectedIds);
+  const [selectedRowStatus, setSelectedRowStatus] = useState<SelectedRowStatus>(intialSelectedRowStatus);
 
   return (
     <GlobalContext.Provider
@@ -52,6 +62,8 @@ export const GlobalProvider: React.FC<React.PropsWithChildren<unknown>> = ({ chi
         setModals,
         tableSelectedIds,
         setTableSelectedIds,
+        selectedRowStatus,
+        setSelectedRowStatus
       }}
     >
       {children}
