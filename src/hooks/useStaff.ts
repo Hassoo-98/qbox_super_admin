@@ -7,7 +7,7 @@ interface GetAllStaffParams {
   ordering?: string;
   role?: string;
   is_active?: string;
-  page?: number;
+  page?: number; 
   limit?: number;
 }
 
@@ -75,10 +75,10 @@ export const useStaff = (params?: GetAllStaffParams) => {
     staffList,
     isLoadingStaffList,
     staffListError,
-    createStaff: createMutation.mutate,
-    updateStaff: updateMutation.mutate,
-    changeStaffStatus: changeStatusMutation.mutate,
-    deleteStaff: deleteMutation.mutate,
+    createStaff: createMutation.mutateAsync,
+    updateStaff: updateMutation.mutateAsync,
+    changeStaffStatus: changeStatusMutation.mutateAsync,
+    deleteStaff: deleteMutation.mutateAsync,
     isCreatingStaff: createMutation.isPending,
     isUpdatingStaff: updateMutation.isPending,
     isChangingStatus: changeStatusMutation.isPending,

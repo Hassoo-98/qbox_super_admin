@@ -1,22 +1,19 @@
 const statusItems = (t: any) => [
-  { key: "active", label: t("Active") },
-  { key: "inactive", label: t("InActive") },
+  { key: "approved", label: t("Approved") },
+  { key: "rejected", label: t("Rejected") },
 ];
-
 const staffrole = (t: any) => [
   {
-    id: 1,
-    name: t("Supervisor"),
+    id: "supervisor",
+    value: t("supervisor"),
   },
+  
   {
-    id: 2,
-    name: t("Admin"),
-  },
-  {
-    id: 3,
-    name: t("Agent"),
+    id: "agent",
+    value: t("agent"),
   },
 ];
+
 
 const statusItemnew = (t: any) => [
   { key: "active", label: t("Active") },

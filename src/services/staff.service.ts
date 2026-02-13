@@ -59,7 +59,7 @@ export const StaffService = {
         payload:Staff
     ):Promise<CrudStaffResponse> =>{
         try{
-            const {data} = await api.post("/staff/create/",payload);
+            const {data} = await api.post("/staff/create",payload);
             return data;
         }catch(error){
             normalizeApiError(error);
@@ -95,7 +95,7 @@ export const StaffService = {
         id:string
     ): Promise<CrudStaffResponse> =>{
         try{
-            const {data} = await api.delete(`staff/${id}/delete`)
+            const {data} = await api.delete(`/staff/${id}/delete`)
             return data;
         }catch(error){
             normalizeApiError(error);

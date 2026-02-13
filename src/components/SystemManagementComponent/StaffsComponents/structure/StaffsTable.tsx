@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Flex, Form, Row, Col, Button } from "antd";
+import React, { useState, useEffect } from "react";
+import { Flex, Form, Row, Col, Button, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   ConfirmModal,
@@ -28,19 +28,40 @@ const StaffsTable: React.FC = () => {
   // Filters
   const [selectedRole, setSelectedRole] = useState<string>();
   const [selectedStatus, setSelectedStatus] = useState<string>();
+  const [search, setSearch] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
 
   // Local UI state
-  const [visible, setVisible] = useState(false);
+  // local `visible` replaced by global `modals` state
   const [editItem, setEditItem] = useState<staffType | null>(null);
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
 
-  // Hooks
+  // Debounce search input (starts filtering after 2s)
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search.trim()), 400);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrent(1);
+  }, [debouncedSearch, selectedRole, selectedStatus]);
+
+  // Prepare params and fetch staff list
+  const params = {
+    search: debouncedSearch || undefined,
+    role: selectedRole || undefined,
+    is_active: selectedStatus || undefined,
+    page: current,
+    limit: pageSize,
+  };
+
   const {
     staffList,
     isLoadingStaffList,
     changeStaffStatus,
     deleteStaff,
-  } = useStaff();
+  } = useStaff(params);
 
   const {
     modals,
@@ -100,14 +121,14 @@ const StaffsTable: React.FC = () => {
       <Row gutter={[16, 16]} align="middle">
         <Col span={24} md={12}>
           <SearchInput
+            withoutForm
+            value={search}
+            inputProps={{
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearch(e.target.value),
+            }}
             placeholder={t("Search by Staff Name")}
-            prefix={
-              <img
-                src="/assets/icons/search.png"
-                width={16}
-                alt="search icon"
-              />
-            }
+            prefix={<img src="/assets/icons/search.png" width={16} alt="search icon" />}
           />
         </Col>
         <Col span={24} md={12}>
@@ -149,13 +170,17 @@ const StaffsTable: React.FC = () => {
           extra={
             <Button
               className="btncancel text-black"
-              onClick={() => setVisible(true)}
+              onClick={() => {
+                setEditItem(null);
+                setTableSelectedIds((prev: any) => ({ ...prev, staffSelectedId: null }));
+                setModals((prev: any) => ({ ...prev, staffAdd: true }));
+              }}
             >
               <PlusOutlined /> {t("Add Staff")}
             </Button>
           }
           columns={staffColumn(
-            setVisible,
+            () => {},
             setEditItem,
             setStatusChanged,
             modals,
@@ -177,11 +202,21 @@ const StaffsTable: React.FC = () => {
 
       {/* Add / Edit Drawer */}
       <AddEditStaffDrawer
-        visible={visible}
+        visible={modals.staffUpdate}
         edititem={editItem}
+        isEdit={true}
         onClose={() => {
-          setVisible(false);
-          setEditItem(null);
+          setTableSelectedIds((prev: any) => ({ ...prev, staffSelectedId: null }));
+          setModals((prev: any) => ({ ...prev, staffUpdate: false }));
+        }}
+      />
+       <AddEditStaffDrawer
+        visible={modals.staffAdd}
+        edititem={editItem}
+        isEdit={false}
+        onClose={() => {
+          setTableSelectedIds((prev: any) => ({ ...prev, staffSelectedId: null }));
+          setModals((prev: any) => ({ ...prev, staffAdd: false }));
         }}
       />
 
@@ -202,14 +237,20 @@ const StaffsTable: React.FC = () => {
 
     const newStatus = !editItem.is_active;
 
-    changeStaffStatus(
+        changeStaffStatus(
       { id: editItem.id, is_active: newStatus },
       {
         onSuccess: () => {
           setEditItem((prev) => prev ? { ...prev, is_active: newStatus } : prev);
           setStatusChanged(false); // close modal
         },
-        onError: () => {
+        onError: (err: any) => {
+          // Show API error details if available
+          if (err && typeof err === 'object' && 'status' in err) {
+            message.error(`${err.status} - ${err.message}`);
+          } else {
+            message.error(t('An error occurred'));
+          }
           setStatusChanged(false);
         },
       }

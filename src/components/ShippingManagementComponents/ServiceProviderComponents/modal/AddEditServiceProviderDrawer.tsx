@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import type { RcFile } from 'antd/es/upload';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../../../sources/i18n';
+import { useServiceProvider } from '../../../../hooks/useServiceProvider';
 
 interface props {
     edititem?: ServiceProviderType | null
@@ -26,22 +27,74 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
         t("Monday"), t("Tuesday"), t("Wednesday"), t("Thursday"),
         t("Friday"), t("Saturday"), t("Sunday")
     ];
+    const { createServiceProvider, updateServiceProvider } = useServiceProvider();
+
+
+const handleSubmit = async (values: any) => {
+    console.log("FORM VALUES:", values);
+
+    const payload: any = {
+        name: values.serviceproviderName,
+        business_registration_number: values.businessReg,
+        contact_person_name: values.contactpersonName,
+        phone_number: values.phoneNumber,
+        email: values.email,
+        operating_cities: values.operatingCities,
+        settlement_cycle_days: values.settlementCycle,
+        markup_type: values.markupType,
+        markup_value: values.markupValue,
+        first_kg_charge: values.charge,
+        additional_kg_charge: values.additionalKg,
+        fuel_surcharge_percentage: values.taxFuel,
+        fuel_surcharge_enabled: values.taxFuelEnabled ?? false,
+    };
+
+    try {
+        if (edititem) {
+            await updateServiceProvider({ id: edititem.id, payload });
+            console.log("Updated successfully");
+        } else {
+            await createServiceProvider(payload);
+            console.log("Created successfully");
+        }
+
+        form.resetFields();
+        setPreviewImage(null);
+        onClose();
+    } catch (error) {
+        console.error("API Error:", error);
+    }
+};
+
 
     useEffect(() => {
         if (visible && edititem) {
             form.setFieldsValue({
-                serviceproviderName: edititem?.providerName?.name,
-                settlementCycle: edititem?.totalDeliveries,
-                contactpersonName: edititem?.contactpersonName,
-                operatingCities: edititem?.cities?.map(city => city.id),
+                // support both mock shape (providerName) and API shape (name, operating_cities...)
+                serviceproviderName: (edititem as any)?.providerName?.name ?? (edititem as any)?.name,
+                businessReg: (edititem as any)?.business_registration_number,
+                settlementCycle: (edititem as any)?.totalDeliveries ?? (edititem as any)?.settlement_cycle_days,
+                contactpersonName: (edititem as any)?.contactpersonName ?? (edititem as any)?.contact_person_name,
+                phoneNumber: (edititem as any)?.phoneNumber ?? (edititem as any)?.phone_number,
+                email: (edititem as any)?.email,
+                operatingCities: (edititem as any)?.cities?.map?.((c: any) => c.id) ?? (edititem as any)?.operating_cities,
+                markupType: (edititem as any)?.markup_type,
+                markupValue: (edititem as any)?.markup_value,
+                first: (edititem as any)?.first,
+                charge: (edititem as any)?.first_kg_charge,
+                additionalKg: (edititem as any)?.additional_kg_charge ?? (edititem as any)?.additionalKg,
+                taxFuel: (edititem as any)?.fuel_surcharge_percentage,
+                taxFuelEnabled: (edititem as any)?.fuel_surcharge_enabled,
             });
-            setPreviewImage(edititem?.providerName?.img);
+
+            setPreviewImage((edititem as any)?.providerName?.img ?? (edititem as any)?.img ?? null);
         } else {
             form.resetFields();
+            setPreviewImage(null);
         }
-    }, [visible, edititem]);
+    }, [visible, edititem, form]);
 
-    const handleUpload = async (_file: RcFile | RcFile[]) => {};
+    const handleUpload = async (_file: RcFile | RcFile[]) => { /* implement if needed */ };
 
     const handleChangeImage = () => setPreviewImage(null);
   
@@ -60,9 +113,14 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
                     <Button className='btncancel text-black border-gray' onClick={onClose}>
                         {t("Cancel")}
                     </Button>
-                    <Button type="primary" className='btnsave border-0 text-white bg-slate-blue' onClick={() => form.submit()}>
-                        {edititem ? t("Update") : t("Save")}
-                    </Button>
+                    <Button
+    type="primary"
+    className='btnsave border-0 text-white bg-slate-blue'
+    onClick={() => form.submit()}
+>
+    {edititem ? t("Update") : t("Save")}
+</Button>
+
                 </Flex>
             }
         >
@@ -76,7 +134,8 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
                     </Button>
                 </Flex>
 
-                <Form layout="vertical" form={form} requiredMark={false}>
+                <Form layout="vertical" form={form} requiredMark={false} onFinish={handleSubmit}>
+
                     <Row gutter={12}>
 
                         <Col span={24}>
@@ -240,15 +299,17 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
                         </Col>
 
                         <Col span={6}>
-                            <Flex align="center" gap={10}>
-                                <Switch size="small" />
-                                <Text>{t("Tax fuel")}</Text>
-                            </Flex>
+                            <Form.Item name="taxFuelEnabled" valuePropName="checked" style={{ marginBottom: 0 }}>
+                                <Flex align="center" gap={10}>
+                                    <Switch size="small" />
+                                    <Text>{t("Tax fuel")}</Text>
+                                </Flex>
+                            </Form.Item>
                         </Col>
 
                         <Col span={18}>
                             <MyInput
-                                withoutForm
+                                name="taxFuel"
                                 required
                                 message={t("Please enter tax fuel")}
                                 addonAfter="%"

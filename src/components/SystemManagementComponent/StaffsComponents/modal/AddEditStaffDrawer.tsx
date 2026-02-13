@@ -9,17 +9,20 @@ import { useEffect, useState, useCallback } from 'react';
 import { useStaff } from '../../../../hooks/useStaff';
 
 interface props {
-    edititem?: staffType | null
-    visible: boolean,
-    onClose: () => void,
+    onConfirm?: ()=>void;
+    isEdit: boolean;
+    visible: boolean;
+    onClose: () => void;
+    edititem?: staffType | null;
 }
 
 const { Title } = Typography
-const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
+const AddEditStaffDrawer: React.FC<props> = ({ visible, onClose, isEdit, onConfirm, edititem }) => {
     const { t } = useTranslation();
     const [form] = Form.useForm();
     const { createStaff, updateStaff, isCreatingStaff, isUpdatingStaff } = useStaff();
     const [isFormValid, setIsFormValid] = useState(false);
+    
 
     // check validity whenever fields change or when form is reset/populated
     const checkFormValid = useCallback(() => {
@@ -29,18 +32,21 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
     }, [form]);
 
     useEffect(() => {
-        if (visible && edititem) {
+        // If opening in edit mode and we have an edit item, populate fields.
+        // Otherwise reset the form (covers opening in Add mode and closing).
+        if (visible && isEdit && edititem) {
             form.setFieldsValue({
-                staffName: edititem?.staffName,
-                role: edititem?.role,
-                phoneNumber: edititem?.phoneNumber,
-                email: edititem?.email,
-            })
+                staffName: edititem.name,
+                role: edititem.role,
+                phoneNumber: edititem.phone_number,
+                email: edititem.email,
+            });
         } else {
-            form.resetFields()
+            form.resetFields();
         }
+
         checkFormValid();
-    }, [visible, edititem, form, checkFormValid])
+    }, [visible, isEdit, edititem, form, checkFormValid]);
 
     const handleSubmit = async (values: any) => {
         try {
@@ -62,11 +68,17 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
                 await createStaff(payload);
                 message.success(t("Staff created successfully"));
             }
-            
+            onConfirm?.();
             onClose();
             form.resetFields();
-        } catch {
-            message.error(t("An error occurred"));
+        } catch (err: any) {
+            if (err && typeof err === "object" && "status" in err) {
+                const status = err.status;
+                const msg = err.message ?? t("An error occurred");
+                message.error(`${status} - ${msg}`);
+            } else {
+                message.error(t("An error occurred"));
+            }
         }
     };
 
@@ -82,14 +94,15 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
                         <Button className='btncancel text-black border-gray' onClick={onClose}>
                             {t("Cancel")}
                         </Button>
-                        <Button 
-                            type="primary" 
-                            className='btnsave border-0 text-white brand-bg' 
-                            onClick={() => { form.submit() }}
+                        <Button
+                            type="primary"
+                            className="btnsave border-0 text-white brand-bg"
+                            onClick={() => {
+                                form.submit();
+                            }}
                             loading={isCreatingStaff || isUpdatingStaff}
-                            disabled={!isFormValid}
                         >
-                            {edititem ? t("Update") : t('Save')}
+                            {isEdit ? t("Update") : t("Save")}
                         </Button>
                     </Flex>
                 }
@@ -99,7 +112,7 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
                 <Flex vertical gap={0}>
                     <Flex justify='space-between' gap={6}>
                         <Title level={5} className='m-0'>
-                            {edititem ? t("Edit Staff") : t('Add Staff')}
+                            {isEdit ? t("Edit Staff") : t('Add Staff')}
                         </Title>
                         <Button onClick={onClose} className='p-0 border-0 bg-transparent'>
                             <CloseOutlined className='fs-18' />
@@ -151,7 +164,7 @@ const AddEditStaffDrawer: React.FC<props> = ({visible,onClose,edititem}) => {
                                 placeholder={t("Enter email address")}
                             />
                         </Col>
-                        {!edititem && (
+                        {!isEdit && (
                             <Col span={24}>
                                 <MyInput
                                     label={t("Password")}

@@ -170,9 +170,13 @@ const staffColumn = (
                 <NavLink
                   to="#"
                   onClick={(e) => {
-                    e.preventDefault();
-                    setVisible(true);
-                    setEditItem(row);
+                  e.preventDefault();
+                  setModals((prev: any) => ({ ...prev, staffUpdate: true }));
+                  setTableSelectedIds((prev: any) => ({
+                    ...prev,
+                    staffSelectedId: row.id,
+                  }));
+                  setEditItem(row);
                   }}
                 >
                   {t("Edit")}
@@ -930,51 +934,35 @@ const serviceproviderColumn = (
 ): TableColumnsType<ServiceProviderType> => [
   {
     title: t("Provider Name"),
-    dataIndex: "providerName",
-    render: (providerName) => (
-      <Flex align="center" gap={10}>
-        <Avatar src={providerName?.img} size={35} />
-        <Text>{providerName?.name}</Text>
-      </Flex>
-    ),
+    dataIndex: "name",
   },
   {
     title: t("Contact-Person Name"),
-    dataIndex: "contactpersonName",
+    dataIndex: "contact_person_name",
   },
   {
-    title: t("Total Deliveries"),
-    dataIndex: "totalDeliveries",
+    title: t("Phone Number"),
+    dataIndex: "phone_number",
   },
   {
-    title: t("Registered Drivers"),
-    dataIndex: "regDrivers",
+    title: t("Email"),
+    dataIndex: "email",
   },
   {
     title: t("Cities"),
-    dataIndex: "cities",
-    render: (cities: CityType[]) => (
-      <Select
-        mode="multiple"
-        value={cities.map((city) => city.id.toString())}
-        options={cities.map((city) => ({
-          value: city.id.toString(),
-          label: city.name,
-        }))}
-        maxTagCount={1}
-        maxTagPlaceholder={(omittedValues) => `+ ${omittedValues.length}`}
-        disabled
-      />
+    dataIndex: "operating_cities",
+    render: (operating_cities: string[]) => (
+      <Text>{operating_cities?.join(", ") || "-"}</Text>
     ),
   },
   {
     title: t("Status"),
-    dataIndex: "status",
-    render: (status: string) =>
-      status === "active" ? (
-        <Text className="btnpill fs-12 success">{t("Active")}</Text>
+    dataIndex: "is_approved",
+    render: (is_approved: boolean) =>
+      is_approved ? (
+        <Text className="btnpill fs-12 success">{t("Approved")}</Text>
       ) : (
-        <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
+        <Text className="btnpill fs-12 inactive">{t("Rejected")}</Text>
       ),
   },
   {
@@ -1014,33 +1002,33 @@ const serviceproviderColumn = (
               ),
               key: "2",
             },
-            row?.status === "active"
+            row?.is_approved
               ? {
                   label: (
                     <NavLink
                       to="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        setStatusChanged(true);
+                        setStatusChanged(row?.id);
                       }}
                     >
-                      {t("Active")}
+                      {t("Rejected")}
                     </NavLink>
                   ),
                   key: "3",
                 }
               : null,
-            row?.status === "inactive"
+            !row?.is_approved
               ? {
                   label: (
                     <NavLink
                       to="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        setStatusChanged(true);
+                        setStatusChanged(row?.id);
                       }}
                     >
-                      {t("Inactive")}
+                      {t("Approved")}
                     </NavLink>
                   ),
                   key: "4",
@@ -1052,7 +1040,7 @@ const serviceproviderColumn = (
                   to="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    setDeleteItem(true);
+                    setDeleteItem(row?.id);
                   }}
                 >
                   {t("Delete")}
