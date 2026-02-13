@@ -22,8 +22,9 @@ const AllQboxesTable: React.FC = () => {
     setCurrent(page);
     setPageSize(size);
   };
-  const{modals, setModals, tableSelectedIds, setTableSelectedIds} = useGlobalContext();
-  const {QboxList, isLoadingQboxList, deleteQbox} = useQbox();
+  const isRTL = i18n.language === "ar";
+  const { modals, setModals, tableSelectedIds, setTableSelectedIds } = useGlobalContext();
+  const { QboxList, isLoadingQboxList, deleteQbox } = useQbox();
   const QboxData = Array.isArray(QboxList?.data?.items) ? QboxList?.data?.items : [];
   const TotalQboxes = QboxList?.data?.total || 0;
   const Cities = [
@@ -41,28 +42,30 @@ const AllQboxesTable: React.FC = () => {
     setCity(value);
   };
 
-  const handleQboxStatusChange = (value: any) => {
+  const handleQboxStatusChange = (value: number | null) => {
     setQboxstatus(value);
   };
-  const isRTL = i18n.language === "ar";
-  const handleQboxDelete =() =>{
-      if(!tableSelectedIds.qboxSelectedId) return;
-      deleteQbox(tableSelectedIds.qboxSelectedId, {
-        onSuccess:() =>{
-          setModals((prev) => ({...prev, qboxDelete:false}));
-          setTableSelectedIds((prev) => ({
-            ...prev,
-            qboxSelectedId:null
-          }))
-        },
-        onError: () =>{
-           setModals((prev) => ({...prev, qboxDelete:false}));
-          setTableSelectedIds((prev) => ({
-            ...prev,
-            qboxSelectedId:null
-          }))
-        }
-      })
+  
+  
+
+  const handleQboxDelete = () => {
+    if (!tableSelectedIds.qboxSelectedId) return;
+    deleteQbox(tableSelectedIds.qboxSelectedId, {
+      onSuccess: () => {
+        setModals((prev) => ({ ...prev, qboxDelete: false }));
+        setTableSelectedIds((prev) => ({
+          ...prev,
+          qboxSelectedId: null
+        }))
+      },
+      onError: () => {
+        setModals((prev) => ({ ...prev, qboxDelete: false }));
+        setTableSelectedIds((prev) => ({
+          ...prev,
+          qboxSelectedId: null
+        }))
+      }
+    })
   }
   return (
     <>
@@ -136,21 +139,26 @@ const AllQboxesTable: React.FC = () => {
             rowHoverable={false}
             pagination={false}
           />
-          <CustomPagination
-            total={TotalQboxes}
-            current={current}
-            pageSize={pageSize}
-            onPageChange={handlePageChange}
-          />
+          {
+            TotalQboxes > 10 && (
+              <CustomPagination
+                total={TotalQboxes}
+                current={current}
+                pageSize={pageSize}
+                onPageChange={handlePageChange}
+              />
+            )
+          }
+
         </Flex>
       </Card>
       <DeleteModal
-       title={t("Delete Account")}
+        title={t("Delete Account")}
         subtitle={t("Are you sure you want to delete")}
         visible={modals.qboxDelete}
         onConfirm={handleQboxDelete}
-        onClose={()=>
-          setModals((prev) => ({...prev, qboxDelete:false}))
+        onClose={() =>
+          setModals((prev) => ({ ...prev, qboxDelete: false }))
         }
       />
     </>
