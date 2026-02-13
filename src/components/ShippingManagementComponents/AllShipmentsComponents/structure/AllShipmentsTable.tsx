@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { Flex, Table, Form, Row, Col, Card, Typography } from "antd";
+import { useEffect, useState } from "react";
+import { useGlobalContext } from "../../../../context/globalContext";
+import { Flex, Table, Form, Row, Col, Card, Typography, Spin } from "antd";
 import { CustomPagination, ModuleTopHeading } from "../../../PageComponents";
 import { allpackagesColumn, allpackagesData } from "../../../../data";
+import api from "../../../../lib/axios";
 import { SearchInput, MySelect } from "../../../Forms";
 import { useNavigate } from "react-router-dom";
+import type { TableColumnsType } from "antd";
 import type { AllPackagesTypes } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
@@ -14,7 +17,10 @@ const AllShipmentsTable: React.FC = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
   const [seletedpackage, setSelectedpackage] = useState<number | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState(allpackagesData);
   const navigate = useNavigate();
+  const { setTableSelectedIds } = useGlobalContext();
   const handlePageChange = (page: number, size: number): void => {
     setCurrent(page);
     setPageSize(size);
@@ -25,10 +31,33 @@ const AllShipmentsTable: React.FC = () => {
     { id: 3, name: t("Return") },
   ];
 
-  const handlePackageChange = (value: any) => {
+  const handlePackageChange = (value: number | null) => {
     setSelectedpackage(value);
   };
   const isRTL = i18n.language === "ar";
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Replace '/shipments' with actual endpoint when available
+        const resp = await api.get("/shipments");
+        if (mounted && resp?.data) {
+          setData(resp.data);
+        }
+      } catch (err: unknown) {
+        // keep fallback static data on error
+        console.error(err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    fetchData();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <>
@@ -82,18 +111,20 @@ const AllShipmentsTable: React.FC = () => {
           </Form>
         </Flex>
         <Flex vertical gap={20}>
-          <Table<AllPackagesTypes>
-            size="large"
-            columns={allpackagesColumn({ navigate }, t)}
-            dataSource={allpackagesData}
-            className="pagination table-cs table"
-            showSorterTooltip={false}
-            scroll={{ x: 1300 }}
-            rowHoverable={false}
-            pagination={false}
-          />
+          <Spin spinning={loading} tip="Loading shipments...">
+            <Table<AllPackagesTypes>
+              size="large"
+                columns={allpackagesColumn({ navigate, setTableSelectedIds }, t) as unknown as TableColumnsType<AllPackagesTypes>}
+                dataSource={data}
+              className="pagination table-cs table"
+              showSorterTooltip={false}
+              scroll={{ x: 1300 }}
+              rowHoverable={false}
+              pagination={false}
+            />
+          </Spin>
           <CustomPagination
-            total={12}
+            total={Array.isArray(data) ? data.length : 0}
             current={current}
             pageSize={pageSize}
             onPageChange={handlePageChange}
