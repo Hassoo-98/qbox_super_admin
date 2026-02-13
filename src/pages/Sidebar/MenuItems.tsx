@@ -372,7 +372,7 @@ const MenuItems = ({ currentTab }: MenuItemsProps): MenuItem[] => {
       ),
 
       getItem(
-        t("QR Logs"),
+        t("Promotions"),
         "11",
         currentTab === "11" ? (
           <img

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { HomeownerService } from "../services/homeOwner.service";
 import { useParams } from "react-router-dom";
 interface GetAllHomeownersParams {
@@ -10,7 +10,6 @@ interface GetAllHomeownersParams {
     limit: number
 }
 export const useHomeowner = (params?: GetAllHomeownersParams) => {
-    const queryClient = useQueryClient();
    const { id } = useParams<{ id: string }>();
     const { data: HomeownerList, isLoading: isLoadingHomeownerList, error: HomeonwerListError } = useQuery({
         queryKey: ["homeonwer", params],
@@ -29,9 +28,6 @@ export const useHomeowner = (params?: GetAllHomeownersParams) => {
     // Delete Homeowner mutation
     const deleteMutation = useMutation({
         mutationFn: (id: string) => HomeownerService.deleteHomeowner(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["homeonwer"] });
-        },
     });
     return {
         HomeownerList,

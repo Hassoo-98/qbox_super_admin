@@ -38,8 +38,8 @@ import type {
 import type { Installment } from "../api/types/admin";
 import { statusColors } from "./statusColors";
 import { t } from "i18next";
-import type { HomeOwner, PackageItem, QboxItem } from "../types/AllQboxTypes";
-const { Text } = Typography;
+import type { HomeOwner, PackageItem, PromotionItem, QboxItem } from "../types/AllQboxTypes";
+const { Text, Paragraph } = Typography;
 
 const installmentColumn = ({
   setVisible,
@@ -1725,6 +1725,115 @@ const payoutrequestinvoiceColumn = (
   },
 ];
 
+const promotionColumn = ({
+  t,
+}: {
+  t: (key: string) => string;
+}): TableColumnsType<PromotionItem> => [
+  {
+    title: t("Code"),
+    dataIndex: "code",
+  },
+  {
+     title: t("Title"),
+    dataIndex: "title",
+  },
+   {
+     title: t("Description"),
+    dataIndex: "description",
+    render:(description:string)=>(
+      <Paragraph ellipsis={{
+        rows:1,
+        tooltip:description
+      }}>{description}</Paragraph>
+    )
+  },
+   {
+     title: t("Type"),
+    dataIndex: "promo_type",
+  },
+   {
+     title: t("Value"),
+    dataIndex: "value",
+  },
+   {
+     title: t("User Limit"),
+    dataIndex:"user_limit",
+  },
+ {
+  title: t("Merchant/Provider Name"),
+  dataIndex: "merchant_name",
+  key: "merchant_name",
+  render: (_: string, record: PromotionItem) => (
+    <Flex align="center" gap={10}>
+      <Avatar src={record.img} size={35} />
+      <Text>{record.merchant_name}</Text>
+    </Flex>
+  ),
+},
+{
+    title: t("Account Status"),
+    dataIndex: "is_active",
+    render: (is_active: boolean) =>
+      is_active === true ? (
+        <Text className="btnpill fs-12 success">{t("Active")}</Text>
+      ) : (
+        <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
+      ),
+  },
+  {
+     title: t("Start Date"),
+    dataIndex: "start_date",
+  },
+  {
+     title: t("End Date"),
+    dataIndex: "end_date",
+  },
+  {
+    title: t("Action"),
+    key: "action",
+    width: 100,
+    render: (_value, row: PromotionItem) => (
+      <Dropdown
+        menu={{
+          items: [
+            {
+              label: (
+                <NavLink
+                  to="#"
+                >
+                  {t("Active")}
+                </NavLink>
+              ),
+              key: "1",
+            },
+             {
+              label: (
+                <NavLink
+                  to="#"
+                >
+                  {t("Delete")}
+                </NavLink>
+              ),
+              key: "1",
+            },
+          ],
+        }}
+        trigger={["click"]}
+      >
+        <Button className="bg-transparent border-0 p-0">
+          <img
+            src="/assets/icons/dots.webp"
+            alt="dots icon"
+            fetchPriority="high"
+            width={16}
+          />
+        </Button>
+      </Dropdown>
+    ),
+  },
+];
+
 export {
   installmentColumn,
   staffColumn,
@@ -1748,4 +1857,5 @@ export {
   payouthistorypackagesColumn,
   payoutrequestColumn,
   payoutrequestinvoiceColumn,
+  promotionColumn
 };

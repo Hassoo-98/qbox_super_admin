@@ -36,6 +36,9 @@ const RequestsQueuePage = lazy(() =>
 const StaffsPage = lazy(() =>
   import("../StaffsPage").then((m) => ({ default: m.StaffsPage })),
 );
+const PromotionPage = lazy(() =>
+import("../PromotionPage").then((m) => ({default: m.PromotionPage})),
+);
 const ActivitylogPage = lazy(() =>
   import("../ActivitylogPage").then((m) => ({ default: m.ActivitylogPage })),
 );
@@ -120,7 +123,7 @@ const Sidebar: React.FC = () => {
                         ? "10"
                         : tab === "rolepermissions"
                           ? "11"
-                          : tab === "qrlogs"
+                          : tab === "promotions"
                             ? "12"
                             : tab === "settingpage"
                               ? "13"
@@ -171,7 +174,7 @@ const Sidebar: React.FC = () => {
         navigate("/rolepermissions", { replace: true });
         break;
        case "11":
-        navigate("/qrlogs", { replace: true });
+        navigate("/promotions", { replace: true });
         break;
       case "12":
         navigate("/settingpage", { replace: true });
@@ -340,6 +343,7 @@ const Sidebar: React.FC = () => {
                 element={<SingleviewRelocationApprovalDetails />}
               />
               <Route path="/staffs" element={<StaffsPage />} />
+              <Route path="/promotions" element={<PromotionPage/>}/>
               <Route
                 path="/installementpending"
                 element={<InstallmentPendingPage />}

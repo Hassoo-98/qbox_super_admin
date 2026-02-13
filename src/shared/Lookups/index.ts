@@ -67,6 +67,37 @@ const packageItem = (t: any) => [
     label: t("Return"),
   },
 ];
+
+const serviceprovider = (t: any) => [
+  {
+    id: 1,
+    name: t("Provider 1"),
+  },
+  {
+    id: 2,
+    name: t("Provider 2"),
+  },
+];
+const promotiontype = (t: any) => [
+  {
+    id: 1,
+    name: t("Percentage"),
+  },
+  {
+    id: 2,
+    name: t("Flat"),
+  },
+];
+const status = (t: any) => [
+  {
+    id: 1,
+    name: t("Active"),
+  },
+  {
+    id: 2,
+    name: t("Inactive"),
+  },
+];
 export {
   statusItems,
   staffrole,
@@ -74,4 +105,7 @@ export {
   citiesOp,
   markuptypeOp,
   packageItem,
+  serviceprovider,
+  promotiontype,
+  status
 };
