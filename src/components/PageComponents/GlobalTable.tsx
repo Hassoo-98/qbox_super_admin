@@ -67,7 +67,7 @@ export const GlobalTable = <T extends object>({
           pagination={false}
           {...props}
         />
-        {paginationProps && (
+        {paginationProps &&  paginationProps.total > 10 && (
           <CustomPagination
             total={paginationProps.total}
             current={paginationProps.current}

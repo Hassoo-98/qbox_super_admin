@@ -13,25 +13,18 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useHomeowner } from "../../../../hooks/useHomeOwner";
 import { useGlobalContext } from "../../../../context/globalContext";
-
+import { useQueryClient } from "@tanstack/react-query";
 const HomeOwnersTable: React.FC = () => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
-
+  const queryClient = useQueryClient();
   // Real Data Hook
-  const { HomeownerList, isLoadingHomeownerList, HomeonwerListError, homeOwnerChangeStatus, isHomeOwnerChangingStatus, deleteHomeowner, RefetchHomeownerList } = useHomeowner();
-  const HomeonwerData = Array.isArray(HomeownerList?.data?.items) ? HomeownerList?.data?.items : [];
-  const totalHomeonwers = HomeownerList?.data?.total || 0;
+  const { HomeownerList, isLoadingHomeownerList, HomeownerListError, homeOwnerChangeStatus, isHomeOwnerChangingStatus, deleteHomeowner } = useHomeowner();
+  const HomeownerData = Array.isArray(HomeownerList?.data?.items) ? HomeownerList?.data?.items : [];
+  const totalHomeowners = HomeownerList?.data?.total || 0;
 
-  // const [activeModal, setActiveModal] = useState<boolean>(false);
-  // const [inactiveModal, setInactiveModal] = useState<boolean>(false);
-  // const [deleteItem, setDeleteItem] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
-  // const [itemToDelete, setItemToDelete] = useState<HomerOwnerTypes | null>(
-  //   null,
-  // );
-
   const [selectedCity, setselectedCity] = useState<
     number | string | undefined
   >();
@@ -88,7 +81,7 @@ const HomeOwnersTable: React.FC = () => {
       {
         onSuccess: () => {
           message.success("Home owner status changed"),
-          RefetchHomeownerList(),
+          queryClient.invalidateQueries({queryKey:["homeowner"]}),
           setModals((prev: any) => ({ ...prev, homeOwnerStatus: false })),
           setTableSelectedIds((perv: any) => ({ ...perv, homeOwnerSelectedId: null }))
         }
@@ -183,10 +176,10 @@ const HomeOwnersTable: React.FC = () => {
           setSelectedRowStatus,
           t,
         })}
-        dataSource={HomeonwerData as any}
+        dataSource={HomeownerData as any}
         rowKey="key"
         paginationProps={{
-          total: totalHomeonwers,
+          total: totalHomeowners,
           current: current,
           pageSize: pageSize,
           onPageChange: handlePageChange,
