@@ -40,7 +40,7 @@ const ConfirmModal: React.FC<ActiveModalProps> = ({
           >
             {t("Cancel")}
           </Button>
-          <Button className={`btnsave border-0 text-white ${title === "Inactivate Account"  ? "bg-delivery-failed" : ""}  bg-slate-blue`}
+          <Button className={`btnsave border-0 text-white ${img === "inactive.png"  ? "bg-delivery-failed" : ""}  bg-slate-blue`}
           onClick={onConfirm}
           >
             {t("Confirm")}

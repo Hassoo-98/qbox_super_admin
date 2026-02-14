@@ -82,7 +82,7 @@ const HomeOwnersTable: React.FC = () => {
         onSuccess: () => {
           message.success("Home owner status changed"),
           queryClient.invalidateQueries({queryKey:["homeowner"]}),
-          setModals((prev: any) => ({ ...prev, homeOwnerStatus: false })),
+          setModals((prev: any) => ({ ...prev, statusModal: false })),
           setTableSelectedIds((perv: any) => ({ ...perv, homeOwnerSelectedId: null }))
         }
       }
@@ -186,15 +186,15 @@ const HomeOwnersTable: React.FC = () => {
         }}
       />
       <ConfirmModal
-        visible={modals.homeOwnerStatus}
-        img={selectedRowStatus?.homeownerCurrentStatus ? "inactive.png" : "active.png"}
-        title={selectedRowStatus?.homeownerCurrentStatus ? t("Inactivate Account") : t("Activate Account")}
-        desc={selectedRowStatus?.homeownerCurrentStatus ? t("Are you sure you want to inactive this account?") : t("Are you sure you want to active this account?")}
+        visible={modals.statusModal}
+        img={selectedRowStatus?.currentStatus ? "inactive.png" : "active.png"}
+        title={selectedRowStatus?.currentStatus ? t("Inactivate Account") : t("Activate Account")}
+        desc={selectedRowStatus?.currentStatus ? t("Are you sure you want to inactive this account?") : t("Are you sure you want to active this account?")}
         onClose={() => {
-          setModals((prev) => ({ ...prev, homeOwnerStatus: false }));
+          setModals((prev) => ({ ...prev, statusModal: false }));
           setTableSelectedIds((prev) => ({ ...prev, homeOwnerSelectedId: null }));
         }}
-        onConfirm={() => changeStatus(selectedRowStatus?.homeownerCurrentStatus)}
+        onConfirm={() => changeStatus(selectedRowStatus?.currentStatus)}
       />
       {/* <ActiveModal
         visible={modals.homeOwnerStatus}
