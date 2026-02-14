@@ -1,9 +1,17 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
-import type { PromotionParams } from "../types/AllQboxTypes"
+import { useMutation, useQuery, } from "@tanstack/react-query"
+import type { PromotionItem, PromotionParams } from "../types/AllQboxTypes"
 import { PromotionService } from "../services/promotion.service"
 import { useParams } from "react-router-dom"
 export const usePromotion = (params?: PromotionParams) => {
     const { id } = useParams<{ id: string }>();
+
+    const createMutation = useMutation({
+        mutationFn:(payload:PromotionItem)=> PromotionService.creatPromotion(payload),
+    })
+
+    const updateMutation = useMutation({
+        mutationFn:({id, payload}:{id:string,payload:PromotionItem})=> PromotionService.updatePromotion(id,payload),
+    })
     const { data: promotionList, isLoading: isLoadingPromotion, isError: promotionListError } = useQuery({
         queryKey: ["promotion"],
         queryFn: () => PromotionService.getAllPromotion(params as PromotionParams),
@@ -18,7 +26,7 @@ export const usePromotion = (params?: PromotionParams) => {
     })
 
     const deleteMutation = useMutation({
-        mutationFn: ({ id }: { id: string }) => PromotionService.deletePromotion(id)
+        mutationFn: (id:string) => PromotionService.deletePromotion(id)
     })
     return {
         // all promotions 
@@ -30,7 +38,12 @@ export const usePromotion = (params?: PromotionParams) => {
         promotionChangeStatus: changeStatusMutation.mutate,
         isPromotionChangingStatus: changeStatusMutation.isPending,
         promotionChangeStatusError:changeStatusMutation.isError,
-        deletePromotion: deleteMutation.mutate
+        deletePromotion: deleteMutation.mutate,
+
+        // Create & Update 
+        createPromotion: createMutation.mutateAsync,
+        updatePromotion: updateMutation.mutateAsync,
+
     }
 
 }

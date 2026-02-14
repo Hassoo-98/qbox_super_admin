@@ -1,14 +1,16 @@
-import { Typography, Card, Flex, Table, Form, Row, Col, Button } from "antd";
+import { Typography, Card, Flex, Table, Form, Row, Col, Button, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Dayjs } from "dayjs";
-import { CustomPagination, ModuleTopHeading } from "../../../PageComponents";
+import { ConfirmModal, CustomPagination, DeleteModal, ModuleTopHeading } from "../../../PageComponents";
 import { MyDatepicker, SearchInput, } from "../../../Forms";
 import type { PromotionItem } from "../../../../types/AllQboxTypes";
-import { promotionColumn, promotionData } from "../../../../data";
+import { promotionColumn } from "../../../../data";
 import { AddEditPromotion } from "../modal";
 import { usePromotion } from "../../../../hooks/usePromotion";
+import { useGlobalContext } from "../../../../context/globalContext";
+import { useQueryClient } from "@tanstack/react-query";
 const { Text } = Typography;
 const PromotionTable = () => {
     const [form] = Form.useForm();
@@ -23,9 +25,50 @@ const PromotionTable = () => {
         setPageSize(size);
     };
     const { t } = useTranslation();
-    const { promotionList, isLoadingPromotion, promotionListError } = usePromotion();
+    const queryClient = useQueryClient();
+    const { promotionList, isLoadingPromotion, promotionListError, promotionChangeStatus, deletePromotion } = usePromotion();
     const PromotionData = Array.isArray(promotionList?.data?.items) ? promotionList?.data?.items : [];
     const TotalPromotion = promotionList?.data?.total || 0;
+    const { modals, setModals, tableSelectedIds, setTableSelectedIds, selectedRowStatus, setSelectedRowStatus } = useGlobalContext();
+
+    const changeStatus = (currentStatus: boolean | null) => {
+        if (!tableSelectedIds.promotionSelectedId) {
+            message.error("promotion  is not selected");
+            return;
+        }
+        promotionChangeStatus(
+            { id: tableSelectedIds.promotionSelectedId, payload: { is_active: !currentStatus } },
+            {
+                onSuccess: () => {
+                    message.success("promotion status changed"),
+                        queryClient.invalidateQueries({ queryKey: ["promotion"] }),
+                        setModals((prev: any) => ({ ...prev, statusModal: false })),
+                        setTableSelectedIds((perv: any) => ({ ...perv, promotionSelectedId: null }))
+                }
+            }
+        );
+    };
+
+    const handlePromotionDelete = () => {
+        if (!tableSelectedIds?.promotionSelectedId) return;
+        deletePromotion(tableSelectedIds.promotionSelectedId, {
+            onSuccess: () => {
+                setModals((prev) => ({ ...prev, deleteModal: false }));
+                queryClient.invalidateQueries({ queryKey: ["promotion"] }),
+                setTableSelectedIds((prev) => ({
+                    ...prev,
+                    promotionSelectedId: null
+                }))
+            },
+            onError: () => {
+                setModals((prev) => ({ ...prev, deleteModal: false }));
+                setTableSelectedIds((prev) => ({
+                    ...prev,
+                    promotionSelectedId: null
+                }))
+            }
+        })
+    }
     return (
         <>
             <Card className="radius-12 border-gray card-cs h-100">
@@ -80,7 +123,12 @@ const PromotionTable = () => {
                     <Table<PromotionItem>
                         size="large"
                         columns={promotionColumn(
-                            { t }
+                            {
+                                setModals,
+                                setTableSelectedIds,
+                                setSelectedRowStatus,
+                                t
+                            }
                         )}
                         dataSource={PromotionData}
                         className="pagination table-cs table"
@@ -88,18 +136,19 @@ const PromotionTable = () => {
                         scroll={{ x: 1600 }}
                         rowHoverable={false}
                         pagination={false}
+                        loading={isLoadingPromotion}
                     />
                     {
-                        TotalPromotion >10 && (
+                        TotalPromotion > 10 && (
                             <CustomPagination
-                        total={TotalPromotion}
-                        current={current}
-                        pageSize={pageSize}
-                        onPageChange={handlePageChange}
-                    />
+                                total={TotalPromotion}
+                                current={current}
+                                pageSize={pageSize}
+                                onPageChange={handlePageChange}
+                            />
                         )
                     }
-                    
+
                 </Flex>
             </Card>
             <AddEditPromotion
@@ -108,6 +157,27 @@ const PromotionTable = () => {
                 onClose={() => setVisible(false)}
                 onConfirm={() => setVisible(false)}
 
+            />
+            <ConfirmModal
+                visible={modals.statusModal}
+                img={selectedRowStatus?.currentStatus ? "inactive.png" : "active.png"}
+                title={selectedRowStatus?.currentStatus ? t("Inactivate Promotion") : t("Activate Promotion")}
+                desc={selectedRowStatus?.currentStatus ? t("Are you sure you want to inactive this promotion?") : t("Are you sure you want to active this promotion?")}
+                onClose={() => {
+                    setModals((prev) => ({ ...prev, statusModal: false }));
+                    setTableSelectedIds((prev) => ({ ...prev, promotionSelectedId: null }));
+                }}
+                onConfirm={() => changeStatus(selectedRowStatus?.currentStatus)}
+            />
+            <DeleteModal
+                title={t("Delete Promotion")}
+                subtitle={t("Are you sure you want to delete")}
+                visible={modals.deleteModal}
+                // item={itemToDelete}
+                onConfirm={handlePromotionDelete}
+                onClose={() =>
+                    setModals((prev) => ({ ...prev, deleteModal: false }))
+                }
             />
         </>
     );

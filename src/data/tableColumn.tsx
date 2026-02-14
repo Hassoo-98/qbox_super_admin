@@ -436,10 +436,10 @@ const homeownersColumn = ({
               to="#"
               onClick={()=>
               (
-                setModals((prev:any)=>({...prev,homeOwnerStatus:true})),
+                setModals((prev:any)=>({...prev,statusModal:true})),
                 setTableSelectedIds((perv:any)=>({...perv,homeOwnerSelectedId:row.id})),
                 setSelectedRowStatus({
-                    homeownerCurrentStatus: row.is_active, 
+                    currentStatus: row.is_active, 
                   })
               
               )
@@ -693,7 +693,7 @@ const allpackagesColumn = (
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_, row: AllPackagesTypes) => {
+    render: (row: AllPackagesTypes) => {
       const items: MenuProps["items"] = [
         {
             label: (
@@ -1732,8 +1732,14 @@ const payoutrequestinvoiceColumn = (
 ];
 
 const promotionColumn = ({
+  setModals,
+  setSelectedRowStatus,
+  setTableSelectedIds,
   t,
 }: {
+  setModals: any,
+  setSelectedRowStatus: any,
+  setTableSelectedIds: any,
   t: (key: string) => string;
 }): TableColumnsType<PromotionItem> => [
   {
@@ -1772,7 +1778,7 @@ const promotionColumn = ({
   key: "merchant_name",
   render: (_: string, record: PromotionItem) => (
     <Flex align="center" gap={10}>
-      <Avatar src={record.img} size={35} />
+      <Avatar src={record.merchant_img_url} size={35} />
       <Text>{record.merchant_name}</Text>
     </Flex>
   ),
@@ -1804,25 +1810,43 @@ const promotionColumn = ({
         menu={{
           items: [
             {
-              label: (
-                <NavLink
-                  to="#"
-                >
-                  {t("Active")}
-                </NavLink>
-              ),
-              key: "1",
-            },
-             {
-              label: (
-                <NavLink
-                  to="#"
-                >
-                  {t("Delete")}
-                </NavLink>
-              ),
-              key: "1",
-            },
+          label: (
+            <NavLink
+              to="#"
+              onClick={()=>
+              (
+                setModals((prev:any)=>({...prev,statusModal:true})),
+                setTableSelectedIds((perv:any)=>({...perv,promotionSelectedId:row.id})),
+                setSelectedRowStatus({
+                    currentStatus: row.is_active, 
+                  })
+              
+              )
+              }
+            >
+              {row?.is_active ? "Inactive" : "Active"}
+            </NavLink>
+          ),
+          key: "1",
+        },
+        {
+          label: (
+            <NavLink
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setModals((prev:any) =>({...prev, deleteModal:true}));
+                setTableSelectedIds((prev:any) => ({
+                  ...prev,
+                  promotionSelectedId:row.id,
+                }))
+              }}
+            >
+              {t("Delete")}
+            </NavLink>
+          ),
+          key: "2",
+        },
           ],
         }}
         trigger={["click"]}
