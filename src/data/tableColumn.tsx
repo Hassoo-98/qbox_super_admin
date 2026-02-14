@@ -624,11 +624,14 @@ const allqboxesColumn = ({
 ];
 
 const allpackagesColumn = (
-  { navigate,
+  {
+    navigate,
     setTableSelectedIds,
-   }: { 
-    navigate: (path: string) => void 
-    setTableSelectedIds:any,
+    viewHandler,
+  }: {
+    navigate: (path: string) => void;
+    setTableSelectedIds: any;
+    viewHandler?: (id: number, row?: any) => Promise<void> | void;
   },
   t: (key: string) => string,
 ): TableColumnsType<PackageItem> => [
@@ -693,23 +696,34 @@ const allpackagesColumn = (
     render: (_, row: AllPackagesTypes) => {
       const items: MenuProps["items"] = [
         {
-          label: (
-            <NavLink
-              to="/"
-              onClick={(e) => {
-                e.preventDefault();
-                setTableSelectedIds((prev:any) =>({
-                  ...prev,
-                  packageSelectedId:row.id
-                }))
-                navigate(
-                  "/allqboxes/view/qboxallpackages/detailview/" + row?.id,
-                );
-              }}
-            >
-              {t("View")}
-            </NavLink>
-          ),
+            label: (
+              <NavLink
+                to="/"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  // call optional view handler (e.g., prefetch) then navigate
+                  if (viewHandler) {
+                    try {
+                      await viewHandler(row.id, row);
+                    } catch (err) {
+                      // swallow - allow navigation even if prefetch fails
+                      // consumer can handle errors inside viewHandler
+                    }
+                  } else {
+                    setTableSelectedIds((prev: any) => ({
+                      ...prev,
+                      packageSelectedId: row.id,
+                    }));
+                  }
+
+                  navigate(
+                    "/allqboxes/view/qboxallpackages/detailview/" + row?.id,
+                  );
+                }}
+              >
+                {t("View")}
+              </NavLink>
+            ),
           key: "1",
         },
       ];
