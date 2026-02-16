@@ -11,7 +11,7 @@ import type { staffType } from "../../../../types";
 import { staffColumn } from "../../../../data";
 import { AddEditStaffDrawer } from "../modal";
 import { useTranslation } from "react-i18next";
-import { statusItems } from "../../../../shared";
+import { statusItems, staffrole } from "../../../../shared";
 import i18n from "../../../../sources/i18n";
 import { useStaff } from "../../../../hooks/useStaff";
 import { useGlobalContext } from "../../../../context/globalContext";
@@ -70,24 +70,33 @@ const StaffsTable: React.FC = () => {
     setTableSelectedIds,
   } = useGlobalContext();
 
+  // normalize possible API response shapes: { data: { items, total } }, { items, total }, { data: { results, count } }
   const staffData = Array.isArray(staffList?.data?.items)
     ? staffList.data.items
+    : Array.isArray((staffList as any)?.items)
+    ? (staffList as any).items
+    : Array.isArray(staffList?.data?.results)
+    ? staffList.data.results
     : [];
 
-  const totalStaff = staffList?.total || 0;
+  const totalStaff =
+    (staffList as any)?.data?.total ??
+    (staffList as any)?.total ??
+    (staffList as any)?.data?.count ??
+    0;
   
 
 
-  const roleItems = [
-    { id: "supervisor", name: t("Supervisor") },
+  const roleItems = staffrole(t).map((r) => ({ id: r.id, name: r.value })).concat([
     { id: "admin", name: t("Admin") },
-    { id: "agent", name: t("Agent") },
-  ];
+    { id: "supervisor", name: t("Supervisor") },
+  ]);
 
-  const statusOptions = statusItems(t).map((item) => ({
-    id: item.key,
-    name: item.label,
-  }));
+  // API expects is_active as a boolean-like value. We send 'true'/'false' strings.
+  const statusOptions = [
+    { id: "true", name: t("Active") },
+    { id: "false", name: t("Inactive") },
+  ];
 
   const handlePageChange = (page: number, size: number): void => {
     setCurrent(page);
