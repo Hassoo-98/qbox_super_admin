@@ -7,10 +7,11 @@ import type { Shipment } from "../services/allshippment.service";
 interface GetAllShipmentParams {
   search?: string;
   ordering?: string;
-  package_type?: number | null;
+  package_type?: string | null;
   shipment_status?: string;
   page?: number;
   limit?: number;
+
 }
 
 export const useShipment = (params?: GetAllShipmentParams) => {

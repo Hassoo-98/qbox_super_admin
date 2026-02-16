@@ -6,6 +6,8 @@ interface GetAllShipmentParams {
   ordering?: string;
   page?: number;
   limit?: number;
+  package_type?: string | null;
+  shipment_status?: string;
 }
 
 export interface Shipment {
@@ -15,7 +17,7 @@ export interface Shipment {
   customer_name: string;
   customer_phone: string;
   shipment_status: string;
-  package_type: number;
+  package_type: string;
   total_amount: string;
   created_at: string;
   updated_at: string;
