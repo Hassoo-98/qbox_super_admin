@@ -19,7 +19,7 @@ export const PromotionService = {
         payload: PromotionItem | Partial<PromotionItem>,
     ) : Promise<CrudPromotionResponse> =>{
         try{
-            const {data} = await api.put(`/promotion/${id}/update`, payload);
+            const {data} = await api.put(`/promotion/${id}/`, payload);
             return data;
         }catch(error){
             normalizeApiError(error);

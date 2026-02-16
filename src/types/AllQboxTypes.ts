@@ -190,14 +190,14 @@ export interface PromotionParams{
 }
 
 export interface PromotionItem {
-  id: string,
+  id?: string,
   code?: string,
   title: string,
   description: string,
   promo_type: "Flat" | "Percentage",
   value?: string,
   user_limit: string,
-  merchant_provider_name: string,
+  merchant_name: string,
   merchant_img_url?: string,
   is_active: boolean,
   start_date: string,

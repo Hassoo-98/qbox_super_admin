@@ -17,6 +17,7 @@ const PromotionTable = () => {
     const [visible, setVisible] = useState<boolean>();
     const [current, setCurrent] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
+    const [editItem, setEditItem] = useState<PromotionItem | null>(null);
     const [selectedYear, setSelectedYear] = useState<[Dayjs, Dayjs] | undefined>(
         undefined,
     );
@@ -127,6 +128,8 @@ const PromotionTable = () => {
                                 setModals,
                                 setTableSelectedIds,
                                 setSelectedRowStatus,
+                                setEditItem,
+                                setVisible,
                                 t
                             }
                         )}
@@ -153,9 +156,9 @@ const PromotionTable = () => {
             </Card>
             <AddEditPromotion
                 visible={visible}
-                title="Add Modal"
+                title={editItem ? "Edit Promotion" : "Add Promotion"}
                 onClose={() => setVisible(false)}
-                onConfirm={() => setVisible(false)}
+                edititem={editItem}
 
             />
             <ConfirmModal

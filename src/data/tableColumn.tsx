@@ -1735,11 +1735,15 @@ const promotionColumn = ({
   setModals,
   setSelectedRowStatus,
   setTableSelectedIds,
+  setEditItem,
+  setVisible,
   t,
 }: {
   setModals: any,
   setSelectedRowStatus: any,
   setTableSelectedIds: any,
+  setEditItem:(item: PromotionItem | null) => void,
+  setVisible: (value: boolean) => void;
   t: (key: string) => string;
 }): TableColumnsType<PromotionItem> => [
   {
@@ -1830,6 +1834,19 @@ const promotionColumn = ({
           key: "1",
         },
         {
+          label:(
+            <NavLink to="#"
+            onClick={()=> {
+              setEditItem(row);
+              setVisible(true);
+            }}
+            >
+              Edit
+            </NavLink>
+          ),
+          key: "2",
+        },
+        {
           label: (
             <NavLink
               to="#"
@@ -1845,7 +1862,7 @@ const promotionColumn = ({
               {t("Delete")}
             </NavLink>
           ),
-          key: "2",
+          key: "3",
         },
           ],
         }}
