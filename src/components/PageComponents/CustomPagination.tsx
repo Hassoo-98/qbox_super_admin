@@ -25,6 +25,9 @@ export const CustomPagination: React.FC<CustomPaginationProps> = ({
      
        
 
+  // hide pagination when total records less than 100
+  if (typeof total === "number" && total < 100) return null;
+
   const itemRender: PaginationProps["itemRender"] = (
     page,
     type,
