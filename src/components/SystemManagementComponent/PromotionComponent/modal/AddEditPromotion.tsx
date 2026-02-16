@@ -1,63 +1,81 @@
+import { useEffect } from "react";
 import { Modal, Button, Flex, Form, message } from "antd";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
 import { MyDatepicker, MyInput, MySelect } from "../../../Forms";
 import { promotiontype, serviceprovider, status } from "../../../../shared";
 import { usePromotion } from "../../../../hooks/usePromotion";
+import type { PromotionItem } from "../../../../types/AllQboxTypes";
+import dayjs from "dayjs";
 interface AddEditModalProps {
     visible?: boolean;
     onClose: () => void;
     title: string;
-    onConfirm: () => void;
+    edititem: PromotionItem | null;
 }
 
 const AddEditPromotion: React.FC<AddEditModalProps> = ({
     visible,
     onClose,
     title,
-    onConfirm
+    edititem
 }) => {
     const { t } = useTranslation();
     const isRTL = i18n.language === "ar";
     const [form] = Form.useForm()
-    const { createPromotion } = usePromotion();
+    const { createPromotion, updatePromotion } = usePromotion();
+
+    useEffect(() => {
+        if (edititem) {
+            form.setFieldsValue({
+                title: edititem.title,
+                description: edititem.description,
+                promo_type: edititem.promo_type,
+                user_limit: edititem.user_limit,
+                merchant_provider_name: edititem.merchant_name,
+                is_active: edititem.is_active ? 1 : 0,
+                start_date: dayjs(edititem.start_date),
+                end_date: dayjs(edititem.end_date),
+            });
+        } else {
+            form.resetFields();
+        }
+    }, [edititem, form]);
 
     const handleSubmit = async (values: any) => {
         try {
             const selectedProvider = serviceprovider(t).find(
                 (item) => item.id === values.merchant_provider_name
             );
-
             const selectedPromoType = promotiontype(t).find(
                 (item) => item.id === values.promo_type
             );
-
             const payload = {
                 title: values.title,
                 description: values.description,
                 promo_type: selectedPromoType?.name,
-
                 user_limit: values.user_limit?.toString(),
-                merchant_provider_name: selectedProvider?.name,
+                merchant_name: selectedProvider?.name,
                 is_active: values.is_active === 1 ? true : false,
                 start_date: values.start_date?.format("YYYY-MM-DD"),
                 end_date: values.end_date?.format("YYYY-MM-DD"),
             };
-
-            console.log("Final Payload:", payload); 
-
-            await createPromotion(payload);
-            message.success("Promotion Created Successfully");
+            if (edititem?.id) {
+                await updatePromotion({
+                    id:edititem?.id,
+                    payload
+                });
+            } else {
+                await createPromotion(payload);
+                message.success("Promotion Created Successfully");
+            }
             onClose();
             form.resetFields();
-
         } catch (error: any) {
             console.log("Backend Error:", error?.response?.data);
             message.error(error?.response?.data?.detail || "Error Occurred");
         }
     };
-
-
 
     return (
         <Modal
@@ -78,7 +96,7 @@ const AddEditPromotion: React.FC<AddEditModalProps> = ({
                         className="btnsave border-0 text-white bg-slate-blue"
                         onClick={() => form.submit()}
                     >
-                        {t("Save")}
+                        {edititem ? t("Update") : t("Save")}
                     </Button>
                 </Flex>
             }
@@ -132,7 +150,7 @@ const AddEditPromotion: React.FC<AddEditModalProps> = ({
                     />
                     <MySelect
                         label={t("Provider")}
-                        name="merchant_provider_name"
+                        name="merchant_name"
                         message={t("Please choose service provider")}
                         options={serviceprovider(t)}
                         placeholder={t("Select Service Provider")}
