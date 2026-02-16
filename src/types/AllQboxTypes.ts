@@ -1,12 +1,12 @@
 
 // Homeowners Types 
-export interface GetAllHomeownersParams{
-    search:string,
-    is_active:string,
-    is_verified:string,
-    ordering:string,
-    page:number,
-    limit:number
+export interface GetAllHomeownersParams {
+  search: string,
+  is_active: string,
+  is_verified: string,
+  ordering: string,
+  page: number,
+  limit: number
 }
 
 export interface Address {
@@ -74,11 +74,11 @@ export interface GetSingleOrDeleteOrStatusResponse {
 
 // Packages Interfaces 
 
-export interface PackageParams{
- search:string;
- ordering:string;
- page:number;
- limit:number;
+export interface PackageParams {
+  search: string;
+  ordering: string;
+  page: number;
+  limit: number;
 }
 
 export interface PackageDetails {
@@ -90,7 +90,7 @@ export interface PackageDetails {
 }
 
 export interface PackageItem {
- id: string;
+  id: string;
   qbox: string;
   tracking_id: string;
   merchant_name: string;
@@ -133,37 +133,37 @@ export interface AllPackagesTableProps {
 
 // Qbox Interfaces 
 
-export interface QboxParams{
-    search:string;
-    ordering:string;
-    page:number;
-    limit:number;
+export interface QboxParams {
+  search: string;
+  ordering: string;
+  page: number;
+  limit: number;
 }
 
-export interface QboxItem{
-    id:string;
-    qbox_id:string;
-    homeowner:string;
-    homeowner_name_snapshot:string;
-    short_address_snapshot:string;
-    city_snapshot:string;
-    status:string;
-    led_indicator:string;
-    camera_status:string;
-    last_online:string;
-    activation_date:string;
-    qbox_image:string;
-    created_at:string;
-    updated_at:string;
-    packages:PackageItem[];
+export interface QboxItem {
+  id: string;
+  qbox_id: string;
+  homeowner: string;
+  homeowner_name_snapshot: string;
+  short_address_snapshot: string;
+  city_snapshot: string;
+  status: string;
+  led_indicator: string;
+  camera_status: string;
+  last_online: string;
+  activation_date: string;
+  qbox_image: string;
+  created_at: string;
+  updated_at: string;
+  packages: PackageItem[];
 }
 
-export interface QboxData{
-items: QboxItem[];
-total:number;
-page:number;
-limit:number;
-hasMore:boolean;
+export interface QboxData {
+  items: QboxItem[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
 }
 
 export interface GetAllQboxResponse {
@@ -177,5 +177,50 @@ export interface CrudQboxResponse {
   success: boolean;
   statusCode: number;
   data: QboxItem;
+  message: string;
+}
+
+export interface PromotionParams{
+ search: string,
+ promo_type:string,
+ is_active:boolean,
+ merchant_provider:string,
+ page:number,
+ page_size:number,
+}
+
+export interface PromotionItem {
+  id: string,
+  code?: string,
+  title: string,
+  description: string,
+  promo_type: "Flat" | "Percentage",
+  value?: string,
+  user_limit: string,
+  merchant_provider_name: string,
+  merchant_img_url?: string,
+  is_active: boolean,
+  start_date: string,
+  end_date: string,
+}
+
+export interface PromotionData {
+  items: PromotionItem[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+}
+
+export interface GetAllPromotionResponse{
+  success: boolean;
+  statusCode: number;
+  data: PromotionData;
+  message: string;
+}
+export interface CrudPromotionResponse{
+  success: boolean;
+  statusCode: number;
+  data: PromotionItem;
   message: string;
 }

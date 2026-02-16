@@ -36,6 +36,9 @@ const RequestsQueuePage = lazy(() =>
 const StaffsPage = lazy(() =>
   import("../StaffsPage").then((m) => ({ default: m.StaffsPage })),
 );
+const PromotionPage = lazy(() =>
+  import("../PromotionPage").then((m) => ({ default: m.PromotionPage })),
+);
 const ActivitylogPage = lazy(() =>
   import("../ActivitylogPage").then((m) => ({ default: m.ActivitylogPage })),
 );
@@ -99,41 +102,41 @@ const Sidebar: React.FC = () => {
     let tab = location?.pathname?.split("/")[1];
     tab =
       tab === ""
-        ? "2"
+        ? "1"
         : tab === "homeowners" || tab === "homeowners/homeownersdetails"
-          ? "3"
+          ? "2"
           : tab === "requestsqueue" ||
-              tab === "requestsqueue/accountapprovaldetails" ||
-              tab === "requestsqueue/relocationapprovaldetails"
-            ? "4"
+            tab === "requestsqueue/accountapprovaldetails" ||
+            tab === "requestsqueue/relocationapprovaldetails"
+            ? "3"
             : tab === "allqboxes"
-              ? "5"
+              ? "4"
               : tab === "installementpending"
-                ? "6"
+                ? "5"
                 : tab === "serviceproviders"
-                  ? "7"
+                  ? "6"
                   : tab === "allshipments"
-                    ? "8"
+                    ? "7"
                     : tab === "serviceproviderrequest"
-                      ? "9"
+                      ? "8"
                       : tab === "staffs"
-                        ? "10"
+                        ? "9"
                         : tab === "rolepermissions"
-                          ? "11"
-                          : tab === "qrlogs"
-                            ? "12"
+                          ? "10"
+                          : tab === "promotions"
+                            ? "11"
                             : tab === "settingpage"
-                              ? "13"
+                              ? "12"
                               : tab === "activitylogs"
-                                ? "14"
+                                ? "13"
                                 : tab === "subscriptionmanagement"
-                                  ? "15"
+                                  ? "14"
                                   : tab === "revenue"
-                                    ? "16"
+                                    ? "15"
                                     : tab === "payouthistory"
-                                      ? "17"
+                                      ? "16"
                                       : tab === "payoutrequests"
-                                        ? "18"
+                                        ? "17"
                                         : "1";
     setCurrentTab(tab);
   }, [location]);
@@ -170,8 +173,8 @@ const Sidebar: React.FC = () => {
       case "10":
         navigate("/rolepermissions", { replace: true });
         break;
-       case "11":
-        navigate("/qrlogs", { replace: true });
+      case "11":
+        navigate("/promotions", { replace: true });
         break;
       case "12":
         navigate("/settingpage", { replace: true });
@@ -340,6 +343,7 @@ const Sidebar: React.FC = () => {
                 element={<SingleviewRelocationApprovalDetails />}
               />
               <Route path="/staffs" element={<StaffsPage />} />
+              <Route path="/promotions" element={<PromotionPage />} />
               <Route
                 path="/installementpending"
                 element={<InstallmentPendingPage />}

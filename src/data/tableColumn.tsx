@@ -38,8 +38,8 @@ import type {
 import type { Installment } from "../api/types/admin";
 import { statusColors } from "./statusColors";
 import { t } from "i18next";
-import type { HomeOwner, PackageItem, QboxItem } from "../types/AllQboxTypes";
-const { Text } = Typography;
+import type { HomeOwner, PackageItem, PromotionItem, QboxItem } from "../types/AllQboxTypes";
+const { Text, Paragraph } = Typography;
 
 const installmentColumn = ({
   setVisible,
@@ -436,10 +436,10 @@ const homeownersColumn = ({
               to="#"
               onClick={()=>
               (
-                setModals((prev:any)=>({...prev,homeOwnerStatus:true})),
+                setModals((prev:any)=>({...prev,statusModal:true})),
                 setTableSelectedIds((perv:any)=>({...perv,homeOwnerSelectedId:row.id})),
                 setSelectedRowStatus({
-                    homeownerCurrentStatus: row.is_active, 
+                    currentStatus: row.is_active, 
                   })
               
               )
@@ -693,7 +693,7 @@ const allpackagesColumn = (
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_, row: AllPackagesTypes) => {
+    render: (row: AllPackagesTypes) => {
       const items: MenuProps["items"] = [
         {
             label: (
@@ -1731,6 +1731,139 @@ const payoutrequestinvoiceColumn = (
   },
 ];
 
+const promotionColumn = ({
+  setModals,
+  setSelectedRowStatus,
+  setTableSelectedIds,
+  t,
+}: {
+  setModals: any,
+  setSelectedRowStatus: any,
+  setTableSelectedIds: any,
+  t: (key: string) => string;
+}): TableColumnsType<PromotionItem> => [
+  {
+    title: t("Code"),
+    dataIndex: "code",
+  },
+  {
+     title: t("Title"),
+    dataIndex: "title",
+  },
+   {
+     title: t("Description"),
+    dataIndex: "description",
+    render:(description:string)=>(
+      <Paragraph ellipsis={{
+        rows:1,
+        tooltip:description
+      }}>{description}</Paragraph>
+    )
+  },
+   {
+     title: t("Type"),
+    dataIndex: "promo_type",
+  },
+   {
+     title: t("Value"),
+    dataIndex: "value",
+  },
+   {
+     title: t("User Limit"),
+    dataIndex:"user_limit",
+  },
+ {
+  title: t("Merchant/Provider Name"),
+  dataIndex: "merchant_name",
+  key: "merchant_name",
+  render: (_: string, record: PromotionItem) => (
+    <Flex align="center" gap={10}>
+      <Avatar src={record.merchant_img_url} size={35} />
+      <Text>{record.merchant_name}</Text>
+    </Flex>
+  ),
+},
+{
+    title: t("Account Status"),
+    dataIndex: "is_active",
+    render: (is_active: boolean) =>
+      is_active === true ? (
+        <Text className="btnpill fs-12 success">{t("Active")}</Text>
+      ) : (
+        <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
+      ),
+  },
+  {
+     title: t("Start Date"),
+    dataIndex: "start_date",
+  },
+  {
+     title: t("End Date"),
+    dataIndex: "end_date",
+  },
+  {
+    title: t("Action"),
+    key: "action",
+    width: 100,
+    render: (_value, row: PromotionItem) => (
+      <Dropdown
+        menu={{
+          items: [
+            {
+          label: (
+            <NavLink
+              to="#"
+              onClick={()=>
+              (
+                setModals((prev:any)=>({...prev,statusModal:true})),
+                setTableSelectedIds((perv:any)=>({...perv,promotionSelectedId:row.id})),
+                setSelectedRowStatus({
+                    currentStatus: row.is_active, 
+                  })
+              
+              )
+              }
+            >
+              {row?.is_active ? "Inactive" : "Active"}
+            </NavLink>
+          ),
+          key: "1",
+        },
+        {
+          label: (
+            <NavLink
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setModals((prev:any) =>({...prev, deleteModal:true}));
+                setTableSelectedIds((prev:any) => ({
+                  ...prev,
+                  promotionSelectedId:row.id,
+                }))
+              }}
+            >
+              {t("Delete")}
+            </NavLink>
+          ),
+          key: "2",
+        },
+          ],
+        }}
+        trigger={["click"]}
+      >
+        <Button className="bg-transparent border-0 p-0">
+          <img
+            src="/assets/icons/dots.webp"
+            alt="dots icon"
+            fetchPriority="high"
+            width={16}
+          />
+        </Button>
+      </Dropdown>
+    ),
+  },
+];
+
 export {
   installmentColumn,
   staffColumn,
@@ -1754,4 +1887,5 @@ export {
   payouthistorypackagesColumn,
   payoutrequestColumn,
   payoutrequestinvoiceColumn,
+  promotionColumn
 };
