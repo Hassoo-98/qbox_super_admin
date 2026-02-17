@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { Modal, Button, Flex, Form, message } from "antd";
 import { useTranslation } from "react-i18next";
@@ -25,37 +26,50 @@ const AddEditPromotion: React.FC<AddEditModalProps> = ({
     const [form] = Form.useForm()
     const { createPromotion, updatePromotion } = usePromotion();
 
-    useEffect(() => {
-        if (edititem) {
-            form.setFieldsValue({
-                title: edititem.title,
-                description: edititem.description,
-                promo_type: edititem.promo_type,
-                user_limit: edititem.user_limit,
-                merchant_provider_name: edititem.merchant_name,
-                is_active: edititem.is_active ? 1 : 0,
-                start_date: dayjs(edititem.start_date),
-                end_date: dayjs(edititem.end_date),
-            });
-        } else {
-            form.resetFields();
-        }
-    }, [edititem, form]);
+  useEffect(() => {
+    if (edititem) {
+        const selectedPromoTypeId = promotiontype(t).find(
+            (item) => item.name === edititem.promo_type
+        )?.id;
+
+        const selectedProviderId = serviceprovider(t).find(
+            (item) => item.name === edititem.merchant_provider_name
+        )?.id;
+
+        form.setFieldsValue({
+            code: edititem.code,
+            title: edititem.title,
+            description: edititem.description,
+            promo_type: selectedPromoTypeId,
+            value: edititem.value,
+            user_limit: edititem.user_limit,
+            merchant_name: selectedProviderId,
+            is_active: edititem.is_active ? 1 : 2,
+            start_date: dayjs(edititem.start_date),
+            end_date: dayjs(edititem.end_date),
+        });
+    } else {
+        form.resetFields();
+    }
+}, [edititem, form, t]);
+
 
     const handleSubmit = async (values: any) => {
         try {
             const selectedProvider = serviceprovider(t).find(
-                (item) => item.id === values.merchant_provider_name
+                (item) => item.id === values.merchant_name
             );
             const selectedPromoType = promotiontype(t).find(
                 (item) => item.id === values.promo_type
             );
             const payload = {
+                code: values.code,
                 title: values.title,
                 description: values.description,
                 promo_type: selectedPromoType?.name,
+                value: values.value?.toString(),
                 user_limit: values.user_limit?.toString(),
-                merchant_name: selectedProvider?.name,
+                merchant_provider_name: selectedProvider?.name,
                 is_active: values.is_active === 1 ? true : false,
                 start_date: values.start_date?.format("YYYY-MM-DD"),
                 end_date: values.end_date?.format("YYYY-MM-DD"),
@@ -110,8 +124,10 @@ const AddEditPromotion: React.FC<AddEditModalProps> = ({
                 <Flex vertical>
                     <MyInput
                         label={t("Promotion Code")}
-                        name={""}
+                        name="code"
                         placeholder={t("Enter promotion code")}
+                        required
+                        message={t("Please enter promotion code")}
                     />
                     <MyInput
                         label={t("Promotion Title")}
@@ -135,12 +151,15 @@ const AddEditPromotion: React.FC<AddEditModalProps> = ({
                         options={promotiontype(t)}
                         placeholder={t("Select Promotion Type")}
                     />
-                    {/* <MyInput
+                    <MyInput
                         label={t("Promotion Value")}
-                        name=""
-                        placeholder={t("Enter usage limit per user")}
+                        name="value"
+                        placeholder={t("Enter promotion value")}
                         addonAfter="SAR"
-                    /> */}
+                        required
+                        message={t("Please enter promotion value")}
+                        type="number"
+                    />
                     <MyInput
                         label={t("User limit")}
                         name="user_limit"

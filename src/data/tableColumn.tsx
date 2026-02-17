@@ -1771,6 +1771,12 @@ const promotionColumn = ({
    {
      title: t("Value"),
     dataIndex: "value",
+    render:(_:string, record:PromotionItem) => (
+      <Flex align="center" gap={10}>
+        <Text>{record?.value}</Text>
+        <Text className="fs-12">{record?.promo_type === "Percentage" ? "%": "SAR"}</Text>
+      </Flex>
+    )
   },
    {
      title: t("User Limit"),
@@ -1779,7 +1785,6 @@ const promotionColumn = ({
  {
   title: t("Merchant/Provider Name"),
   dataIndex: "merchant_name",
-  key: "merchant_name",
   render: (_: string, record: PromotionItem) => (
     <Flex align="center" gap={10}>
       <Avatar src={record.merchant_img_url} size={35} />
