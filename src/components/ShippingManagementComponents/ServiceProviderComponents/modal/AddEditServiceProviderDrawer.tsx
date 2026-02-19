@@ -1,5 +1,5 @@
 import { CloseOutlined, EditFilled } from '@ant-design/icons'
-import { Button, Col, Divider, Drawer, Flex, Form, Row, Switch, Typography } from 'antd'
+import { Button, Col, Divider, Drawer, Flex, Form, Row, Switch, Typography, message } from 'antd'
 import { MyInput, MySelect, SingleFileUpload, TimeForm } from '../../../Forms';
 import { citiesOp, markuptypeOp } from '../../../../shared';
 import type { ServiceProviderType } from '../../../../types';
@@ -22,16 +22,33 @@ const AddEditServiceProviderDrawer: React.FC<props> = ({ visible, onClose, editi
     const { t } = useTranslation();
     const [form] = Form.useForm();
     const [previewimage, setPreviewImage] = useState<string | null>(null)
+    const [submitting, setSubmitting] = useState(false);
 
     const daysOfWeek = [
         t("Monday"), t("Tuesday"), t("Wednesday"), t("Thursday"),
         t("Friday"), t("Saturday"), t("Sunday")
     ];
-    const { createServiceProvider, updateServiceProvider } = useServiceProvider();
+    // Drawer only needs mutations; disable list fetching to avoid duplicate network calls
+    const { createServiceProvider, updateServiceProvider, isCreatingServiceProvider, isUpdatingServiceProvider } = useServiceProvider(undefined, { enabled: false });
 
 
 const handleSubmit = async (values: any) => {
     console.log("FORM VALUES:", values);
+    if (submitting) return;
+    setSubmitting(true);
+
+    // Normalize operating cities to numeric ids
+    const normalizedOperatingCities = Array.isArray(values.operatingCities)
+        ? values.operatingCities.map((c: any) => Number(c)).filter((n: number) => !Number.isNaN(n))
+        : [];
+
+    // Map frontend markup option ids to backend choice strings
+    const markupTypeMap: Record<number, string> = {
+        1: "fixed",
+        2: "percentage",
+    };
+
+    const normalizedMarkupType = markupTypeMap[Number(values.markupType)] ?? String(values.markupType ?? "");
 
     const payload: any = {
         name: values.serviceproviderName,
@@ -39,30 +56,43 @@ const handleSubmit = async (values: any) => {
         contact_person_name: values.contactpersonName,
         phone_number: values.phoneNumber,
         email: values.email,
-        operating_cities: values.operatingCities,
-        settlement_cycle_days: values.settlementCycle,
-        markup_type: values.markupType,
-        markup_value: values.markupValue,
-        first_kg_charge: values.charge,
-        additional_kg_charge: values.additionalKg,
-        fuel_surcharge_percentage: values.taxFuel,
-        fuel_surcharge_enabled: values.taxFuelEnabled ?? false,
+        operating_cities: normalizedOperatingCities,
+        settlement_cycle_days: Number(values.settlementCycle) || undefined,
+        markup_type: normalizedMarkupType,
+        markup_value: String(values.markupValue ?? ""),
+        first_kg_charge: String(values.charge ?? ""),
+        additional_kg_charge: String(values.additionalKg ?? ""),
+        fuel_surcharge_percentage: String(values.taxFuel ?? ""),
+        fuel_surcharge_enabled: !!values.taxFuelEnabled,
     };
 
     try {
         if (edititem) {
-            await updateServiceProvider({ id: edititem.id, payload });
-            console.log("Updated successfully");
+            // Resolve id from multiple possible shapes to avoid `undefined`
+            const resolvedId = (edititem as any).id ?? (edititem as any).key ?? (edititem as any)?._raw?.id ?? (edititem as any)?.pk ?? undefined;
+
+            if (!resolvedId) {
+                message.error("Update cancelled: provider id is undefined.");
+                console.error("Update cancelled: provider id is undefined. Edit item:", edititem);
+                return;
+            }
+
+            await updateServiceProvider({ id: Number(resolvedId), payload });
+            message.success("Provider updated");
         } else {
             await createServiceProvider(payload);
-            console.log("Created successfully");
+            message.success("Provider created");
         }
 
         form.resetFields();
         setPreviewImage(null);
         onClose();
-    } catch (error) {
+    } catch (error: any) {
         console.error("API Error:", error);
+        const text = error?.message || "Failed to save provider";
+        message.error(text);
+    } finally {
+        setSubmitting(false);
     }
 };
 
@@ -116,7 +146,18 @@ const handleSubmit = async (values: any) => {
                     <Button
     type="primary"
     className='btnsave border-0 text-white bg-slate-blue'
-    onClick={() => form.submit()}
+    loading={submitting}
+    disabled={submitting}
+    onClick={async () => {
+        try {
+            const values = await form.validateFields();
+            await handleSubmit(values);
+        } catch (err: any) {
+            const msg = t("Please fill required fields correctly");
+            message.error(msg);
+            console.warn("Validation failed:", err);
+        }
+    }}
 >
     {edititem ? t("Update") : t("Save")}
 </Button>
