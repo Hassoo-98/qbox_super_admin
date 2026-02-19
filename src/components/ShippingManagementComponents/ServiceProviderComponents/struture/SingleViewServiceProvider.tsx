@@ -67,9 +67,6 @@ const SingleViewServiceProvider = () => {
 
     const onChange = (key:string) => {
         setActiveKey(key);
-        // If user switches to the basic info tab, ensure we have fresh details
-        if (key === '1') fetchDetails(id);
-        // future: if key === '2' or '3', call respective APIs (packages/drivers)
     };
 
     useEffect(() => {

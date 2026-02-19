@@ -65,6 +65,7 @@ export const ServiceProviderService = {
     params?: GetAllServiceProviderParams
   ): Promise<ServiceProviderGetResponse> => {
     try {
+      // fetch list
       const { data } = await api.get("/service_provider/", { params });
       return data;
     } catch (error) {

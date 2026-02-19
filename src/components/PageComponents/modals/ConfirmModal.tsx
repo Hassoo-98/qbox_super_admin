@@ -50,7 +50,7 @@ const ConfirmModal: React.FC<ActiveModalProps> = ({
     >
       <Flex vertical align="center" className="mt-3" gap={10}>
         <img
-          src={`/assets/icons/${img}`}
+          src={`/assets/icons/active.png`}
           width={50}
           alt="bin icon"
           fetchPriority="high"
