@@ -130,7 +130,6 @@ const StaffsTable: React.FC = () => {
       <Row gutter={[16, 16]} align="middle">
         <Col span={24} md={12}>
           <SearchInput
-          className="w-100"
             withoutForm
             value={search}
             inputProps={{
