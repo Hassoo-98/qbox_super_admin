@@ -38,7 +38,7 @@ import type {
 import type { Installment } from "../api/types/admin";
 import { statusColors } from "./statusColors";
 import { t } from "i18next";
-import type { HomeOwner, PackageItem, PromotionItem, QboxItem } from "../types/AllQboxTypes";
+import type { HomeOwner, PackageItem, PromotionItem, QboxItem, RoleItem } from "../types/AllQboxTypes";
 const { Text, Paragraph } = Typography;
 
 const installmentColumn = ({
@@ -1368,23 +1368,27 @@ const singleviewqrhistorytableColumn = (
 
 const rolepermissionColumn = (
   {
-    setStatusChanged,
-    setDeleteItem,
+     setModals,
+     setTableSelectedIds,
+    setSelectedRowStatus,
+    t
   }: {
-    setStatusChanged: (value: boolean) => void;
-    setDeleteItem: (value: boolean) => void;
+     setModals: any,
+     setSelectedRowStatus: any,
+     setTableSelectedIds: any,
+    t: (key: string) => string,
   },
-  t: (key: string) => string,
-): TableColumnsType<RolePermissionType> => [
+  
+): TableColumnsType<RoleItem> => [
   {
     title: t("Role Name"),
-    dataIndex: "rolename",
+    dataIndex: "name",
   },
   {
     title: t("Status"),
-    dataIndex: "status",
-    render: (status: string) =>
-      status === "Active" ? (
+    dataIndex: "is_active",
+    render: (is_active: boolean) =>
+      is_active === true ? (
         <Text className="btnpill fs-12 success">{t("Active")}</Text>
       ) : (
         <Text className="btnpill fs-12 inactive">{t("Inactive")}</Text>
@@ -1394,7 +1398,7 @@ const rolepermissionColumn = (
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_, _row: RolePermissionType) => {
+    render: (_, row: RoleItem) => {
       const items: MenuProps["items"] = [
         {
           label: (
@@ -1412,13 +1416,19 @@ const rolepermissionColumn = (
         {
           label: (
             <NavLink
-              to="/"
-              onClick={(e) => {
-                e.preventDefault();
-                setStatusChanged(true);
-              }}
+              to="#"
+                 onClick={()=>
+              (
+                setModals((prev:any)=>({...prev,statusModal:true})),
+                setTableSelectedIds((perv:any)=>({...perv,roleSelectedId:row.id})),
+                setSelectedRowStatus({
+                    currentStatus: row.is_active, 
+                  })
+              
+              )
+              }
             >
-              {t("Active")}
+              {row?.is_active ? t("Inactive") : t("Active")}
             </NavLink>
           ),
           key: "2",
@@ -1426,10 +1436,14 @@ const rolepermissionColumn = (
         {
           label: (
             <NavLink
-              to="/"
-              onClick={(e) => {
+              to="#"
+             onClick={(e) => {
                 e.preventDefault();
-                setDeleteItem(true);
+                setModals((prev:any) =>({...prev, deleteModal:true}));
+                setTableSelectedIds((prev:any) => ({
+                  ...prev,
+                  roleSelectedId:row.id,
+                }))
               }}
             >
               {t("Delete")}

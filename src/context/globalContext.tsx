@@ -17,6 +17,7 @@ type TableSelectedIds = {
   qboxSelectedId: string | null;
   packageSelectedId: string | null;
   promotionSelectedId: string | null;
+  roleSelectedId: string | null;
 };
 
 type SelectedRowStatus = {
@@ -48,6 +49,7 @@ const initialTableSelectedIds: TableSelectedIds = {
   qboxSelectedId: null,
   packageSelectedId: null,
   promotionSelectedId:null,
+  roleSelectedId:null,
 };
 
 const intialSelectedRowStatus: SelectedRowStatus = {

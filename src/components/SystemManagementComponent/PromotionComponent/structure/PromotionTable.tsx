@@ -37,6 +37,8 @@ const PromotionTable = () => {
             message.error("promotion  is not selected");
             return;
         }
+
+        console.log("Cussrent", currentStatus);
         promotionChangeStatus(
             { id: tableSelectedIds.promotionSelectedId, payload: { is_active: !currentStatus } },
             {

@@ -1,4 +1,4 @@
-import { Typography, Card, Flex, Table, Form, Row, Col, Button } from "antd";
+import { Typography, Card, Flex, Table, Form, Row, Col, Button, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   ConfirmModal,
@@ -7,22 +7,22 @@ import {
   ModuleTopHeading,
 } from "../../../PageComponents";
 import { SearchInput, MySelect } from "../../../Forms";
-import type { RolePermissionType } from "../../../../types";
 import { useState } from "react";
-import { rolepermissionColumn, rolepermissionData } from "../../../../data";
+import { rolepermissionColumn, } from "../../../../data";
 import { statusItems } from "../../../../shared";
 import { useTranslation } from "react-i18next";
 import { AddEditRoleDrawer } from "../modal/AddEditRoleDrawer";
-
+import { useRole } from "../../../../hooks/useRoles";
+import type { RoleItem } from "../../../../types/AllQboxTypes";
+import { useGlobalContext } from "../../../../context/globalContext";
+import { useQueryClient } from "@tanstack/react-query";
 const { Text } = Typography;
 const RolePermissionTable = () => {
   const [form] = Form.useForm();
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
-  const [deleteItem, setDeleteItem] = useState<boolean>(false);
   const [addRoleDrawer, setAddRoleDrawer] = useState(false);
-  const [statusChanged, setStatusChanged] = useState(false);
 
   const [editRoleItem, setEditRoleItem] = useState<{
     roleName: string;
@@ -48,6 +48,54 @@ const RolePermissionTable = () => {
   const handleStatusChange = (value: any) => {
     setSelectedStatus(value);
   };
+
+  const queryClient = useQueryClient();
+
+  const { RoleList, isLoadingRoleList, roleChangeStatus, deleteRole } = useRole();
+  const { modals, setModals, tableSelectedIds, setTableSelectedIds, selectedRowStatus, setSelectedRowStatus } = useGlobalContext();
+
+  const RoleData = Array.isArray(RoleList?.data?.items) ? RoleList?.data?.items : [];
+  const TotalRole = RoleList?.data?.total || 0;
+
+   const changeStatus = (currentStatus: boolean | null) => {
+        if (!tableSelectedIds.roleSelectedId) {
+            message.error("role  is not selected");
+            return;
+        }
+        roleChangeStatus(
+            { id: tableSelectedIds.roleSelectedId, payload: { is_active: !currentStatus } },
+            {
+                onSuccess: () => {
+                    message.success("promotion status changed"),
+                        queryClient.invalidateQueries({ queryKey: ["Roles"] }),
+                        setModals((prev: any) => ({ ...prev, statusModal: false })),
+                        setTableSelectedIds((perv: any) => ({ ...perv, roleSelectedId: null }))
+                }
+            }
+        );
+    };
+
+    const handleRoleDelete = () => {
+      console.log(tableSelectedIds?.roleSelectedId)
+        if (!tableSelectedIds?.roleSelectedId) return;
+        deleteRole(tableSelectedIds.roleSelectedId, {
+            onSuccess: () => {
+                setModals((prev) => ({ ...prev, deleteModal: false }));
+                queryClient.invalidateQueries({ queryKey: ["Roles"] }),
+                setTableSelectedIds((prev) => ({
+                    ...prev,
+                    roleSelectedId: null
+                }))
+            },
+            onError: () => {
+                setModals((prev) => ({ ...prev, deleteModal: false }));
+                setTableSelectedIds((prev) => ({
+                    ...prev,
+                    roleSelectedId: null
+                }))
+            }
+        })
+    }
 
   return (
     <>
@@ -104,43 +152,57 @@ const RolePermissionTable = () => {
           </Form>
         </Flex>
         <Flex vertical gap={20}>
-          <Table<RolePermissionType>
+          <Table<RoleItem>
             size="large"
             columns={rolepermissionColumn(
-              { setStatusChanged, setDeleteItem },
-              t,
+              {
+                setModals,
+                setTableSelectedIds,
+                setSelectedRowStatus,
+                t
+              }
             )}
-            dataSource={rolepermissionData}
+            dataSource={RoleData as any}
             className="pagination table-cs table"
             showSorterTooltip={false}
             scroll={{ x: 800 }}
             rowHoverable={false}
             pagination={false}
+            loading={isLoadingRoleList}
           />
-          <CustomPagination
-            total={12}
-            current={current}
-            pageSize={pageSize}
-            onPageChange={handlePageChange}
-          />
+          {
+            TotalRole > 10 && (
+              <CustomPagination
+                total={TotalRole}
+                current={current}
+                pageSize={pageSize}
+                onPageChange={handlePageChange}
+              />
+            )
+          }
         </Flex>
       </Card>
       <ConfirmModal
-        visible={statusChanged}
-        title={t("Inactivate Role")}
-        desc={t("Are you sure you want to inactive this role?")}
-        onClose={() => setStatusChanged(false)}
+        visible={modals.statusModal}
+        img={selectedRowStatus?.currentStatus ? "inactive.png" : "active.png"}
+        title={selectedRowStatus?.currentStatus ? t("Inactivate Role") : t("Activate Role")}
+        desc={selectedRowStatus?.currentStatus ? t("Are you sure you want to inactive this role?") : t("Are you sure you want to active this role?")}
+        onClose={() => {
+          setModals((prev) => ({ ...prev, statusModal: false }));
+          setTableSelectedIds((prev) => ({ ...prev, promotionSelectedId: null }));
+        }}
+        onConfirm={() => changeStatus(selectedRowStatus?.currentStatus)}
       />
       <DeleteModal
-        title={t("Delete Role")}
-        subtitle={t(
-          t(
-            "This action in undone. Are you sure you want to delete this role?",
-          ),
-        )}
-        visible={deleteItem}
-        onClose={() => setDeleteItem(false)}
-      />
+                title={t("Delete Promotion")}
+                subtitle={t("Are you sure you want to delete")}
+                visible={modals.deleteModal}
+                // item={itemToDelete}
+                onConfirm={handleRoleDelete}
+                onClose={() =>
+                    setModals((prev) => ({ ...prev, deleteModal: false }))
+                }
+            />
       <AddEditRoleDrawer
         visible={addRoleDrawer}
         onClose={() => setAddRoleDrawer(false)}

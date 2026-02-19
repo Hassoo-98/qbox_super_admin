@@ -180,13 +180,13 @@ export interface CrudQboxResponse {
   message: string;
 }
 
-export interface PromotionParams{
- search: string,
- promo_type:string,
- is_active:boolean,
- merchant_provider:string,
- page:number,
- page_size:number,
+export interface PromotionParams {
+  search: string,
+  promo_type: string,
+  is_active: boolean,
+  merchant_provider: string,
+  page: number,
+  page_size: number,
 }
 
 export interface PromotionItem {
@@ -198,7 +198,7 @@ export interface PromotionItem {
   value?: string,
   user_limit: string,
   merchant_provider_name?: string,
-  merchant_name?:string,
+  merchant_name?: string,
   merchant_img_url?: string,
   is_active: boolean,
   start_date: string,
@@ -213,15 +213,63 @@ export interface PromotionData {
   hasMore: boolean;
 }
 
-export interface GetAllPromotionResponse{
+export interface GetAllPromotionResponse {
   success: boolean;
   statusCode: number;
   data: PromotionData;
   message: string;
 }
-export interface CrudPromotionResponse{
+
+export interface CrudPromotionResponse {
   success: boolean;
   statusCode: number;
   data: PromotionItem;
+  message: string;
+}
+
+// Role Types 
+export interface ChangeStatusParams{
+  id: string;
+  payload: {
+    is_active: boolean;
+  }
+}
+export interface RoleParams {
+  search: string;
+}
+
+export interface Permission {
+  id: string;
+  module: string;
+  module_id: string;
+  actions: string[];
+  action_ids: string[];
+}
+
+export interface RoleItem {
+  id: string;
+  name: string;
+  is_static: boolean;
+  is_active: boolean;
+  permissions: Permission[];
+}
+
+export interface RoleData {
+  items: RoleItem[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+}
+export interface GetAllRoleResponse{
+  success: boolean;
+   statusCode: number;
+  data: RoleData;
+  message: string;
+}
+export interface CrudRoleResponse {
+  success: boolean;
+  statusCode: number;
+  data: RoleItem;
   message: string;
 }
