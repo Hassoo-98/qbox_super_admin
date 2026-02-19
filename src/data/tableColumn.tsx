@@ -1371,14 +1371,14 @@ const rolepermissionColumn = (
     setStatusChanged,
     setDeleteItem,
   }: {
-    setStatusChanged: (value: boolean) => void;
-    setDeleteItem: (value: boolean) => void;
+    setStatusChanged: (value: RolePermissionType) => void;
+    setDeleteItem: (value: RolePermissionType) => void;
   },
   t: (key: string) => string,
 ): TableColumnsType<RolePermissionType> => [
   {
     title: t("Role Name"),
-    dataIndex: "rolename",
+    dataIndex: "name",
   },
   {
     title: t("Status"),
@@ -1415,7 +1415,7 @@ const rolepermissionColumn = (
               to="/"
               onClick={(e) => {
                 e.preventDefault();
-                setStatusChanged(true);
+                setStatusChanged(_row);
               }}
             >
               {t("Active")}
@@ -1429,7 +1429,7 @@ const rolepermissionColumn = (
               to="/"
               onClick={(e) => {
                 e.preventDefault();
-                setDeleteItem(true);
+                setDeleteItem(_row);
               }}
             >
               {t("Delete")}
