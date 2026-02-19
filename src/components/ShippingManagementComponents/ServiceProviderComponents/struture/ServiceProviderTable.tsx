@@ -1,11 +1,11 @@
 import { Typography, Card, Flex, Table, Form, Row, Col, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
 import type { ServiceProviderType } from "../../../../types";
-import type { ServiceProvider } from "../../../../services/serviceProvider.service";
+// import type { ServiceProvider } from "../../../../services/serviceProvider.service";
 import { statusItems } from "../../../../shared";
 import {
   ConfirmModal,
@@ -13,7 +13,7 @@ import {
   ModuleTopHeading,
 } from "../../../PageComponents";
 import { serviceproviderColumn } from "../../../../data";
-import { MyDatepicker, SearchInput, MySelect } from "../../../Forms";
+import {  SearchInput, MySelect } from "../../../Forms";
 import { AddEditServiceProviderDrawer } from "../modal";
 import { useServiceProvider } from "../../../../hooks/useServiceProvider";
 
@@ -22,8 +22,16 @@ const { Text } = Typography;
 const ServiceProviderTable = () => {
   const [form] = Form.useForm();
   const [search, setSearch] = useState<string>("");
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      setSearch(e.target.value);
+    }, 400);
+  }, []);
   const [selectedCity, setselectedCity] = useState<string>("");
-  const [selectedStatus, setselectedStatus] = useState<string>("");
+  const [selectedStatus, setselectedStatus] = useState<string>("approved");
   const [visible, setVisible] = useState<boolean>(false);
   const [edititem, setEditItem] = useState<ServiceProviderType | null>(null);
   const [statuschanged, setStatusChanged] = useState<boolean>(false);
@@ -49,18 +57,24 @@ const ServiceProviderTable = () => {
     page: 1,
     limit: 10,
   });
+  // prevent duplicate in-flight actions (status change / delete)
+  const actionInFlight = useRef<Record<number, boolean>>({});
 
   // ✅ Format API data for table
-  console.log("Raw API Response:", serviceProviderList);
-  const items = Array.isArray(serviceProviderList)
+  const rawItems = Array.isArray(serviceProviderList)
     ? serviceProviderList
     : serviceProviderList?.data?.items ?? [];
 
-  const tableData = (items || []).map((item: ServiceProvider) => ({
+  // Normalize each item so `id` and `key` are always present (fallbacks: pk, key)
+  const items = (rawItems || []).map((it: any) => {
+    const resolvedId = it?.id ?? it?.pk ?? it?.key ?? undefined;
+    return { ...it, id: resolvedId };
+  });
+
+  const tableData = items.map((item: any) => ({
     ...item,
     key: item.id,
   }));
-  console.log("Fetched Service Providers:", tableData);
 
   const cityItem = [
     { id: "qatif", name: t("Qatif") },
@@ -99,9 +113,9 @@ const ServiceProviderTable = () => {
                   <Col span={24} md={24} lg={12}>
                     <SearchInput
                       placeholder={t("Search by Service Provider Name")}
-                      onChange={(e: any) =>
-                        setSearch(e.target.value)
-                      }
+                      inputProps={{
+                        onChange: handleSearchChange,
+                      }}
                       prefix={
                         <img
                           src="/assets/icons/search.png"
@@ -143,20 +157,6 @@ const ServiceProviderTable = () => {
                 </Row>
               </Col>
 
-              <Col span={24} md={24} xl={7}>
-                <Flex justify="end" gap={10}>
-                  <MyDatepicker
-                    withoutForm
-                    rangePicker
-                    className="datepicker-cs"
-                    placeholder={[t("Start Year"), t("End Year")]}
-                    value={selectedYear}
-                    onChange={(dates: [Dayjs, Dayjs] | null) =>
-                      setSelectedYear(dates ?? undefined)
-                    }
-                  />
-                </Flex>
-              </Col>
             </Row>
           </Form>
         </Flex>
@@ -209,17 +209,28 @@ const ServiceProviderTable = () => {
         desc={t(
           "Are you sure you want to status change of this service provider?",
         )}
+        img={"inactive.png"}
         onClose={() => setStatusChanged(false)}
         onConfirm={async () => {
-          const currentItem = tableData.find(
-            (i) => i.id === selectedId,
-          );
-          if (currentItem) {
+          // guard against double clicks/parallel requests
+          if (actionInFlight.current[selectedId]) return;
+
+          const currentItem = tableData.find((i) => i.id === selectedId);
+          if (!currentItem) {
+            setStatusChanged(false);
+            return;
+          }
+
+          actionInFlight.current[selectedId] = true;
+          try {
             await changeServiceProviderStatus({
               id: selectedId,
               is_approved: !currentItem.is_approved,
             });
+          } finally {
+            actionInFlight.current[selectedId] = false;
           }
+
           setStatusChanged(false);
         }}
       />
@@ -233,7 +244,13 @@ const ServiceProviderTable = () => {
         visible={deleteitem}
         onClose={() => setDeleteItem(false)}
         onConfirm={async () => {
-          await deleteServiceProvider(selectedId);
+          if (actionInFlight.current[selectedId]) return;
+          actionInFlight.current[selectedId] = true;
+          try {
+            await deleteServiceProvider(selectedId);
+          } finally {
+            actionInFlight.current[selectedId] = false;
+          }
           setDeleteItem(false);
         }}
       />
