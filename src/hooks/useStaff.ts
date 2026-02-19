@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StaffService } from "../services/staff.service";
 
-
 interface GetAllStaffParams {
   search?: string;
   ordering?: string;
@@ -18,32 +17,37 @@ export const useStaff = (params?: GetAllStaffParams) => {
   const { data: staffList, isLoading: isLoadingStaffList, error: staffListError } = useQuery({
     queryKey: ["staff", params],
     queryFn: () => StaffService.getAllStaff(params as GetAllStaffParams),
+    keepPreviousData: true, // keeps old data while fetching new page
   });
+
+  // ✅ Helper for safe invalidation
+  const invalidateStaffList = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["staff", params],
+      exact: true, // only invalidate this specific query
+    });
+  };
 
   // Create staff mutation
   const createMutation = useMutation({
     mutationFn: (payload: any) => StaffService.createStaff(payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["staff"] });
-    },
+    onSuccess: invalidateStaffList,
   });
 
   // Update staff mutation
   const updateMutation = useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: any }) => 
       StaffService.UpdateStaff(id, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["staff"] });
-    },
+    onSuccess: invalidateStaffList,
   });
 
   // Change status mutation
   const changeStatusMutation = useMutation({
     mutationFn: ({ id, is_active }: { id: string; is_active: boolean }) => 
       StaffService.ChangeStatusStaff(id, { is_active }),
-    // optimistic update: update cache immediately, rollback on error, and refetch on success
     onMutate: async ({ id, is_active }: { id: string; is_active: boolean }) => {
-      await queryClient.cancelQueries({ queryKey: ["staff", params] });
+      await queryClient.cancelQueries({ queryKey: ["staff", params], exact: true });
+
       const previous = queryClient.getQueryData<any>(["staff", params]);
       queryClient.setQueryData(["staff", params], (old: any) => {
         if (!old) return old;
@@ -58,17 +62,13 @@ export const useStaff = (params?: GetAllStaffParams) => {
         queryClient.setQueryData(["staff", params], context.previous);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["staff"] });
-    },
+    onSuccess: invalidateStaffList,
   });
 
   // Delete staff mutation
   const deleteMutation = useMutation({
     mutationFn: (id: string) => StaffService.DeleteStaff(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["staff"] });
-    },
+    onSuccess: invalidateStaffList,
   });
 
   return {
