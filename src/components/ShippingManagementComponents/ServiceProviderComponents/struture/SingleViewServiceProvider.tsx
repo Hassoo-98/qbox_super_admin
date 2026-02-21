@@ -57,13 +57,14 @@ const SingleViewServiceProvider = () => {
                 _raw: provider,
             }
 
-            setDetails(mapped);
+            setDetails(mapped); 
         } catch (err) {
             console.error('Failed fetching provider details', err);
         } finally {
             setLoading(false);
         }
     }
+    console.log(details);
 
     const onChange = (key:string) => {
         setActiveKey(key);
@@ -110,7 +111,9 @@ const SingleViewServiceProvider = () => {
                                     {isArabic ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
                                 </Button>
                                 <Avatar src={details?.providerName?.img} size={40}/>
+                                
                                 <Title level={5} className="fw-500 m-0">{details?.contactpersonName}</Title>
+                                
                             </Flex>
                             <Flex gap={5}>
                                 {
