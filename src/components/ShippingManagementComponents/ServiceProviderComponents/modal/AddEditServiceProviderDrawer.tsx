@@ -124,6 +124,34 @@ const handleSubmit = async (values: any) => {
         }
     }, [visible, edititem, form]);
 
+    
+    useEffect(() => {
+    if (visible) {
+        const defaultWorkingHours: any = {};
+
+        ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+        .forEach((day) => {
+            defaultWorkingHours[day] = [
+                {
+                    fromTime: null,
+                    toTime: null,
+                }
+            ];
+        });
+
+        form.setFieldsValue(defaultWorkingHours);
+
+        if (edititem) {
+            form.setFieldsValue({
+                ...defaultWorkingHours,
+                ...edititem,
+            });
+        }
+    } else {
+        form.resetFields();
+    }
+}, [visible]);
+
     const handleUpload = async (_file: RcFile | RcFile[]) => { /* implement if needed */ };
 
     const handleChangeImage = () => setPreviewImage(null);
