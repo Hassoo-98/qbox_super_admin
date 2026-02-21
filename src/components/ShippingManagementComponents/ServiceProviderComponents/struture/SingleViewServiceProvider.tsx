@@ -64,7 +64,7 @@ const SingleViewServiceProvider = () => {
             setLoading(false);
         }
     }
-    console.log(details);
+    // console.log(details);
 
     const onChange = (key:string) => {
         setActiveKey(key);
