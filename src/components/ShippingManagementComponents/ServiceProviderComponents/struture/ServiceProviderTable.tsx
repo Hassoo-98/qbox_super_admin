@@ -30,8 +30,8 @@ const ServiceProviderTable = () => {
       setSearch(e.target.value);
     }, 400);
   }, []);
-  const [selectedCity, setselectedCity] = useState<string>("");
-  const [selectedStatus, setselectedStatus] = useState<string>("approved");
+ const [selectedCity, setselectedCity] = useState<string | undefined>();
+const [selectedStatus, setselectedStatus] = useState<string | undefined>();
   const [visible, setVisible] = useState<boolean>(false);
   const [edititem, setEditItem] = useState<ServiceProviderType | null>(null);
   const [statuschanged, setStatusChanged] = useState<boolean>(false);
@@ -52,11 +52,11 @@ const ServiceProviderTable = () => {
     changeServiceProviderStatus,
   } = useServiceProvider({
     search,
-    city: selectedCity,
-    is_approved: selectedStatus,
-    page: 1,
-    limit: 10,
-  });
+     ...(selectedCity && { city: selectedCity }),
+  ...(selectedStatus && { is_approved: selectedStatus }),
+  page: 1,
+  limit: 10,
+});
   // prevent duplicate in-flight actions (status change / delete)
   const actionInFlight = useRef<Record<number, boolean>>({});
 
@@ -128,30 +128,30 @@ const ServiceProviderTable = () => {
 
                   <Col span={24} lg={12}>
                     <Flex gap={5}>
-                      <MySelect
-                        withoutForm
-                        className="px-3 filter-bg fs-13 text-black"
-                        options={cityItem}
-                        placeholder={t("City")}
-                        value={selectedCity}
-                        onChange={(value: any) =>
-                          setselectedCity(value)
-                        }
-                        allowClear
+                     
+                     <MySelect
+                      withoutForm
+                      className="filter-dropdown px-3 filter-bg fs-13 text-black"
+                      options={cityItem}
+                      placeholder={t("City")}
+                      value={selectedCity}
+                      onChange={(value: string | undefined) => setselectedCity(value)}
+                      allowClear
                         maxWidth={150}
+
                       />
-                      <MySelect
-                        withoutForm
-                        className="px-3 filter-bg fs-13 text-black"
-                        options={statusOptions}
-                        placeholder={t("Status")}
-                        value={selectedStatus}
-                        onChange={(value: any) =>
-                          setselectedStatus(value)
-                        }
-                        allowClear
+
+                    <MySelect
+                     withoutForm
+                     className="filter-dropdown px-3 filter-bg fs-13 text-black"
+                     options={statusOptions}
+                     placeholder={t("Status")}
+                     value={selectedStatus}
+                     onChange={(value: string | undefined) => setselectedStatus(value)}
+                     allowClear
                         maxWidth={150}
-                      />
+
+                     />
                     </Flex>
                   </Col>
                 </Row>
