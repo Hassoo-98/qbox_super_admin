@@ -943,6 +943,7 @@ const serviceproviderColumn = (
     navigate,
     setDeleteItem,
     setStatusChanged,
+    viewHandler,
   }: ServiceProviderColumnParams,
   t: (key: string) => string,
 ): TableColumnsType<ServiceProviderType> => [
@@ -965,9 +966,23 @@ const serviceproviderColumn = (
   {
     title: t("Cities"),
     dataIndex: "operating_cities",
-    render: (operating_cities: string[]) => (
-      <Text>{operating_cities?.join(", ") || "-"}</Text>
-    ),
+    render: (operating_cities: any[]) => {
+      if (!operating_cities || operating_cities.length === 0) return <Text>-</Text>;
+      const names = (operating_cities || []).map((c) => {
+        if (!c && c !== 0) return "";
+        if (typeof c === "object") return c.name ?? c.label ?? String(c.id ?? c.pk ?? "");
+        const s = String(c);
+        // common normalization: replace underscores/hyphens and capitalize
+        const normalized = s.replace(/[_-]/g, " ");
+        // try to localize common city keys via t(); fallback to capitalized string
+        const localized = /[a-z]/i.test(normalized)
+          ? t(normalized.charAt(0).toUpperCase() + normalized.slice(1))
+          : normalized;
+        return localized || normalized;
+      });
+
+      return <Text>{names.filter(Boolean).join(", ") || "-"}</Text>;
+    },
   },
   {
     title: t("Status"),
@@ -991,8 +1006,16 @@ const serviceproviderColumn = (
               label: (
                 <NavLink
                   to="#"
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.preventDefault();
+                    if (typeof viewHandler === "function") {
+                      try {
+                        await viewHandler(row?.id ?? row?.key, row);
+                      } catch (_err) {
+                        /* swallow - still navigate */
+                      }
+                    }
+
                     navigate("/serviceproviders/view/" + row?.key);
                   }}
                 >
