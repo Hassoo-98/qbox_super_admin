@@ -4,6 +4,8 @@ import { useState, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { ServiceProviderService } from "../../../../services/serviceProvider.service";
 import type { ServiceProviderType } from "../../../../types";
 // import type { ServiceProvider } from "../../../../services/serviceProvider.service";
 import { statusItems } from "../../../../shared";
@@ -44,6 +46,20 @@ const [selectedStatus, setselectedStatus] = useState<string | undefined>();
 
   const { t } = useTranslation();
 
+  const queryClient = useQueryClient();
+
+  const viewHandler = async (id: number) => {
+    if (!id) return;
+    try {
+      await queryClient.prefetchQuery({
+        queryKey: ["service-provider", id],
+        queryFn: () => ServiceProviderService.getSingleServiceProvider(id as number),
+      });
+    } catch {
+      // ignore prefetch errors; allow navigation
+    }
+  };
+
   // ✅ TanStack Query Hook
   const {
     serviceProviderList,
@@ -75,6 +91,30 @@ const [selectedStatus, setselectedStatus] = useState<string | undefined>();
     ...item,
     key: item.id,
   }));
+
+  // Apply client-side filters so the table shows readable city names and filters always work
+  const filteredTableData = tableData.filter((row: any) => {
+    // City filter: match either string ids/names or object entries
+    if (selectedCity) {
+      const cities = row.operating_cities || [];
+      const matched = cities.some((c: any) => {
+        if (c == null) return false;
+        if (typeof c === "object") return String(c.id) === String(selectedCity) || String(c.name) === String(selectedCity);
+        return String(c) === String(selectedCity) || String(c).toLowerCase() === String(selectedCity).toLowerCase();
+      });
+      if (!matched) return false;
+    }
+
+    // Status filter: map 'approved' -> true, 'rejected' -> false
+    if (selectedStatus) {
+      const wantApproved = String(selectedStatus).toLowerCase() === "approved";
+      if (Boolean(row.is_approved) !== wantApproved) return false;
+    }
+
+    return true;
+  });
+
+  const currentItemForModal = tableData.find((i) => i.id === selectedId);
 
   const cityItem = [
     { id: "qatif", name: t("Qatif") },
@@ -179,10 +219,11 @@ const [selectedStatus, setselectedStatus] = useState<string | undefined>();
                   setSelectedId(id);
                   setDeleteItem(true);
                 },
+                viewHandler,
               },
               t,
             )}
-            dataSource={tableData}
+            dataSource={filteredTableData}
             className="pagination table-cs table"
             showSorterTooltip={false}
             scroll={{ x: 800 }}
@@ -209,7 +250,7 @@ const [selectedStatus, setselectedStatus] = useState<string | undefined>();
         desc={t(
           "Are you sure you want to status change of this service provider?",
         )}
-        img={"inactive.png"}
+        img={currentItemForModal?.is_approved ? "inactive.png" : "active.png"}
         onClose={() => setStatusChanged(false)}
         onConfirm={async () => {
           // guard against double clicks/parallel requests
