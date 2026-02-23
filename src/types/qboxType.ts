@@ -258,6 +258,7 @@ export type ServiceProviderColumnParams = {
   navigate: (path: string) => void;
   setStatusChanged: (value: number) => void;
   setDeleteItem: (value: number) => void;
+  viewHandler?: (id: number, row?: any) => Promise<void> | void;
 };
 
 export type AllPackageProviderType = {
