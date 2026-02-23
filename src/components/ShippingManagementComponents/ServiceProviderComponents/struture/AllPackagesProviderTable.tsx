@@ -9,7 +9,11 @@ import { allpackageproviderColumn, allpkgproviderData } from "../../../../data";
 import { MyDatepicker, SearchInput, MySelect } from "../../../Forms";
 import i18n from "../../../../sources/i18n";
 
-const AllPackagesProviderTable = () => {
+type Props = {
+  packagesData?: any[];
+};
+
+const AllPackagesProviderTable = ({ packagesData }: Props) => {
   const [form] = Form.useForm();
   const [selectedpackage, setselectedPackage] = useState<string>("");
   const navigate = useNavigate();
@@ -84,7 +88,20 @@ const AllPackagesProviderTable = () => {
           <Table<AllPackageProviderType>
             size="large"
             columns={allpackageproviderColumn({ navigate }, t)}
-            dataSource={allpkgproviderData}
+            dataSource={
+              Array.isArray(packagesData)
+                ? packagesData.map((p: any, idx: number) => ({
+                    key: p.id ?? p.pk ?? idx,
+                    trackingID: p.tracking_id ?? p.trackingID ?? "",
+                    senderName: p.merchant_name ?? p.senderName ?? "",
+                    driverName: p.driver_name ?? p.driverName ?? "",
+                    qrCode: p.qr_code ?? p.qrCode ?? "",
+                    packageType: p.package_type ?? p.packageType ?? "",
+                    status: p.status ?? p.shipment_status ?? "",
+                    lastUpdate: p.last_update ?? p.lastUpdate ?? "",
+                  }))
+                : allpkgproviderData
+            }
             className="pagination table-cs table"
             showSorterTooltip={false}
             scroll={{ x: 800 }}
