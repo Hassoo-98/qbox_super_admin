@@ -82,12 +82,12 @@ const SingleViewServiceProvider = () => {
         {
             key: '2',
             label: t("All Packages"),
-            children: <AllPackagesProviderTable />
+            children: <AllPackagesProviderTable packagesData={details?._raw?.packages ?? details?._raw?.data?.packages} />
         },
         {
             key: '3',
             label: t("Drivers"),
-            children: <DriversTable />
+            children: <DriversTable driversData={details?._raw?.drivers ?? details?._raw?.data?.drivers} />
         },
     ];
 
