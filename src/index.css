@@ -1553,7 +1553,7 @@
   background-color: var(--darkest-red) !important;
 }
 .bg-delivery-completed {
-  background-color: var(--green) !important;
+  background-color: var(--dark-slate-blue) !important;
 }
 .bg-delivery-failed {
   background-color: var(--pink-color) !important;
