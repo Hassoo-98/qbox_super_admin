@@ -75,6 +75,39 @@
   --sky-text: #00c0e8;
 }
 
+/* Select dropdown spacing fix
+   Ensure the dropdown doesn't reserve an unwanted blank area at the top
+   and keep option padding consistent. This targets Ant Design dropdown
+   visuals only and is intentionally scoped to dropdown elements. */
+.ant-select-dropdown {
+  padding-top: 0 !important;
+}
+.ant-select-dropdown .ant-select-item-option,
+.ant-select-dropdown .rc-virtual-list-holder-inner > li {
+  padding: 8px 12px !important;
+}
+.ant-select-dropdown .ant-select-item-option:first-child {
+  margin-top: 0 !important;
+}
+.ant-select-dropdown .ant-select-selection-search {
+  display: none !important;
+}
+
+/* Make long dropdowns scrollable and compact */
+.ant-select-dropdown {
+  max-height: 220px !important;
+  overflow-y: auto !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
+}
+.ant-select-dropdown .ant-select-item-option-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.filter-dropdown .ant-select-selector {
+  min-width: 140px !important;
+}
+
 .sky-status {
   background-color: var(--sky-bg) !important;
   color: var(--sky-text) !important;
@@ -1685,4 +1718,23 @@
 }
 .w-100 {
   height: 39px !important;
+}
+.preview-box {
+  height: 180px; /* fixed height between 160-200px */
+  width: 100%;
+  max-width: 340px; /* prevents excessive width inside drawer */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center image inside the box */
+  overflow: hidden; /* prevent overflow */
+  box-sizing: border-box;
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain; /* preserve aspect ratio, no stretching */
+  display: block;
 }
