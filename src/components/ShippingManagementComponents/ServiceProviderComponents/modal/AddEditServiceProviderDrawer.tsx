@@ -219,12 +219,14 @@ const handleSubmit = async (values: any) => {
                                     className='my-3'
                                 />
                             ) : (
-                                <Flex className='my-3' vertical gap={5} justify='center' align='center'>
-                                    <img src={previewimage} alt="logo" className='radius-12 mxw-mxh' />
-                                    <Button type="link" className='fs-13 text-brand' onClick={handleChangeImage}>
-                                        <EditFilled /> {t("Edit")}
-                                    </Button>
-                                </Flex>
+                               <Flex className='my-3' vertical gap={5} justify='center' align='center'>
+  <div className="preview-box radius-12">
+    <img src={previewimage} alt="logo" className="preview-img" />
+  </div>
+  <Button type="link" className='fs-13 text-brand' onClick={handleChangeImage}>
+    <EditFilled /> {t("Edit")}
+  </Button>
+</Flex>
                             )}
                         </Col>
 
