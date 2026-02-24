@@ -950,6 +950,28 @@ const serviceproviderColumn = (
   {
     title: t("Provider Name"),
     dataIndex: "name",
+    render: (name: string, row: ServiceProviderType) => {
+      const src = (row as any)?.providerName?.img ?? (row as any)?.img ?? (row as any)?.logo ?? undefined;
+      const displayName = name ?? (row as any)?.providerName?.name ?? '';
+      const initials = displayName
+        .split(" ")
+        .map((p) => (p ? p.charAt(0) : ""))
+        .filter(Boolean)
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+
+      return (
+        <Flex align="center" style={{ gap: 12 }}>
+          {src ? (
+            <Avatar src={src} size={36} />
+          ) : (
+            <Avatar size={36}>{initials || displayName?.charAt(0)?.toUpperCase()}</Avatar>
+          )}
+          <Text className="fs-13">{displayName}</Text>
+        </Flex>
+      );
+    },
   },
   {
     title: t("Contact-Person Name"),
@@ -971,17 +993,21 @@ const serviceproviderColumn = (
       const names = (operating_cities || []).map((c) => {
         if (!c && c !== 0) return "";
         if (typeof c === "object") return c.name ?? c.label ?? String(c.id ?? c.pk ?? "");
-        const s = String(c);
-        // common normalization: replace underscores/hyphens and capitalize
-        const normalized = s.replace(/[_-]/g, " ");
-        // try to localize common city keys via t(); fallback to capitalized string
-        const localized = /[a-z]/i.test(normalized)
-          ? t(normalized.charAt(0).toUpperCase() + normalized.slice(1))
-          : normalized;
-        return localized || normalized;
-      });
+        return String(c);
+      }).filter(Boolean);
 
-      return <Text>{names.filter(Boolean).join(", ") || "-"}</Text>;
+      if (names.length === 1) return <Text>{names[0]}</Text>;
+
+      const items = names.map((n, idx) => ({ key: `${idx}`, label: <Text>{n}</Text> }));
+
+      return (
+        <Dropdown menu={{ items }} trigger={['click']}>
+          <Button className="sm-pill radius-12" type="text">
+            <Text>{names[0]} </Text>
+            <Text className="text-gray">+{names.length - 1}</Text>
+          </Button>
+        </Dropdown>
+      );
     },
   },
   {
