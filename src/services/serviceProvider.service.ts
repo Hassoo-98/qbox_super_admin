@@ -112,7 +112,7 @@ export const ServiceProviderService = {
 
   deleteServiceProvider: async (id: number): Promise<ServiceProviderUpdateDeleteResponse> => {
     try {
-      const { data } = await api.delete(`/service_provider/${id}/delete`);
+      const { data } = await api.delete(`/service_provider/${id}`);
       return data;
     } catch (error) {
       return normalizeApiError(error);

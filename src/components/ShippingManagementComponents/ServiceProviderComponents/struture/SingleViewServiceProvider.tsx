@@ -17,6 +17,8 @@ const SingleViewServiceProvider = () => {
     const { id } = useParams()
     const [details, setDetails] = useState<any>(null)
     const [loading, setLoading] = useState(false)
+    const [packagesData, setPackagesData] = useState<any[] | undefined>(undefined)
+    const [driversData, setDriversData] = useState<any[] | undefined>(undefined)
     const [activeKey, setActiveKey] = useState('1');
 
     const fetchDetails = async (providerId?: string | undefined) => {
@@ -73,6 +75,18 @@ const SingleViewServiceProvider = () => {
     useEffect(() => {
         fetchDetails(id);
     }, [id]);
+
+    // when details load and a tab is active, populate lists from the single-view response
+    useEffect(() => {
+        if (!details) return;
+        if (activeKey === '2' && packagesData === undefined) {
+            setPackagesData(details?._raw?.packages ?? details?._raw?.data?.packages ?? []);
+        }
+        if (activeKey === '3' && driversData === undefined) {
+            setDriversData(details?._raw?.drivers ?? details?._raw?.data?.drivers ?? []);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [details, activeKey]);
     const items = [
         {
             key: '1',
@@ -82,12 +96,12 @@ const SingleViewServiceProvider = () => {
         {
             key: '2',
             label: t("All Packages"),
-            children: <AllPackagesProviderTable />
+            children: <AllPackagesProviderTable packagesData={packagesData ?? details?._raw?.packages ?? details?._raw?.data?.packages} />
         },
         {
             key: '3',
             label: t("Drivers"),
-            children: <DriversTable />
+            children: <DriversTable driversData={driversData ?? details?._raw?.drivers ?? details?._raw?.data?.drivers} />
         },
     ];
 

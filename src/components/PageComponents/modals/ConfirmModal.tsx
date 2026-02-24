@@ -40,8 +40,16 @@ const ConfirmModal: React.FC<ActiveModalProps> = ({
           >
             {t("Cancel")}
           </Button>
-          <Button className={`btnsave border-0 text-white ${img === "inactive.png"  ? "bg-delivery-failed" : ""}  bg-slate-blue`}
-          onClick={onConfirm}
+          <Button
+            className={
+              `btnsave border-0 text-white ` +
+              (img === "inactive.png"
+                ? "bg-delivery-failed"
+                : img === "active.png"
+                ? "bg-delivery-completed"
+                : "bg-slate-blue")
+            }
+            onClick={onConfirm}
           >
             {t("Confirm")}
           </Button>
@@ -50,9 +58,9 @@ const ConfirmModal: React.FC<ActiveModalProps> = ({
     >
       <Flex vertical align="center" className="mt-3" gap={10}>
         <img
-          src={`/assets/icons/active.png`}
+          src={`/assets/icons/${img || 'active.png'}`}
           width={50}
-          alt="bin icon"
+          alt="action icon"
           fetchPriority="high"
         />
         <Title level={5} className="m-0">

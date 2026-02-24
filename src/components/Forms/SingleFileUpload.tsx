@@ -157,9 +157,8 @@ const SingleFileUpload: React.FC<SingleFileUploadProps> = ({
                     <img
                       src={preview}
                       alt={file.name}
-                      width={width}
-                      height={height}
-                      className="object-cover radius-12"
+                      style={{ maxWidth: `${width}px`, maxHeight: `${height}px`, width: "auto", height: "auto" }}
+                      className="object-contain radius-12"
                     />
                   ) : (
                     <img

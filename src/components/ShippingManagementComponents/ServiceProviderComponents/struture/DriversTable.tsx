@@ -9,7 +9,11 @@ import { ConfirmModal } from "../../../PageComponents";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
 
-const DriversTable = () => {
+type Props = {
+  driversData?: any[];
+};
+
+const DriversTable = ({ driversData }: Props) => {
   const [form] = Form.useForm();
   const [statuschanged, setStatusChanged] = useState<boolean>(false);
   const [selectedStatus, setselectedStatus] = useState<string>("");
@@ -66,7 +70,20 @@ const DriversTable = () => {
           <Table<DriverProviderType>
             size="large"
             columns={driverproviderColumn({ setStatusChanged }, t)}
-            dataSource={driverproviderData}
+            dataSource={
+              Array.isArray(driversData)
+                ? driversData.map((d: any, idx: number) => ({
+                    key: d.id ?? d.pk ?? idx,
+                    img: d.img ?? d.image ?? d.avatar ?? "",
+                    driverName: d.name ?? d.driver_name ?? d.driverName ?? "",
+                    phoneNumber: d.phone_number ?? d.phoneNumber ?? "",
+                    emailAddress: d.email ?? d.emailAddress ?? "",
+                    totalDeliveries: d.total_deliveries ?? d.totalDeliveries ?? 0,
+                    issuesLogged: d.issues_logged ?? d.issuesLogged ?? 0,
+                    status: d.status ?? (d.is_active ? "active" : "inactive"),
+                  }))
+                : driverproviderData
+            }
             className="pagination table-cs table"
             showSorterTooltip={false}
             scroll={{ x: 800 }}
@@ -82,7 +99,9 @@ const DriversTable = () => {
         desc={t(
           "Are you sure you want to status change of this service provider?",
         )}
+        img={"active.png"}
         onClose={() => setStatusChanged(false)}
+        onConfirm={() => setStatusChanged(false)}
       />
     </>
   );

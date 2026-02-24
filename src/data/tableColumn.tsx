@@ -943,12 +943,35 @@ const serviceproviderColumn = (
     navigate,
     setDeleteItem,
     setStatusChanged,
+    viewHandler,
   }: ServiceProviderColumnParams,
   t: (key: string) => string,
 ): TableColumnsType<ServiceProviderType> => [
   {
     title: t("Provider Name"),
     dataIndex: "name",
+    render: (name: string, row: ServiceProviderType) => {
+      const src = (row as any)?.providerName?.img ?? (row as any)?.img ?? (row as any)?.logo ?? undefined;
+      const displayName = name ?? (row as any)?.providerName?.name ?? '';
+      const initials = displayName
+        .split(" ")
+        .map((p) => (p ? p.charAt(0) : ""))
+        .filter(Boolean)
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+
+      return (
+        <Flex align="center" style={{ gap: 12 }}>
+          {src ? (
+            <Avatar src={src} size={36} />
+          ) : (
+            <Avatar size={36}>{initials || displayName?.charAt(0)?.toUpperCase()}</Avatar>
+          )}
+          <Text className="fs-13">{displayName}</Text>
+        </Flex>
+      );
+    },
   },
   {
     title: t("Contact-Person Name"),
@@ -965,9 +988,27 @@ const serviceproviderColumn = (
   {
     title: t("Cities"),
     dataIndex: "operating_cities",
-    render: (operating_cities: string[]) => (
-      <Text>{operating_cities?.join(", ") || "-"}</Text>
-    ),
+    render: (operating_cities: any[]) => {
+      if (!operating_cities || operating_cities.length === 0) return <Text>-</Text>;
+      const names = (operating_cities || []).map((c) => {
+        if (!c && c !== 0) return "";
+        if (typeof c === "object") return c.name ?? c.label ?? String(c.id ?? c.pk ?? "");
+        return String(c);
+      }).filter(Boolean);
+
+      if (names.length === 1) return <Text>{names[0]}</Text>;
+
+      const items = names.map((n, idx) => ({ key: `${idx}`, label: <Text>{n}</Text> }));
+
+      return (
+        <Dropdown menu={{ items }} trigger={['click']}>
+          <Button className="sm-pill radius-12" type="text">
+            <Text>{names[0]} </Text>
+            <Text className="text-gray">+{names.length - 1}</Text>
+          </Button>
+        </Dropdown>
+      );
+    },
   },
   {
     title: t("Status"),
@@ -991,8 +1032,16 @@ const serviceproviderColumn = (
               label: (
                 <NavLink
                   to="#"
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.preventDefault();
+                    if (typeof viewHandler === "function") {
+                      try {
+                        await viewHandler(row?.id ?? row?.key, row);
+                      } catch (_err) {
+                        /* swallow - still navigate */
+                      }
+                    }
+
                     navigate("/serviceproviders/view/" + row?.key);
                   }}
                 >
