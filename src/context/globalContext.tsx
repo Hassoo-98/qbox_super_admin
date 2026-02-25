@@ -29,6 +29,8 @@ type GlobalContextType = {
   setTableSelectedIds: React.Dispatch<React.SetStateAction<TableSelectedIds>>;
   selectedRowStatus: SelectedRowStatus;
   setSelectedRowStatus: React.Dispatch<React.SetStateAction<SelectedRowStatus>>;
+  dataRefreshToken: number;
+  setDataRefreshToken: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const initialModals: ModalsState = {
@@ -60,6 +62,7 @@ export const GlobalProvider: React.FC<React.PropsWithChildren<unknown>> = ({ chi
   const [modals, setModals] = useState<ModalsState>(initialModals);
   const [tableSelectedIds, setTableSelectedIds] = useState<TableSelectedIds>(initialTableSelectedIds);
   const [selectedRowStatus, setSelectedRowStatus] = useState<SelectedRowStatus>(intialSelectedRowStatus);
+  const [dataRefreshToken, setDataRefreshToken] = useState<number>(0);
 
   return (
     <GlobalContext.Provider
@@ -70,6 +73,9 @@ export const GlobalProvider: React.FC<React.PropsWithChildren<unknown>> = ({ chi
         setTableSelectedIds,
         selectedRowStatus,
         setSelectedRowStatus
+        ,
+        dataRefreshToken,
+        setDataRefreshToken
       }}
     >
       {children}
