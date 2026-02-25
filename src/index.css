@@ -436,8 +436,8 @@
   margin-bottom: 0.5rem !important;
 }
 .my-3 {
-  margin-top: 1rem !important;
-  margin-bottom: 1rem !important;
+  /* margin-top: 1rem !important; */
+  margin-bottom: 3rem !important;
 }
 .my-4 {
   margin-top: 1.5rem !important;
@@ -1720,21 +1720,25 @@
   height: 39px !important;
 }
 .preview-box {
-  height: 180px; /* fixed height between 160-200px */
-  width: 100%;
-  max-width: 340px; /* prevents excessive width inside drawer */
+  height: 100px !important;
+  width: 160px !important;
   display: flex;
   align-items: center;
-  justify-content: center; /* center image inside the box */
-  overflow: hidden; /* prevent overflow */
+  justify-content: center;
+  overflow: hidden;
   box-sizing: border-box;
+  border: 1px solid var(--light-border);
+  padding: 8px;
+  background-color: var(--f5);
+  position: relative;
+  flex-shrink: 0;
 }
 
 .preview-img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain; /* preserve aspect ratio, no stretching */
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
   display: block;
+  margin: auto;
+  flex-shrink: 0;
 }
