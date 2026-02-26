@@ -225,3 +225,41 @@ export interface CrudPromotionResponse{
   data: PromotionItem;
   message: string;
 }
+
+// Installment Types 
+
+export interface InstallmentParams {
+  search:string,
+  ordering:string,
+  page:number,
+  limit:number
+}
+export interface QboxInstallmentItem{
+  id: string,
+  homeowner:HomeOwner,
+  installment_date:string,
+  staff:string,
+  technician_name:string,
+  created_at:string,
+  updated_at:string,
+}
+export interface QboxInstallmentData {
+  items: QboxInstallmentItem[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+}
+export interface GetQboxInstallmentsResponse {
+  success: boolean;
+  statusCode: number;
+  data: QboxInstallmentData;
+  message: string;
+}
+
+export interface CrudQboxInstallmentnResponse{
+  success: boolean;
+  statusCode: number;
+  data: QboxInstallmentItem;
+  message: string;
+}

@@ -13,7 +13,7 @@ type ModalsState = {
 
 type TableSelectedIds = {
   staffSelectedId: string | null;
-  homeOwnerSelectedId: string | null;
+  homeOwnerSelectedId: string | undefined;
   qboxSelectedId: string | null;
   packageSelectedId: string | null;
   promotionSelectedId: string | null;

@@ -5,34 +5,51 @@ import {
   ArrowRightOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Flex, Modal, Tag, Typography } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
-import { installmentpendingData } from "../../../../data";
+import { useNavigate } from "react-router-dom";
 import { HomeOwnerDetailTable } from "./HomeOwnerDetailTable";
 import { BreadCrumb } from "../../../PageComponents";
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
-
-
+import { useInstallment } from "../../../../hooks/useInstallment";
+import { useGlobalContext } from "../../../../context/globalContext";
+import { useHomeowner } from "../../../../hooks/useHomeOwner";
 const { Title } = Typography;
 const SingleViewHomeOwnerDetail = () => {
   const isRTL = i18n.language === "ar";
   const navigate = useNavigate();
   const [previewOpen, setPreviewOpen] = useState(false);
-  const { id } = useParams();
-  const details = installmentpendingData?.find(
-    (list) => list?.key === Number(id)
-  );
   const { t } = useTranslation();
-
+  const {installmentView,} = useInstallment();
+  const detials  = installmentView?.data
+  const {modals, setModals, tableSelectedIds, setTableSelectedIds } = useGlobalContext();
+  const {homeOwnerChangeStatus} = useHomeowner();
+    const changeStatus = (is_active: boolean) => {
+    console.log("is_active value being sent:", is_active);
+    if (!tableSelectedIds.homeOwnerSelectedId) {
+      // message.error("homwOwner is not selected");
+      return;
+    }
+    homeOwnerChangeStatus(
+      { id: tableSelectedIds.homeOwnerSelectedId, payload: { is_active } },
+      {
+        onSuccess: () => {
+          // message.success("Home owner status changed"),
+          setModals((prev: any) => ({ ...prev, statusModal: false })),
+            setTableSelectedIds((perv: any) => ({ ...perv, homeOwnerSelectedId: null }))
+        }
+      }
+    );
+  };
   return (
+    <>
     <Flex vertical gap={20} style={{ direction: isRTL ? "rtl" : "ltr" }}>
       <BreadCrumb
         items={[
           { title: t("QBox Management") },
           { title: t("Installment Pending") },
-          { title: `${details?.homeownerName}` },
+          { title: `${detials?.homeowner?.full_name}` },
         ]}
       />
       <Card className="card-bg card-cs radius-12 border-gray">
@@ -46,28 +63,44 @@ const SingleViewHomeOwnerDetail = () => {
              {isRTL ? <ArrowRightOutlined/> :    <ArrowLeftOutlined />}
               </Button>
               <Title level={5} className="fw-500 m-0">
-                #{details?.id} {details?.homeownerName}
+                #{detials?.homeowner?.qboxes[0]?.qbox_id} {detials?.homeowner?.full_name}
               </Title>
-              {details?.status && (
+              {detials?.homeowner?.is_active && (
                 <Tag
                   className={`sm-pill radius-20 fs-12 border-0 ${
-                    details.status.toLowerCase() === "active"
+                    detials?.homeowner?.is_active
                       ? t("success")
                       : t("inactive")
                   }`}
                 >
-                  {details.status.charAt(0).toUpperCase() +
-                    details.status.slice(1).toLowerCase()}
+                  {detials?.homeowner?.is_active ? "Active" : "Inactive"}
                 </Tag>
               )}
             </Flex>
-            <Button className="btncancel bg-red text-white">
+            {
+              detials?.homeowner?.is_active ? (
+                 <Button className="btncancel bg-red text-white" onClick={() => {
+                  setModals(prev => ({ ...prev, homeOwnerStatus: true }));
+                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: detials?.homeowner?.id }));
+                }}>
               {t("Inactivate Account")}
             </Button>
+              ):(
+                 <Button className="btncancel  bg-green text-white" 
+                 onClick={() => {
+                  setModals(prev => ({ ...prev, homeOwnerStatus: true }));
+                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: detials?.homeowner?.id }));
+                }}
+                 >
+              {t("Active Account")}
+            </Button>
+              )
+            }
+           
           </Flex>
           <Flex vertical gap={5} justify="center" align="center">
             {/* <Image
-                            src={details?.img}
+                            src={detials?.homeowner?.installation_qbox_image_url}
                             alt="home owner image"
                             className='radius-12 mxw-mxh'
                             fetchPriority="high"
@@ -83,7 +116,7 @@ const SingleViewHomeOwnerDetail = () => {
             >
               <div style={{ width: "200px", position: "relative" }}>
                 <img
-                  src={details?.img}
+                  src={detials?.homeowner?.installation_qbox_image_url}
                   alt="Package"
                   style={{
                     width: "100%",
@@ -139,7 +172,7 @@ const SingleViewHomeOwnerDetail = () => {
               bodyStyle={{ padding: 0 }}
             >
               <img
-                src={details?.img}
+                src={detials?.homeowner?.installation_qbox_image_url}
                 style={{
                   width: "100%",
                   height: "380px",
@@ -149,10 +182,12 @@ const SingleViewHomeOwnerDetail = () => {
               />
             </Modal>
           </Flex>
-          <HomeOwnerDetailTable details={details} />
+          <HomeOwnerDetailTable detials={detials} />
         </Flex>
       </Card>
     </Flex>
+    
+    </>
   );
 };
 
