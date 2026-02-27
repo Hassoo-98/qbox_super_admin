@@ -7,7 +7,7 @@ import {
 import { Button, Card, Flex, Modal, Tag, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { HomeOwnerDetailTable } from "./HomeOwnerDetailTable";
-import { BreadCrumb } from "../../../PageComponents";
+import { BreadCrumb, ConfirmModal } from "../../../PageComponents";
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -81,7 +81,7 @@ const SingleViewHomeOwnerDetail = () => {
               detials?.homeowner?.is_active ? (
                  <Button className="btncancel bg-red text-white" onClick={() => {
                   setModals(prev => ({ ...prev, homeOwnerStatus: true }));
-                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: detials?.homeowner?.id }));
+                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: detials?.homeowner?.id ?? null }));
                 }}>
               {t("Inactivate Account")}
             </Button>
@@ -89,7 +89,7 @@ const SingleViewHomeOwnerDetail = () => {
                  <Button className="btncancel  bg-green text-white" 
                  onClick={() => {
                   setModals(prev => ({ ...prev, homeOwnerStatus: true }));
-                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: detials?.homeowner?.id }));
+                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: detials?.homeowner?.id ?? null }));
                 }}
                  >
               {t("Active Account")}
@@ -186,7 +186,22 @@ const SingleViewHomeOwnerDetail = () => {
         </Flex>
       </Card>
     </Flex>
-    
+    <ConfirmModal
+        visible={modals.homeOwnerStatus}
+        img={detials?.homeowner?.is_active ? 'active.png' : 'inactive.png'}
+        title={detials?.homeowner?.is_active ? t("Inactivate Home Owner") : t("Activate Home Owner")}
+        desc={
+          detials?.homeowner?.is_active
+            ? t("Are you sure you want to inactivate this home owner?")
+            : t("Are you sure you want to activate this home owner?")
+
+        }
+        onClose={() => {
+          setModals((prev) => ({ ...prev, homeOwnerStatus: false }));
+          setTableSelectedIds((prev) => ({ ...prev, homeOwnerSelectedId: null }));
+        }}
+        onConfirm={() => changeStatus(true)}
+      />
     </>
   );
 };
