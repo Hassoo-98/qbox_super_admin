@@ -4,7 +4,7 @@ import {
   CloseOutlined,
   ArrowRightOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Flex, Modal, Tag, Typography } from "antd";
+import { Button, Card, Flex, message, Modal, Tag, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { HomeOwnerDetailTable } from "./HomeOwnerDetailTable";
 import { BreadCrumb, ConfirmModal } from "../../../PageComponents";
@@ -24,14 +24,15 @@ const SingleViewHomeOwnerDetail = () => {
   const {installmentView,} = useInstallment();
   const detials  = installmentView?.data
   const {modals, setModals, tableSelectedIds, setTableSelectedIds } = useGlobalContext();
-  const {homeOwnerChangeStatus} = useHomeowner();
+ const { changeHomeownerStatus } = useHomeowner(undefined, { fetchSingle: false, fetchList: false });
     const changeStatus = (is_active: boolean) => {
     console.log("is_active value being sent:", is_active);
     if (!tableSelectedIds.homeOwnerSelectedId) {
-      // message.error("homwOwner is not selected");
+      message.error("home Owner is not selected");
+      console.log("id not found")
       return;
     }
-    homeOwnerChangeStatus(
+    changeHomeownerStatus(
       { id: tableSelectedIds.homeOwnerSelectedId, payload: { is_active } },
       {
         onSuccess: () => {
@@ -80,7 +81,7 @@ const SingleViewHomeOwnerDetail = () => {
             {
               detials?.homeowner?.is_active ? (
                  <Button className="btncancel bg-red text-white" onClick={() => {
-                  setModals(prev => ({ ...prev, homeOwnerStatus: true }));
+                  setModals(prev => ({ ...prev, statusModal: true }));
                   setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: detials?.homeowner?.id ?? null }));
                 }}>
               {t("Inactivate Account")}
@@ -88,7 +89,7 @@ const SingleViewHomeOwnerDetail = () => {
               ):(
                  <Button className="btncancel  bg-green text-white" 
                  onClick={() => {
-                  setModals(prev => ({ ...prev, homeOwnerStatus: true }));
+                  setModals(prev => ({ ...prev, statusModal: true }));
                   setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: detials?.homeowner?.id ?? null }));
                 }}
                  >
@@ -187,8 +188,8 @@ const SingleViewHomeOwnerDetail = () => {
       </Card>
     </Flex>
     <ConfirmModal
-        visible={modals.homeOwnerStatus}
-        img={detials?.homeowner?.is_active ? 'active.png' : 'inactive.png'}
+        visible={modals.statusModal}
+        img={detials?.homeowner?.is_active ? 'inactive.png' : 'active.png'}
         title={detials?.homeowner?.is_active ? t("Inactivate Home Owner") : t("Activate Home Owner")}
         desc={
           detials?.homeowner?.is_active
@@ -197,10 +198,13 @@ const SingleViewHomeOwnerDetail = () => {
 
         }
         onClose={() => {
-          setModals((prev) => ({ ...prev, homeOwnerStatus: false }));
+          setModals((prev) => ({ ...prev, statusModal: false }));
           setTableSelectedIds((prev) => ({ ...prev, homeOwnerSelectedId: null }));
         }}
-        onConfirm={() => changeStatus(true)}
+        onConfirm={() => {
+  console.log("ID at click:", tableSelectedIds.homeOwnerSelectedId);
+  changeStatus(true);
+}}
       />
     </>
   );

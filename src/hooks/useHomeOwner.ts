@@ -1,19 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { HomeownerService } from "../services/homeOwner.service";
 import { useParams } from "react-router-dom";
+import type { GetAllHomeownersParams } from "../types/AllQboxTypes";
 
-interface GetAllHomeownersParams {
-  search?: string;
-  is_active?: string;
-  is_verified?: string;
-  ordering?: string;
-  page?: number;
-  limit?: number;
+interface UseHomeownerOptions {
+  fetchSingle?: boolean; // sirf single homeowner get karna hai ya nahi
+  fetchList?: boolean;   // sirf list get karna hai ya nahi
 }
 
-export const useHomeowner = (params?: GetAllHomeownersParams) => {
+export const useHomeowner = (
+  params?: GetAllHomeownersParams,
+  options?: UseHomeownerOptions
+) => {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const { fetchSingle = true, fetchList = true } = options || {};
 
   // ===============================
   // 🔹 GET ALL HOMEOWNERS
@@ -26,6 +27,7 @@ export const useHomeowner = (params?: GetAllHomeownersParams) => {
     queryKey: ["homeowner", params],
     queryFn: () =>
       HomeownerService.getAllHomeowners(params as GetAllHomeownersParams),
+    enabled: fetchList,
   });
 
   // ===============================
@@ -38,7 +40,7 @@ export const useHomeowner = (params?: GetAllHomeownersParams) => {
   } = useQuery({
     queryKey: ["single-homeowner", id],
     queryFn: () => HomeownerService.getSingleHomeowner(id as string),
-    enabled: !!id,
+    enabled: !!id && fetchSingle,
   });
 
   // ===============================
@@ -52,7 +54,6 @@ export const useHomeowner = (params?: GetAllHomeownersParams) => {
       id: string;
       payload: { is_active: boolean };
     }) => HomeownerService.changeHomeownerStatus(id, payload),
-
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["homeowner"] });
       queryClient.invalidateQueries({ queryKey: ["single-homeowner"] });
@@ -64,7 +65,6 @@ export const useHomeowner = (params?: GetAllHomeownersParams) => {
   // ===============================
   const deleteMutation = useMutation({
     mutationFn: (id: string) => HomeownerService.deleteHomeowner(id),
-
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["homeowner"] });
     },

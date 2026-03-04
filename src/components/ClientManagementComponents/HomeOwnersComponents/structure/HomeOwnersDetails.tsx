@@ -33,8 +33,8 @@ const HomeOwnersDetails: React.FC = () => {
   const { id } = useParams();
   const details = homeownersData?.find((list) => list?.key === Number(id));
 
-  const { Homeowner, homeOwnerChangeStatus } = useHomeowner()
-  const homeOwnerdetial = Homeowner?.data;
+  const { homeowner, changeHomeownerStatus } = useHomeowner()
+  const homeOwnerdetial = homeowner?.data;
   const { modals, setModals, tableSelectedIds, setTableSelectedIds } = useGlobalContext();
   const changeStatus = (is_active: boolean) => {
     console.log("is_active value being sent:", is_active);
@@ -42,7 +42,7 @@ const HomeOwnersDetails: React.FC = () => {
       // message.error("homwOwner is not selected");
       return;
     }
-    homeOwnerChangeStatus(
+    changeHomeownerStatus(
       { id: tableSelectedIds.homeOwnerSelectedId, payload: { is_active } },
       {
         onSuccess: () => {
