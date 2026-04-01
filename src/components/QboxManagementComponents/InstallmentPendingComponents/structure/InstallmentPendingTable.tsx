@@ -2,13 +2,13 @@ import { Typography, Card, Flex, Table, Form, Row, Col } from "antd";
 
 import { CustomPagination, ModuleTopHeading } from "../../../PageComponents";
 import { SearchInput, MySelect } from "../../../Forms";
-import type { InstallmentType } from "../../../../types";
-import { installmentColumn, installmentpendingData } from "../../../../data";
+import { installmentColumn } from "../../../../data";
 import { useState } from "react";
 import i18n from "../../../../sources/i18n";
 import { InstallmentCompletedModal } from "../modal";
 import { useTranslation } from "react-i18next";
-
+import { useInstallment } from "../../../../hooks/useInstallment";
+import type { QboxInstallmentItem } from "../../../../types/AllQboxTypes";
 const { Text } = Typography;
 const InstallmentPendingTable = () => {
   const [form] = Form.useForm();
@@ -31,7 +31,9 @@ const InstallmentPendingTable = () => {
     setPageSize(size);
   };
   const isRTL = i18n.language === "ar";
-
+  const {installmentList, isLoadinginstallmentList} = useInstallment();
+  const installmentData = Array.isArray(installmentList?.data?.items) ? installmentList?.data?.items : [];
+  const TotalInstallment = installmentList?.data?.total || 0;
   return (
     <>
       <Card
@@ -80,22 +82,27 @@ const InstallmentPendingTable = () => {
           </Form>
         </Flex>
         <Flex vertical gap={20}>
-          <Table<InstallmentType>
+          <Table<QboxInstallmentItem>
             size="large"
             columns={installmentColumn({ setVisible, t })}
-            dataSource={installmentpendingData}
+            dataSource={installmentData ?? []}
             className="pagination table-cs table"
             showSorterTooltip={false}
             scroll={{ x: 800 }}
             rowHoverable={false}
             pagination={false}
+            loading={isLoadinginstallmentList}
           />
-          <CustomPagination
-            total={12}
+         {
+          TotalInstallment > 10 && (
+             <CustomPagination
+            total={TotalInstallment}
             current={current}
             pageSize={pageSize}
             onPageChange={handlePageChange}
           />
+          )
+         }
         </Flex>
       </Card>
 

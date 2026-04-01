@@ -1,13 +1,13 @@
 import { Flex, Table, Typography } from "antd";
-import type { InstallmentType } from "../../../../types";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../sources/i18n";
+import type { QboxInstallmentItem } from "../../../../types/AllQboxTypes";
 interface props {
-  details: InstallmentType | undefined;
+  detials: QboxInstallmentItem | undefined;
 }
 
 const { Text } = Typography;
-const HomeOwnerDetailTable: React.FC<props> = ({ details }) => {
+const HomeOwnerDetailTable: React.FC<props> = ({ detials }) => {
   const { t } = useTranslation();
   const columns = [
     {
@@ -25,67 +25,67 @@ const HomeOwnerDetailTable: React.FC<props> = ({ details }) => {
     {
       key: "1",
       type: <Text className="text-gray">{t("Full Name")}</Text>,
-      detail: <Text>{details?.homeownerName}</Text>,
+      detail: <Text>{detials?.homeowner?.full_name}</Text>,
     },
     {
       key: "2",
       type: <Text className="text-gray">{t("Email Address")}</Text>,
-      detail: <Text>{details?.email}</Text>,
+      detail: <Text>{detials?.homeowner?.email}</Text>,
     },
     {
       key: "3",
       type: <Text className="text-gray">{t("Phone Number")}</Text>,
-      detail: <Text>{details?.phoneNumber}</Text>,
+      detail: <Text>{detials?.homeowner?.phone_number}</Text>,
     },
     {
       key: "4",
       type: <Text className="text-gray">{t("Short Address")}</Text>,
-      detail: <Text>{details?.shortAddress}</Text>,
+      detail: <Text>{detials?.homeowner?.address?.short_address}</Text>,
     },
     {
       key: "5",
       type: <Text className="text-gray">{t("City")}</Text>,
-      detail: <Text>{details?.city}</Text>,
+      detail: <Text>{detials?.homeowner?.address?.city}</Text>,
     },
     {
       key: "6",
       type: <Text className="text-gray">{t("District")}</Text>,
-      detail: <Text>{details?.district}</Text>,
+      detail: <Text>{detials?.homeowner?.address?.district}</Text>,
     },
     {
       key: "7",
       type: <Text className="text-gray">{t("Street")}</Text>,
-      detail: <Text>{details?.street}</Text>,
+      detail: <Text>{detials?.homeowner?.address?.street}</Text>,
     },
     {
       key: "8",
       type: <Text className="text-gray">{t("Postal Code")}</Text>,
-      detail: <Text>{details?.postalCode}</Text>,
+      detail: <Text>{detials?.homeowner?.address?.postal_code}</Text>,
     },
     {
       key: "9",
       type: <Text className="text-gray">{t("Building #")}</Text>,
-      detail: <Text>{details?.building}</Text>,
+      detail: <Text>{detials?.homeowner?.address?.building_number}</Text>,
     },
     {
       key: "10",
       type: <Text className="text-gray">{t("Secondary Number")}</Text>,
-      detail: <Text>{details?.secondaryNumber}</Text>,
+      detail: <Text>{detials?.homeowner?.address?.secondary_building_number}</Text>,
     },
-    {
-      key: "11",
-      type: <Text className="text-gray">{t("ID Type & Number")}</Text>,
-      detail: <Text>{details?.idType}</Text>,
-    },
+    // {
+    //   key: "11",
+    //   type: <Text className="text-gray">{t("ID Type & Number")}</Text>,
+    //   detail: <Text>{detials?.homeowner?.qboxes?.map((item) => item?.qbox_id)}</Text>,
+    // },
     {
       key: "12",
       type: <Text className="text-gray">{t("Preferred Location")}</Text>,
-      detail: <Text>{details?.preLocation}</Text>,
+      detail: <Text>{detials?.homeowner?.installation_location_preference}</Text>,
     },
     {
       key: "13",
       type: <Text className="text-gray">{t("Instruction")}</Text>,
-      detail: <Text>{details?.instruction}</Text>,
+      detail: <Text>{detials?.homeowner?.installation_access_instruction}</Text>,
     },
   ];
   const isRTL = i18n.language === "ar";

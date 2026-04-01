@@ -10,7 +10,7 @@ import {
   type TableColumnsType,
   Modal,
 } from "antd";
-import { ActiveModal, BreadCrumb, ConfirmModal } from "../../../PageComponents";
+import { BreadCrumb, ConfirmModal } from "../../../PageComponents";
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
@@ -27,8 +27,6 @@ const { Text, Title } = Typography;
 
 const HomeOwnersDetails: React.FC = () => {
   const { t } = useTranslation();
-  const [inactivestatus, setInactiveStatus] = useState<boolean>(false);
-  const [activestatus, setActiveStatus] = useState<boolean>(false);
   const [previewOpen, setPreviewOpen] = useState<boolean>(false);
   const isRTL = i18n.language === "ar";
   const navigate = useNavigate();
@@ -172,7 +170,7 @@ const HomeOwnersDetails: React.FC = () => {
                 className="btncancel bg-red text-white"
                 onClick={() => {
                   setModals(prev => ({ ...prev, homeOwnerStatus: true }));
-                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: homeOwnerdetial.id }));
+                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: homeOwnerdetial?.id ?? null }));
                 }}
               >
                 {t("Inactive Account")}
@@ -182,7 +180,7 @@ const HomeOwnersDetails: React.FC = () => {
                 className="btncancel bg-green text-white"
                 onClick={() => {
                   setModals(prev => ({ ...prev, homeOwnerStatus: true }));
-                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: homeOwnerdetial.id }));
+                  setTableSelectedIds(prev => ({ ...prev, homeOwnerSelectedId: homeOwnerdetial?.id ?? null }));
                 }}
               >
                 {t("Active Account")}
@@ -294,11 +292,12 @@ const HomeOwnersDetails: React.FC = () => {
 
       <ConfirmModal
         visible={modals.homeOwnerStatus}
-        title={homeOwnerdetial?.is_active ? t("Inactivate Staff") : t("Activate Staff")}
+        img={homeOwnerdetial?.is_active ? 'active.png' : 'inactive.png'}
+        title={homeOwnerdetial?.is_active ? t("Inactivate Home Owner") : t("Activate Home Owner")}
         desc={
           homeOwnerdetial?.is_active
-            ? t("Are you sure you want to inactivate this staff?")
-            : t("Are you sure you want to activate this staff?")
+            ? t("Are you sure you want to inactivate this home owner?")
+            : t("Are you sure you want to activate this home owner?")
 
         }
         onClose={() => {
@@ -307,16 +306,6 @@ const HomeOwnersDetails: React.FC = () => {
         }}
         onConfirm={() => changeStatus(true)}
       />
-      {/* <ActiveModal
-        visible={modals.homeOwnerStatus}
-        title={t("Activate Account")}
-        desc={t("Are you sure you want to active this account?")}
-        onClose={() => {
-          setModals((prev) => ({ ...prev, homeOwnerStatus: false }));
-          setTableSelectedIds((prev) => ({ ...prev, homeOwnerSelectedId: null }));
-        }}
-        onConfirm={() => changeStatus(false)}
-      /> */}
     </>
   );
 };

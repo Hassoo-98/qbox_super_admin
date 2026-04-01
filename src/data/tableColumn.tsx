@@ -38,34 +38,39 @@ import type {
 import type { Installment } from "../api/types/admin";
 import { statusColors } from "./statusColors";
 import { t } from "i18next";
-import type { HomeOwner, PackageItem, PromotionItem, QboxItem } from "../types/AllQboxTypes";
+import type { HomeOwner, PackageItem, PromotionItem, QboxInstallmentItem, QboxItem } from "../types/AllQboxTypes";
 const { Text, Paragraph } = Typography;
 
 const installmentColumn = ({
   setVisible,
   t,
-}: VisibleType): TableColumnsType<InstallmentType> => [
-  {
-    title: t("QBox ID"),
-    dataIndex: "id",
+}: VisibleType): TableColumnsType<QboxInstallmentItem> => [
+{
+  title: t("QBox ID"),
+  key: "qbox_id",
+  render: (_, record) => {
+    return record.homeowner.qboxes
+      ?.map((q) => q.qbox_id)
+      .join(", ") || "-";
   },
+},
   {
     title: t("Homeowner Name"),
-    dataIndex: "homeownerName",
+    dataIndex: ["homeowner", "full_name"],
   },
   {
     title: t("Short Address"),
-    dataIndex: t("shortAddress"),
+    dataIndex: ["homeowner", "address", "short_address"],
   },
   {
     title: t("City"),
-    dataIndex: "city",
+    dataIndex: ["homeowner", "address", "city"],
   },
   {
     title: t("Action"),
     key: "action",
     width: 100,
-    render: (_value: unknown, row: InstallmentType) => (
+    render: (_value: unknown, row: QboxInstallmentItem) => (
       <Dropdown
         menu={{
           items: [
@@ -85,7 +90,7 @@ const installmentColumn = ({
             },
             {
               label: (
-                <NavLink to={`/installmentpending/viewdetail/${row?.key}`}>
+                <NavLink to={`/installmentpending/viewdetail/${row?.id}`}>
                   {t("View HomeOwner Details")}
                 </NavLink>
               ),

@@ -13,7 +13,7 @@ export const usePromotion = (params?: PromotionParams) => {
         mutationFn:({id, payload}:{id:string,payload:PromotionItem})=> PromotionService.updatePromotion(id,payload),
     })
     const { data: promotionList, isLoading: isLoadingPromotion, isError: promotionListError } = useQuery({
-        queryKey: ["promotion"],
+        queryKey: ["promotion", params],
         queryFn: () => PromotionService.getAllPromotion(params as PromotionParams),
         staleTime: 0,
         gcTime: 0,
