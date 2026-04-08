@@ -19,9 +19,9 @@ const HomeOwnersTable: React.FC = () => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   // Real Data Hook
-  const { HomeownerList, isLoadingHomeownerList, HomeownerListError, homeOwnerChangeStatus, isHomeOwnerChangingStatus, deleteHomeowner } = useHomeowner();
-  const HomeownerData = Array.isArray(HomeownerList?.data?.items) ? HomeownerList?.data?.items : [];
-  const totalHomeowners = HomeownerList?.data?.total || 0;
+  const { homeownerList, isLoadingHomeownerList, homeownerListError, changeHomeownerStatus, isChangingHomeownerStatus, deleteHomeowner } = useHomeowner();
+  const HomeownerData = Array.isArray(homeownerList?.data?.items) ? homeownerList?.data?.items : [];
+  const totalHomeowners = homeownerList?.data?.total || 0;
 
   const [pageSize, setPageSize] = useState<number>(10);
   const [current, setCurrent] = useState<number>(1);
@@ -73,10 +73,10 @@ const HomeOwnersTable: React.FC = () => {
   };
   const changeStatus = (currentStatus: boolean | null) => {
     if (!tableSelectedIds.homeOwnerSelectedId) {
-      message.error("homwOwner is not selected");
+      message.error("home Owner is not selected");
       return;
     }
-    homeOwnerChangeStatus(
+    changeHomeownerStatus(
       { id: tableSelectedIds.homeOwnerSelectedId, payload: { is_active: !currentStatus } },
       {
         onSuccess: () => {
